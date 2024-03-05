@@ -2,17 +2,12 @@
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { GetCurrentUserName } from "@/app/utils/actions";
 interface NavbarProps {
   onClick: () => void;
 }
 
 const Navbar: React.FC<NavbarProps> = ({ onClick }) => {
   const [userName, setUserName] = useState<string>("");
-
-  useEffect(() => {
-    GetCurrentUserName().then((uname) => setUserName(uname));
-  }, []);
 
   return (
     <>

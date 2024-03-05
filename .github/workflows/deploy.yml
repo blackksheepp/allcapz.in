@@ -1,0 +1,87 @@
+name: Build on DockerHub and Deploy to AWS
+
+on:
+  push:
+    branches: ["master"]
+  pull_request:
+    branches: ["master"]
+
+env:
+  DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+  DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+  AWS_PRIVATE_KEY: ${{ secrets.AWS_PRIVATE_KEY }}
+  AWS_HOST: ${{ secrets.AWS_HOST }}
+  REPO: ${{ secrets.REPO }}
+
+jobs:
+  build:
+    environment: production
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ env.DOCKERHUB_USERNAME }}
+          password: ${{ env.DOCKERHUB_TOKEN }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build and Push Docker Image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./
+          push: true
+          dockerfile: ./Dockerfile
+          tags: ${{ env.DOCKERHUB_USERNAME }}/${{ env.REPO }}:latest
+
+  deploy:
+    needs: build
+    environment: production
+    runs-on: ubuntu-latest
+
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      REDIS_URI: ${{ secrets.REDIS_URI }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ env.DOCKERHUB_USERNAME }}
+          password: ${{ env.DOCKERHUB_TOKEN }}
+
+      - name: Set permissions for private key
+        run: |
+          echo "${{ env.AWS_PRIVATE_KEY }}" > key.pem
+          chmod 600 key.pem
+
+      - name: Stop running container
+        run: |
+          ssh -o StrictHostKeyChecking=no -i key.pem ${{ env.AWS_HOST }} 'docker stop ${{ env.REPO }} || true'
+          ssh -o StrictHostKeyChecking=no -i key.pem ${{ env.AWS_HOST }} 'docker rm ${{ env.REPO }} || true'
+          ssh -o StrictHostKeyChecking=no -i key.pem ${{ env.AWS_HOST }} 'docker rmi -f $(docker images ${{ env.DOCKERHUB_USERNAME }}/${{ env.REPO }} -aq) || true'
+
+      - name: Pull Docker Image
+        run: |
+          ssh -o StrictHostKeyChecking=no -i key.pem ${{ env.AWS_HOST }} 'docker pull ${{ env.DOCKERHUB_USERNAME }}/${{ env.REPO }}:latest'
+
+      - name: Run new container
+        run: |
+          ssh -o StrictHostKeyChecking=no -i key.pem ${{ env.AWS_HOST }} 'docker run -d -p 8000:8000 --name ${{ env.REPO }} --env REDIS_URI="${{ env.REDIS_URI }}" --env DATABASE_URL="${{ env.DATABASE_URL }}" ${{ env.DOCKERHUB_USERNAME }}/${{ env.REPO }}:latest'
+      - name: Copy nginx.conf to EC2
+        run: |
+          scp -o StrictHostKeyChecking=no -i key.pem .nginx/nginx.conf ${{ env.AWS_HOST }}:~/.nginx/
+      - name: Restart Nginx
+        run: |
+          ssh -o StrictHostKeyChecking=no -i key.pem ${{ env.AWS_HOST }} '
+          sudo mv ~/.nginx/nginx.conf /etc/nginx/nginx.conf
+          sudo systemctl restart nginx
+          '

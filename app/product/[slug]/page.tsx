@@ -13,7 +13,7 @@ export default function Product({ params }: { params: { slug: string } }) {
   const [cart, setCart] = useState(false);
   const [product, setProduct] = useState<ProductType | null>(null);
   const [zoom, setZoom] = useState(false);
-  
+
   useEffect(() => {
     (async () => {
       const url = atob(decodeURIComponent(params.slug));
@@ -27,60 +27,59 @@ export default function Product({ params }: { params: { slug: string } }) {
     <>
       {cart && <Cart onClick={() => setCart(!cart)} showCart={cart} />}
       <div
-        className={`absolute w-full pb-20 ${
-          cart || zoom ? "blur-lg pointer-events-none " : "blur-none"
-        }`}
+        className={`absolute w-full pb-20 ${cart || zoom ? "blur-lg pointer-events-none " : "blur-none"
+          }`}
       >
         <Navbar onClick={() => setCart(!cart)} />
         <div className="flex flex-row justify-center gap-16 mx-52 pt-20">
-          <div className="relative top-0 right-0 w-full">
+          <div className="relative top-0 w-[500px] grid place-items-center">
             <Image
               src={product?.image!}
               alt={product?.title!}
               width={0}
               height={0}
-              sizes="100vh"
+              sizes="100vw"
               onClick={() => setZoom(true)}
-              className="absolute top-4 right-4   w-auto h-[500px]"
+              className="absolute mt-4 mr-4 w-[500px] h-auto"
             />
             <Image
               src={product?.image!}
               alt={product?.title!}
               width={0}
               height={0}
-              sizes="100vh"
+              sizes="100vw"
               onClick={() => setZoom(true)}
-              className="absolute top-3 right-3   w-auto h-[500px]"
+              className="absolute mt-3 mr-3 w-[500px] h-auto"
             />
             <Image
               src={product?.image!}
               alt={product?.title!}
               width={0}
               height={0}
-              sizes="100vh"
+              sizes="100vw"
               onClick={() => setZoom(true)}
-              className="absolute top-2 right-2   w-auto h-[500px]"
+              className="absolute mt-2 mr-2 w-[500px] h-auto"
             />
             <Image
               src={product?.image!}
               alt={product?.title!}
               width={0}
               height={0}
-              sizes="100vh"
+              sizes="100vw"
               onClick={() => setZoom(true)}
-              className="absolute top-1 right-1  w-auto h-[500px]"
+              className="absolute mt-1 mr-1 w-[500px] h-auto"
             />
             <Image
               src={product?.image!}
               alt={product?.title!}
               width={0}
               height={0}
-              sizes="100vh"
+              sizes="100vw"
               onClick={() => setZoom(true)}
-              className="absolute top-0 right-0 w-auto h-[500px]"
+              className="absolute w-[500px] h-auto"
             />
           </div>
-          <div className="text-accent font-retro h-[500px] flex flex-col items-center justify-between">
+          <div className="text-accent font-retro w-[500px] flex flex-col items-center justify-between gap-10">
             <div className="flex flex-col gap-3">
               <div className="flex flex-col items-center gap-3">
                 <p className="text-4xl text-center">{product?.title}</p>
@@ -101,7 +100,8 @@ export default function Product({ params }: { params: { slug: string } }) {
               Limited Edition Serialized and Signed by the Author
               <br />
             </p>
-            <button className="mt-10 btn w-full h-bh font-retro text-black">
+            <button className="mt-10 btn w-full h-bh font-retro text-black"
+              onClick={() => {}}>
               ADD TO CART
             </button>
           </div>
@@ -122,7 +122,7 @@ export default function Product({ params }: { params: { slug: string } }) {
               height={0}
               sizes="100vw"
               className="w-auto h-full cursor-pointer"
-              onClick={() => {}}
+              onClick={() => { }}
             />
           </div>
         </div>

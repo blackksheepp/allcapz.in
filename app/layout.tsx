@@ -1,4 +1,3 @@
-import { ClerkProvider } from "@clerk/nextjs";
 import type { Metadata } from "next";
 import { BackgroundTexture } from "./components/TextureOverlay";
 import "./globals.css";
@@ -14,13 +13,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <ClerkProvider>
       <html lang="en">
         <body className="bg-black">
           <BackgroundTexture />
           <main>{children}</main>
         </body>
       </html>
-    </ClerkProvider>
   );
 }
