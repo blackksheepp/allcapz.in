@@ -38,3 +38,5 @@ next-env.d.ts
 todo.md
 public/img/posters/
 app/api/
+
+.vscode/

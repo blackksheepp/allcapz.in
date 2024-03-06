@@ -30,13 +30,13 @@ const Navbar: React.FC<NavbarProps> = ({ onClick }) => {
             >
               {userName ? (
                 <div>
-                  <p className="lg:text-[14px]">Hey, {userName}</p>
-                  <p className="lg:text-[10px]">Your Profile</p>
+                  <p className="lg:text-[14px] text-[11px]">Hey, {userName}</p>
+                  <p className="lg:text-[10px] text-[8px]">Your Profile</p>
                 </div>
               ) : (
                 <div>
-                  <p className="lg:text-[14px]">Hey, Login</p>
-                  <p className="lg:text-[10px]">Or Register</p>
+                  <p className="lg:text-[14px] text-[11px]">Hey, Login</p>
+                  <p className="lg:text-[10px] text-[8px]">Or Register</p>
                 </div>
               )}
             </Link>

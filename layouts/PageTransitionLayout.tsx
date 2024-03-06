@@ -5,10 +5,11 @@ import { usePathname } from "next/navigation";
 
 interface ILayoutProps {
   animate: boolean;
+  mobile: boolean;
   children: ReactNode;
 }
 
-export const PageTransitionLayout: FC<ILayoutProps> = ({ animate, children }) => {
+export const PageTransitionLayout: FC<ILayoutProps> = ({ animate, mobile, children }) => {
 
   return (
     <AnimatePresence mode={"wait"}>
@@ -19,23 +20,24 @@ export const PageTransitionLayout: FC<ILayoutProps> = ({ animate, children }) =>
         exit="exitState"
         transition={{
           type: "spring",
-          duration: 1,
         }}
         variants={{
           initialState: {
             x: "100vw",
           },
           animateState: {
-            x: 0,
+            x: mobile ? 0 : "calc(100vw - 400px)",
           },
           exitState: {
             x: "-100vw",
           },
         }}
-        className="min-h-screen w-full fixed z-40"
+        className="top-0 min-h-screen fixed z-40 bg-black"
+        style={{ width: mobile ? "100vw"  : "400px"}}
       >
         {children}
       </motion.div>
     </AnimatePresence>
   );
 };
+

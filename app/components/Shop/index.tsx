@@ -38,7 +38,7 @@ const Products = () => {
   return (
     <div className="mt-vw-10-min@lg mx-vw-32">
       <section>
-        <div className="font-retro text-xl text-center text-gray-400 py-vw-1.5 flex flex-col gap-1 mx-auto">
+        <div className="font-retro text-xl  text-center text-gray-400 py-vw-1.5 flex flex-col gap-1 mx-auto">
           <div className="flex flex-row justify-center items-baseline gap-7">
             {collections ? (
               <TitleSlide

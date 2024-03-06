@@ -13,6 +13,7 @@ export default function Product({ params }: { params: { slug: string } }) {
   const [cart, setCart] = useState(false);
   const [product, setProduct] = useState<ProductType | null>(null);
   const [zoom, setZoom] = useState(false);
+  const [mobile, setMobile] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -21,78 +22,81 @@ export default function Product({ params }: { params: { slug: string } }) {
       const product = await GetProductByTitle(collection, title);
       setProduct(product);
     })();
+
+
+    setMobile(window.innerWidth < 640);
   }, [params.slug]);
 
   return (
     <>
-      {cart && <Cart onClick={() => setCart(!cart)} showCart={cart} />}
+      <Cart onClick={() => setCart(!cart)} showCart={cart} />
       <div
-        className={`absolute w-full pb-20 ${cart || zoom ? "blur-lg pointer-events-none " : "blur-none"
+        className={`absolute w-full inset-y-0  ${cart || zoom ? "transition-all delay-500 duration-200 ease-in blur-lg pointer-events-none " : "blur-none"
           }`}
       >
         <Navbar onClick={() => setCart(!cart)} />
-        <div className="flex flex-row justify-center gap-16 mx-52 pt-20">
-          <div className="relative top-0 w-[500px] grid place-items-center">
+        <div className="flex lg:flex-row md:flex-row flex-col justify-center gap-vw-16-min@sm mx-vw-52 mt-vw-16-min@sm mb-10">
+          <div className="relative top-0 lg:w-[400px] md:w-[400px] lg:min-w-[400px] md:min-w-[400px] w-full lg:h-[500px] md:h-[500px] h-[300px] grid place-items-center">
             <Image
               src={product?.image!}
               alt={product?.title!}
               width={0}
               height={0}
-              sizes="100vw"
+              sizes="100vh"
               onClick={() => setZoom(true)}
-              className="absolute mt-4 mr-4 w-[500px] h-auto"
+              className="absolute mt-4 mr-4 lg:h-[500px] md:h-[500px] h-[300px] w-auto"
             />
             <Image
               src={product?.image!}
               alt={product?.title!}
               width={0}
               height={0}
-              sizes="100vw"
+              sizes="100vh"
               onClick={() => setZoom(true)}
-              className="absolute mt-3 mr-3 w-[500px] h-auto"
+              className="absolute mt-3 mr-3 lg:h-[500px] md:h-[500px] h-[300px] w-auto"
             />
             <Image
               src={product?.image!}
               alt={product?.title!}
               width={0}
               height={0}
-              sizes="100vw"
+              sizes="100vh"
               onClick={() => setZoom(true)}
-              className="absolute mt-2 mr-2 w-[500px] h-auto"
+              className="absolute mt-2 mr-2 lg:h-[500px] md:h-[500px] h-[300px] w-auto"
             />
             <Image
               src={product?.image!}
               alt={product?.title!}
               width={0}
               height={0}
-              sizes="100vw"
+              sizes="100vh"
               onClick={() => setZoom(true)}
-              className="absolute mt-1 mr-1 w-[500px] h-auto"
+              className="absolute mt-1 mr-1 lg:h-[500px] md:h-[500px] h-[300px] w-auto"
             />
             <Image
               src={product?.image!}
               alt={product?.title!}
               width={0}
               height={0}
-              sizes="100vw"
+              sizes="100vh"
               onClick={() => setZoom(true)}
-              className="absolute w-[500px] h-auto"
+              className="absolute lg:h-[500px] md:h-[500px] h-[300px] w-auto"
             />
           </div>
-          <div className="text-accent font-retro w-[500px] flex flex-col items-center justify-between gap-10">
+          <div className="text-accent font-retro lg:h-[500px] md:h-[500px] lg:w-[400px] md:w-[400px] w-[250px] flex flex-col items-center justify-between gap-vw-10-min@xs place-self-center">
             <div className="flex flex-col gap-3">
               <div className="flex flex-col items-center gap-3">
-                <p className="text-4xl text-center">{product?.title}</p>
+                <p className="lg:text-4xl md:text-4xl text-2xl text-center">{product?.title}</p>
                 <hr className="w-36" />
               </div>
               <div className="text-center">
-                <p className="text-2xl font-retro">
+                <p className="lg:text-2xl md:text-2xl text-lg  font-retro">
                   {product?.price.toFixed(2)}
                 </p>
-                <p className="font-ibm">(Regular Size)</p>
+                <p className="font-ibm lg:text-lg text-xs">(Regular Size)</p>
               </div>
             </div>
-            <p className="text-lg font-ibm mt-10">
+            <p className="lg:text-lg md:text-lg text-sm  font-ibm mt-10">
               ENG // 27.8×39.4 inches
               <br />
               120 g/m² Magistra Deluxe Blueback paper Digital Color Printing
@@ -121,7 +125,7 @@ export default function Product({ params }: { params: { slug: string } }) {
               width={0}
               height={0}
               sizes="100vw"
-              className="w-auto h-full cursor-pointer"
+              className={`${mobile ? "w-full h-auto" : "w-auto h-full"} cursor-pointer`}
               onClick={() => { }}
             />
           </div>
