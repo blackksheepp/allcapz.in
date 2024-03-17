@@ -1,14 +1,16 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useSession } from "@/app/Providers/Session";
+
 interface NavbarProps {
-  onClick: () => void;
+  onCart: () => void;
+  onLogin: () => void;
 }
 
-const Navbar: React.FC<NavbarProps> = ({ onClick }) => {
-  const [userName, setUserName] = useState<string>("");
-
+const Navbar: React.FC<NavbarProps> = ({ onCart: onCart, onLogin: onLogin }) => {
+  const { session, authenticate, logout } = useSession();
   return (
     <>
       <nav className="sticky top-7 z-40">
@@ -24,22 +26,10 @@ const Navbar: React.FC<NavbarProps> = ({ onClick }) => {
             />
           </Link>
           <div className="flex flex-row items-center lg:gap-5 md:gap-4 sm:gap-3 gap-2">
-            <Link
-              className="text-accent font-retro"
-              href={userName ? "/profile" : "/login"}
-            >
-              {userName ? (
-                <div>
-                  <p className="lg:text-[14px] text-[11px]">Hey, {userName}</p>
-                  <p className="lg:text-[10px] text-[8px]">Your Profile</p>
-                </div>
-              ) : (
-                <div>
-                  <p className="lg:text-[14px] text-[11px]">Hey, Login</p>
-                  <p className="lg:text-[10px] text-[8px]">Or Register</p>
-                </div>
-              )}
-            </Link>
+            <div className="text-accent font-retro cursor-pointer" onClick={() => {!session && onLogin()}}>
+              <p className="lg:text-[14px] text-[11px]">Hey, {session ? session.name : "Login"}</p>
+              <p className="lg:text-[10px] text-[8px]" onClick={() => {logout()}}>{session ? "Your Profile" : "Or Sign Up"}</p>
+            </div>
             <Image
               src="/img/cart.png"
               alt="cart"
@@ -47,7 +37,7 @@ const Navbar: React.FC<NavbarProps> = ({ onClick }) => {
               height={0}
               sizes="100vw"
               className="dropshadow w-auto h-vw-10-min@lg-max@xl cursor-pointer"
-              onClick={onClick}
+              onClick={onCart}
             />
           </div>
         </div>

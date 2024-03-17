@@ -5,15 +5,21 @@ import { GetProductByTitle } from "@/app/utils/db";
 import { ProductType } from "@/database/collections";
 
 import Cart from "@/app/components/Cart";
+import Auth from "@/app/components/Auth";
 import Navbar from "@/app/components/Navbar";
 import Image from "next/image";
+import { TextureOverlay } from "@/app/components/TextureOverlay";
 
 
 export default function Product({ params }: { params: { slug: string } }) {
   const [cart, setCart] = useState(false);
+  const [login, setLogin] = useState(false);
+
   const [product, setProduct] = useState<ProductType | null>(null);
   const [zoom, setZoom] = useState(false);
   const [mobile, setMobile] = useState(false);
+
+  const [isTransitioning, setIsTransitioning] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -23,20 +29,41 @@ export default function Product({ params }: { params: { slug: string } }) {
       setProduct(product);
     })();
 
-
     setMobile(window.innerWidth < 640);
+    setTimeout(() => setIsTransitioning(true), 100)
   }, [params.slug]);
 
   return (
     <>
-      <Cart onClick={() => setCart(!cart)} showCart={cart} />
       <div
-        className={`absolute w-full inset-y-0  ${cart || zoom ? "transition-all delay-500 duration-200 ease-in blur-lg pointer-events-none " : "blur-none"
+        className="absolute z-80 w-full h-screen min-h-[700px] overflow-y-hidden"
+        onClick={() => {
+          setZoom(false);
+        }}
+      >
+        <div className={`w-full h-full max-h-max flex items-center blur-[100px] justify-center transition-all ease-linear duration-300 ${isTransitioning ? 'opacity-100' : 'opacity-0 '}`}>
+          <Image
+            src={product?.image!}
+            alt={product?.title!}
+            width={0}
+            height={0}
+            sizes="100vw"
+            className={`${mobile ? `h-1/2 w-auto rotate-[90deg]` : `w-1/2`} transition-all ease-linear duration-300 ${isTransitioning ? `${mobile ? `scale-[200%] rotate-[0deg]` : `scale-[160%] rotate-[90deg]`}` : ''}`}
+            onClick={() => { }}
+          />
+        </div>
+      </div>
+      <TextureOverlay />
+      <Cart onClick={() => setCart(!cart)} showCart={cart} />
+      <Auth onClick={() => setLogin(!login)} showLogin={login} />
+      <div
+        className={`absolute w-full inset-y-0  ${cart || zoom ? `transition-all delay-${zoom ? "50" : "500"} duration-${zoom ? "50" : "200"} ease-in blur-lg pointer-events-none ` : `transition-all delay-${zoom ? "50" : "200"} duration-${zoom ? "50" : "200"} ease-in blur-none`
           }`}
       >
-        <Navbar onClick={() => setCart(!cart)} />
-        <div className="flex lg:flex-row md:flex-row flex-col justify-center gap-vw-16-min@sm mx-vw-52 mt-vw-16-min@sm mb-10">
+        <Navbar onCart={() => setCart(!cart)} onLogin={() => setLogin(!login)} />
+        <div className="flex lg:flex-row md:flex-row flex-col justify-center gap-vw-16-min@sm mx-vw-52 mt-vw-16-min@lg mb-10">
           <div className="relative top-0 lg:w-[400px] md:w-[400px] lg:min-w-[400px] md:min-w-[400px] w-full lg:h-[500px] md:h-[500px] h-[300px] grid place-items-center">
+
             <Image
               src={product?.image!}
               alt={product?.title!}
@@ -44,7 +71,7 @@ export default function Product({ params }: { params: { slug: string } }) {
               height={0}
               sizes="100vh"
               onClick={() => setZoom(true)}
-              className="absolute mt-4 mr-4 lg:h-[500px] md:h-[500px] h-[300px] w-auto"
+              className="absolute mt-6 mr-6 lg:h-[500px] md:h-[500px] h-[300px] w-auto blur-[0px]"
             />
             <Image
               src={product?.image!}
@@ -53,25 +80,7 @@ export default function Product({ params }: { params: { slug: string } }) {
               height={0}
               sizes="100vh"
               onClick={() => setZoom(true)}
-              className="absolute mt-3 mr-3 lg:h-[500px] md:h-[500px] h-[300px] w-auto"
-            />
-            <Image
-              src={product?.image!}
-              alt={product?.title!}
-              width={0}
-              height={0}
-              sizes="100vh"
-              onClick={() => setZoom(true)}
-              className="absolute mt-2 mr-2 lg:h-[500px] md:h-[500px] h-[300px] w-auto"
-            />
-            <Image
-              src={product?.image!}
-              alt={product?.title!}
-              width={0}
-              height={0}
-              sizes="100vh"
-              onClick={() => setZoom(true)}
-              className="absolute mt-1 mr-1 lg:h-[500px] md:h-[500px] h-[300px] w-auto"
+              className="absolute mt-3 mr-3 lg:h-[500px] md:h-[500px] h-[300px] w-auto blur-[0px]"
             />
             <Image
               src={product?.image!}
@@ -105,7 +114,7 @@ export default function Product({ params }: { params: { slug: string } }) {
               <br />
             </p>
             <button className="mt-10 btn w-full h-bh font-retro text-black"
-              onClick={() => {}}>
+              onClick={() => { }}>
               ADD TO CART
             </button>
           </div>

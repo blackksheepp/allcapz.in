@@ -14,6 +14,7 @@ import {
   delProduct,
   getProductByTitle,
 } from "@/database/collections";
+import { UserType, createUser, getUser } from "@/database/users";
 
 export const CreateCollection = async (name: string) => {
   return await createCollection(name);
@@ -86,3 +87,11 @@ export const SaveImage = async (form: FormData) => {
 export const GetProductByTitle = async (collection: string, title: string) => {
   return await getProductByTitle(collection, title);
 };
+
+export const CreateUser = async (user: UserType) => {
+  return await createUser(user);
+}
+
+export const GetUser = async (email: string) => {
+  return await getUser(email);  
+}

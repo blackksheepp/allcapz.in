@@ -3,13 +3,13 @@ import { ReactNode, FC } from "react";
 
 import { usePathname } from "next/navigation";
 
-interface ILayoutProps {
+interface CTransitionProps {
   animate: boolean;
   mobile: boolean;
   children: ReactNode;
 }
 
-export const PageTransitionLayout: FC<ILayoutProps> = ({ animate, mobile, children }) => {
+export const CartTransition: FC<CTransitionProps> = ({ animate, mobile, children }) => {
 
   return (
     <AnimatePresence mode={"wait"}>
@@ -32,8 +32,8 @@ export const PageTransitionLayout: FC<ILayoutProps> = ({ animate, mobile, childr
             x: "-100vw",
           },
         }}
-        className="top-0 min-h-screen fixed z-40 bg-black"
-        style={{ width: mobile ? "100vw"  : "400px"}}
+        className="top-0 fixed z-40 bg-black"
+        style={{ width: mobile ? "100vw" : "400px", height: "100vh" }}
       >
         {children}
       </motion.div>

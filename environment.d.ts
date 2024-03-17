@@ -3,6 +3,10 @@ declare global {
     interface ProcessEnv {
       REDIS_URI: string;
       DATABASE_URL: string;
+      JWT_SECRET: string;
+      NODEMAILER_EMAIL: string;
+      NODEMAILER_PW: string;
+      AUTH_URL: string;
       NODE_ENV: "development" | "production";
       PORT?: string;
       PWD: string;

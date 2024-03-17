@@ -1,4 +1,5 @@
 import prisma from "@/lib/prisma";
+
 export interface CollectionType {
   name: string;
   products: ProductType[];
