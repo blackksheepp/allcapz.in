@@ -1,5 +1,5 @@
 import { CollectionType } from "@/database/collections";
-import { DelCollection } from "@/app/utils/db";
+import { DelCollection } from "@/app/utils/database/collections";
 import { ObjectElement } from "../Common";
 import Image from "next/image";
 export interface CollectionElement extends ObjectElement {

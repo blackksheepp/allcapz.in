@@ -1,13 +1,16 @@
 "use client";
 import React, { useEffect, useState } from "react";
 
-import { GetProductByTitle } from "@/app/utils/db";
-import { ProductType } from "@/database/collections";
+import { GetProductByTitle } from "@/app/utils/database/collections";
+import { ProductType } from "@/app/utils/database/collections";
 
 import Cart from "@/app/components/Cart";
 import Auth from "@/app/components/Auth";
 import Navbar from "@/app/components/Navbar";
 import Image from "next/image";
+import { AddToCart } from "@/app/utils/database/carts";
+import { AddToCartCookies } from "@/app/utils/cookies/cart";
+import { useSession } from "@/app/Providers/Session";
 
 
 export default function Product({ params }: { params: { slug: string } }) {
@@ -19,6 +22,18 @@ export default function Product({ params }: { params: { slug: string } }) {
   const [mobile, setMobile] = useState(false);
 
   const [isTransitioning, setIsTransitioning] = useState(false);
+
+  const { session } = useSession();
+  const addToCart = async () => {
+    if (product) {
+      if (session) {
+          await AddToCart(session.email, product);
+      } else {
+        await AddToCartCookies(product);
+      }
+      setCart(true);
+    }
+  }
 
   useEffect(() => {
     (async () => {
@@ -112,7 +127,7 @@ export default function Product({ params }: { params: { slug: string } }) {
               <br />
             </p>
             <button className="mt-10 btn w-full h-bh font-retro text-black"
-              onClick={() => { }}>
+              onClick={() => {addToCart()}}>
               ADD TO CART
             </button>
           </div>

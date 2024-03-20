@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 import React, { FC, useEffect, useState } from "react";
-import { GetCollections, GetProducts } from "@/app/utils/db";
+import { GetCollections, GetProducts } from "@/app/utils/database/collections";
 import {
   CollectionType,
   ProductType,

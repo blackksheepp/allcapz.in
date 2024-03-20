@@ -4,7 +4,9 @@ import type { NextRequest } from 'next/server'
 const publicRoutes = [
     "/",
     "/product/.*",
-    "/email"
+    "/email",
+    "/admin",
+    "/google"
 ];
 
 export const middleware = async (request: NextRequest) => {

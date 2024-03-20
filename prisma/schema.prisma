@@ -27,3 +27,9 @@ model Users {
   name String
   email String @unique  
 }
+
+model Carts {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  user String @unique  
+  products Product[]
+}

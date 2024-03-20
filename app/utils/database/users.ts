@@ -1,3 +1,4 @@
+"use server"
 import prisma from "@/lib/prisma";
 
 export interface UserType {
@@ -5,7 +6,7 @@ export interface UserType {
     email: string;
 }
 
-export const createUser = async (user: UserType) => {
+export const CreateUser = async (user: UserType) => {
     try {
         await prisma.users.create({
             data: user,
@@ -17,7 +18,7 @@ export const createUser = async (user: UserType) => {
     }
 };
 
-export const getUsers = async () => {
+export const GetUsers = async () => {
     try {
         return await prisma.users.findMany({});
     } catch (error) {
@@ -27,7 +28,7 @@ export const getUsers = async () => {
 };
 
 
-export const getUser = async (email: string) => {
+export const GetUser = async (email: string) => {
     try {
         return await prisma.users.findFirst({
             where: {
@@ -40,7 +41,7 @@ export const getUser = async (email: string) => {
     }
 }
 
-export const updateName = async (email: string, name: string) => {
+export const UpdateName = async (email: string, name: string) => {
     try {
         await prisma.users.update({
             where: {

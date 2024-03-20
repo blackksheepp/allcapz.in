@@ -2,7 +2,9 @@
 import React, { FormEvent, useEffect, useState } from "react";
 import { LoginTransition } from "@/layouts/LoginTransition";
 import { useSession } from "@/app/Providers/Session";
-import { GetUser } from "@/app/utils/db";
+import { GetUser } from "@/app/utils/database/users";
+import { GetGoogleAuthLink } from "@/app/utils/auth";
+import { useRouter } from "next/navigation";
 
 const Minimize = ({
     onClick,
@@ -65,7 +67,7 @@ const Auth = ({
     }
 
     const [email, setEmail] = useState<string>("");
-    const [emailSent, setEmailSent] = useState<boolean>(false);
+    const [emailSent, setEmailSent] = useState<string>("");
 
     const { session, authenticate, logout } = useSession();
 
@@ -92,9 +94,20 @@ const Auth = ({
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
         if (await validateEmail(email)) {
-            setEmailSent(true);
+            setEmailSent(`Check your email App
+                        <br />
+                        We&apos;ve sent you a ${authType} url at
+                        <br />
+                        ${email}`);
             setSendEmail(true);
         }
+    }
+
+    const router = useRouter()
+    const GoogleAuth = async () => {
+        setEmailSent(`We're redirecting you to google ${authType}.`);
+        const link = await GetGoogleAuthLink();
+        router.push(link);
     }
 
     useEffect(() => {
@@ -142,7 +155,7 @@ const Auth = ({
                                 <Close onClick={close} />
                             </div>
                         </div>
-                        <div className="w-full h-full bg-black opacity-90"></div>
+                        <div className="w-full h-full bg-black opacity-95"></div>
                         <div style={{ width: width - 30, maxWidth: 600 }} className="absolute mt-6 flex flex-col gap-2 text-[13px] font text-green-400">
                             <p className="mt-2 ml-3 text-[13px]">
                                 ALLCAPZ [Version 1.0]
@@ -153,6 +166,7 @@ const Auth = ({
                             {!emailSent ? (
                                 <form onSubmit={handleSubmit} className="self-center flex flex-col items-center justify-center gap-2 mt-10">
                                     <button
+                                        onClick={() => GoogleAuth()}
                                         className="border-[1px] border-green-400 hover:bg-green-500 hover:text-black hover:font-bold transition-all duration-200 ease-in-out w-[230px] py-1.5 text-[13px]"
                                     >
                                         {capitalize(authType)} with Google
@@ -176,11 +190,7 @@ const Auth = ({
                             ) : (
                                 <div className="w-full flex items-center justify-center mt-10 text-[18px]">
                                     <p className="text-center">
-                                        Check your email App
-                                        <br />
-                                        We&apos;ve sent you a {authType} url at
-                                        <br />
-                                        {email}
+                                        {emailSent}
                                     </p>
                                 </div>
                             )}

@@ -23,7 +23,7 @@ import {
   RenameCollection,
   RenameProduct,
   SaveImage,
-} from "@/app/utils/db";
+} from "@/app/utils/database/collections";
 
 const Admin = () => {
   const [showForm, setShowForm] = useState<boolean>(false);

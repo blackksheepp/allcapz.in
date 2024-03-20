@@ -7,6 +7,8 @@ declare global {
       NODEMAILER_EMAIL: string;
       NODEMAILER_PW: string;
       AUTH_URL: string;
+      GOOGLE_CLIENT_ID: string;
+      GOOGLE_CLIENT_SECRET: string;
       NODE_ENV: "development" | "production";
       PORT?: string;
       PWD: string;
