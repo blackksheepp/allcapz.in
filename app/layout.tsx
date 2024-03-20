@@ -4,8 +4,8 @@ import { SessionProvider } from "./Providers/Session";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "RchnaKaar",
-  description: "EXTR4 ORD1N4RY DR1P!",
+  title: "ALLCAPZ",
+  description: "EXTRA ORDINARY ART",
 };
 
 export default function RootLayout({
@@ -14,13 +14,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-      <html lang="en">
-        <body className="bg-black">
-          <SessionProvider>
-            <BackgroundTexture />
-            <main>{children}</main>
-          </SessionProvider>
-        </body>
-      </html>
+    <html lang="en">
+      <body className="bg-black">
+        <SessionProvider>
+          <BackgroundTexture />
+          <main>{children}</main>
+        </SessionProvider>
+      </body>
+    </html>
   );
 }

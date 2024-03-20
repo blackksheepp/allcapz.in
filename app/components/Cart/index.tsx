@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { CartTransition } from "@/layouts/CartTransition";
-import { TextureOverlay } from "../TextureOverlay";
+import { FitTexture } from "../TextureOverlay";
 
 const Cart = ({
   showCart,
@@ -30,7 +30,7 @@ const Cart = ({
   return (
     <CartTransition animate={showCart} mobile={mobile}>
       <div className="w-full h-full flex flex-col items-center justify-center">
-        <TextureOverlay />
+        <FitTexture />
         <div className="w-full flex flex-row items-center justify-between px-7 pt-8">
           <p className="text-accent font-retro text-xl">
             CART

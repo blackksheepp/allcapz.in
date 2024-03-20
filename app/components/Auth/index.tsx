@@ -58,6 +58,7 @@ const Auth = ({
     onClick: React.MouseEventHandler;
 }) => {
     const [mobile, setMobile] = useState(false);
+    const [width, setWidth] = useState(0);
     const [authType, setAuthType] = useState<"login" | "sign up">("sign up");
     const toggleAuth = () => {
         setAuthType(authType == "login" ? "sign up" : "login")
@@ -93,7 +94,7 @@ const Auth = ({
         if (await validateEmail(email)) {
             setEmailSent(true);
             setSendEmail(true);
-        } 
+        }
     }
 
     useEffect(() => {
@@ -108,6 +109,7 @@ const Auth = ({
         })()
 
         setMobile(window.innerWidth < 640);
+        setWidth(window.innerWidth)
 
         if (showLogin) {
             document.body.classList.add("overflow-hidden");
@@ -116,40 +118,40 @@ const Auth = ({
         }
 
         return () => {
-            document.body.classList.remove("overflow-hidden");
+            document.body.classList.remove("overflow-hidden")
         };
 
 
 
-    }, [showLogin, mobile, emailSent, authType, email, authenticate, sendEmail]);
+    }, [showLogin, mobile, emailSent, authType, email, authenticate, sendEmail, width]);
 
     return (
         <LoginTransition animate={showLogin} mobile={mobile}>
             <div className="w-full h-screen grid place-items-center font-ibm">
-                <div className="box-shadow w-[600px] h-[400px] border-accent border-[4px] flex items-start">
-                    <div className="w-full h-full flex flex-col">
-                        <div className="bg-accent h-[24px] w-full flex items-center px-2 py-2">
-                            <div className="w-full flex flex-row gap-2 items-start justify-start text-sm text-black font-bold">
+                <div style={{ width: width - 30, maxWidth: 600 }} className={`box-shadow h-[400px] border-accent lg:border-[4px] md:border-[4px] border-[2px] flex items-start`}>
+                    <div className="w-full h-full flex flex-col ">
+                        <div className="bg-accent h-[24px] w-full flex flex-row justify-between items-center px-2 py-2">
+                            <div className="flex flex-row gap-2 items-start justify-start text-sm text-black font-bold">
                                 <p>{capitalize(authType)}</p>
                                 <p className="text-[12px] cursor-pointer opacity-60" onClick={toggleAuth}>
                                     (Click here to {authType == "login" ? "Sign Up" : "Login"})
                                 </p>
                             </div>
-                            <div className="flex flex-row gap-1 w-full h-full items-center justify-end">
+                            <div className="flex flex-row gap-1 h-full items-center justify-end">
                                 <Minimize onClick={close} />
                                 <Close onClick={close} />
                             </div>
                         </div>
                         <div className="w-full h-full bg-black opacity-90"></div>
-                        <div className="w-[600px] absolute mt-6 flex flex-col gap-2 text-[13px] font text-green-400">
-                            <p className="mt-2 ml-3 text-[13px] ">
+                        <div style={{ width: width - 30, maxWidth: 600 }} className="absolute mt-6 flex flex-col gap-2 text-[13px] font text-green-400">
+                            <p className="mt-2 ml-3 text-[13px]">
                                 ALLCAPZ [Version 1.0]
                                 <br />
                                 (c) AllCapz Corp. All rights reserved.
                             </p>
 
                             {!emailSent ? (
-                                <form onSubmit={handleSubmit} className="flex flex-col items-center justify-center gap-2 mt-10">
+                                <form onSubmit={handleSubmit} className="self-center flex flex-col items-center justify-center gap-2 mt-10">
                                     <button
                                         className="border-[1px] border-green-400 hover:bg-green-500 hover:text-black hover:font-bold transition-all duration-200 ease-in-out w-[230px] py-1.5 text-[13px]"
                                     >
@@ -182,7 +184,6 @@ const Auth = ({
                                     </p>
                                 </div>
                             )}
-
                             <div className="w-full h-full mt-4 grid place-items-center">
                                 {/* <code>
                                     <span className="ascii text-green-500 logo">

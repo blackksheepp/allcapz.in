@@ -8,7 +8,6 @@ import Cart from "@/app/components/Cart";
 import Auth from "@/app/components/Auth";
 import Navbar from "@/app/components/Navbar";
 import Image from "next/image";
-import { TextureOverlay } from "@/app/components/TextureOverlay";
 
 
 export default function Product({ params }: { params: { slug: string } }) {
@@ -48,12 +47,11 @@ export default function Product({ params }: { params: { slug: string } }) {
             width={0}
             height={0}
             sizes="100vw"
-            className={`${mobile ? `h-1/2 w-auto rotate-[90deg]` : `w-1/2`} transition-all ease-linear duration-300 ${isTransitioning ? `${mobile ? `scale-[200%] rotate-[0deg]` : `scale-[160%] rotate-[90deg]`}` : ''}`}
+            className={`${mobile ? `h-1/2 w-auto rotate-[90deg]` : `w-1/2`} transition-all ease-linear duration-1000 ${isTransitioning ? `${mobile ? `scale-[200%] rotate-[0deg]` : `scale-[160%] rotate-[90deg]`}` : ''}`}
             onClick={() => { }}
           />
         </div>
       </div>
-      <TextureOverlay />
       <Cart onClick={() => setCart(!cart)} showCart={cart} />
       <Auth onClick={() => setLogin(!login)} showLogin={login} />
       <div
