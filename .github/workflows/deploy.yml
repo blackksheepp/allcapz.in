@@ -44,9 +44,6 @@ jobs:
     environment: production
     runs-on: ubuntu-latest
 
-    env:
-      DATABASE_URL: ${{ secrets.DATABASE_URL }}
-      REDIS_URI: ${{ secrets.REDIS_URI }}
 
     steps:
       - name: Checkout
@@ -75,7 +72,7 @@ jobs:
 
       - name: Run new container
         run: |
-          ssh -o StrictHostKeyChecking=no -i key.pem ${{ env.AWS_HOST }} 'docker run -d -p 8000:8000 --name ${{ env.REPO }} --env REDIS_URI="${{ env.REDIS_URI }}" --env DATABASE_URL="${{ env.DATABASE_URL }}" ${{ env.DOCKERHUB_USERNAME }}/${{ env.REPO }}:latest'
+          ssh -o StrictHostKeyChecking=no -i key.pem ${{ env.AWS_HOST }} 'docker run -d -p 8000:8000 --name ${{ env.REPO }} --env-file ~/.env ${{ env.DOCKERHUB_USERNAME }}/${{ env.REPO }}:latest'
       - name: Copy nginx.conf to EC2
         run: |
           scp -o StrictHostKeyChecking=no -i key.pem .nginx/nginx.conf ${{ env.AWS_HOST }}:~/.nginx/
