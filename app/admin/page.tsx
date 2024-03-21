@@ -13,7 +13,7 @@ import { CollectionForm } from "./components/Collection/Form";
 import { ProductForm } from "./components/Product/Form";
 import { DNDList } from "./components/DNDList";
 import { DropResult, Draggable } from "react-beautiful-dnd";
-import { CollectionType, ProductType } from "@/database/collections";
+import { CollectionType, ProductType } from "@/app/utils/database/collections";
 import {
   CreateCollection,
   CreateProduct,

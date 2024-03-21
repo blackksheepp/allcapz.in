@@ -11,6 +11,7 @@ import Image from "next/image";
 import { AddToCart } from "@/app/utils/database/carts";
 import { AddToCartCookies } from "@/app/utils/cookies/cart";
 import { useSession } from "@/app/Providers/Session";
+import { BackgroundTexture } from "@/app/components/TextureOverlay";
 
 
 export default function Product({ params }: { params: { slug: string } }) {
@@ -20,6 +21,7 @@ export default function Product({ params }: { params: { slug: string } }) {
   const [product, setProduct] = useState<ProductType | null>(null);
   const [zoom, setZoom] = useState(false);
   const [mobile, setMobile] = useState(false);
+  const [spin, setSpin] = useState(true);
 
   const [isTransitioning, setIsTransitioning] = useState(false);
 
@@ -27,7 +29,7 @@ export default function Product({ params }: { params: { slug: string } }) {
   const addToCart = async () => {
     if (product) {
       if (session) {
-          await AddToCart(session.email, product);
+        await AddToCart(session.email, product);
       } else {
         await AddToCartCookies(product);
       }
@@ -55,14 +57,15 @@ export default function Product({ params }: { params: { slug: string } }) {
           setZoom(false);
         }}
       >
-        <div className={`w-full h-full max-h-max flex items-center blur-[100px] justify-center transition-all ease-linear duration-300 ${isTransitioning ? 'opacity-100' : 'opacity-0 '}`}>
+        <BackgroundTexture />
+        <div className={`w-full h-full max-h-max flex items-center blur-[100px] justify-center transition-all ease-linear duration-1000 ${isTransitioning ? 'opacity-100' : 'opacity-0 '} ${(!login && !cart) && "animate-spin-slow"}`}>
           <Image
             src={product?.image!}
             alt={product?.title!}
             width={0}
             height={0}
             sizes="100vw"
-            className={`${mobile ? `h-1/2 w-auto rotate-[90deg]` : `w-1/2`} transition-all ease-linear duration-1000 ${isTransitioning ? `${mobile ? `scale-[200%] rotate-[0deg]` : `scale-[160%] rotate-[90deg]`}` : ''}`}
+            className={`${mobile ? `h-1/2 w-auto rotate-[90deg]` : `w-1/2`} transition-all ease-linear duration-1000 ${isTransitioning ? `${mobile ? `scale-[300%] rotate-[0deg]` : `scale-[220%] rotate-[90deg]`}` : ''}`}
             onClick={() => { }}
           />
         </div>
@@ -70,12 +73,12 @@ export default function Product({ params }: { params: { slug: string } }) {
       <Cart onClick={() => setCart(!cart)} showCart={cart} />
       <Auth onClick={() => setLogin(!login)} showLogin={login} />
       <div
-        className={`absolute w-full inset-y-0  ${cart || zoom ? `transition-all delay-${zoom ? "50" : "500"} duration-${zoom ? "50" : "200"} ease-in blur-lg pointer-events-none ` : `transition-all delay-${zoom ? "50" : "200"} duration-${zoom ? "50" : "200"} ease-in blur-none`
+        className={`absolute w-full ${login || cart || zoom ? `transition-all delay-${zoom ? "50" : "500"} duration-${zoom ? "50" : "200"} ease-in blur-lg pointer-events-none ` : `transition-all delay-${zoom ? "50" : "200"} duration-${zoom ? "50" : "200"} ease-in blur-none`
           }`}
       >
         <Navbar onCart={() => setCart(!cart)} onLogin={() => setLogin(!login)} />
-        <div className="flex lg:flex-row md:flex-row flex-col justify-center gap-vw-16-min@sm mx-vw-52 mt-vw-16-min@lg mb-10">
-          <div className="relative top-0 lg:w-[400px] md:w-[400px] lg:min-w-[400px] md:min-w-[400px] w-full lg:h-[500px] md:h-[500px] h-[300px] grid place-items-center">
+        <div className="flex lg:flex-row md:flex-row flex-col justify-center gap-vw-16-min@sm mx-vw-52 mt-vw-16-max@lg  mb-vw-10">
+          <div className="relative place-self-center lg:w-[400px] md:w-[400px] lg:min-w-[400px] md:min-w-[400px] w-full lg:h-[500px] md:h-[500px] h-[300px] grid place-items-center">
 
             <Image
               src={product?.image!}
@@ -127,7 +130,7 @@ export default function Product({ params }: { params: { slug: string } }) {
               <br />
             </p>
             <button className="mt-10 btn w-full h-bh font-retro text-black"
-              onClick={() => {addToCart()}}>
+              onClick={() => { addToCart() }}>
               ADD TO CART
             </button>
           </div>

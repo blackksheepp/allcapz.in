@@ -126,7 +126,12 @@ html body {
 
 
 path {
-    fill:#000000;
+    fill: #000000;
     stroke: #000000;
     stroke-width: 1px;
+}
+
+.slick-initialized .slick-track {
+    display: flex;
+    align-items: baseline;
 }

@@ -47,7 +47,7 @@ const Cart = ({
     <CartTransition animate={showCart} mobile={mobile}>
       <div className="w-full h-full flex flex-col items-center justify-center">
         <FitTexture />
-        <div className="w-full flex flex-row items-center justify-between px-7 pt-8">
+        <div className="w-full flex flex-row items-center justify-between px-10 pt-8">
           <p className="text-accent font-retro text-xl">
             CART
           </p>
@@ -59,22 +59,32 @@ const Cart = ({
             CLOSE
           </button>
         </div>
-        <div className="z-10 w-full h-screen flex flex-col items-center justify-center">
-          {cart ? (<div className="w-full flex flex-col gap-5 items-center justify-center">
+        <div className="z-10 w-full h-screen flex flex-col mt-10">
+          {cart ? (<div className="w-full flex flex-col gap-5 items-start justify-center">
             {cart.products.flatMap(product => {
-              return <div className="w-full flex flex-row items-stretch px-10">
-                <Image
+              return <div className="w-full flex flex-row justify-center gap-5 px-10">
+                <div className="w-full flex flex-row justify-center gap-5"><Image
                   src={product.image}
                   alt=""
                   width={0}
                   height={0}
                   sizes="100vw"
-                  className="w-[100px] h-auto"
+                  className="w-[90px] h-auto self-start opacity-90"
                 />
-                <div className="w-full flex flex-col gap-2 text-accent font-retro text-sm">
-                  <p>{product.title}</p>
-                  <p>{product.price}</p>
-                </div>
+                  <div className="w-full py-1 flex flex-col justify-between gap-2 text-accent opacity-80 font-retro text-sm">
+                    <div className="flex flex-col gap-2"><p>{product.title}</p>
+                      <p>{product.price.toFixed(2)}</p></div>
+                    <p className="text-[20px]"> - 1 + </p>
+                  </div></div>
+                <Image
+                  src="/img/trash.svg"
+                  alt="trash"
+                  width={0}
+                  height={0}
+                  sizes="100vw"
+                  className="w-[25px] cursor-pointer mb-4 mr-2 opacity-90"
+                  onClick={() => { }}
+                />
               </div>
             })}
           </div>) : <p className="text-accent font-retro text-sm box-border w-full h-[400px] grid place-items-center">Nothing to see here.</p>}

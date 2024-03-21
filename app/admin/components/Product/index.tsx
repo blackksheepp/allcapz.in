@@ -1,6 +1,6 @@
 import { ObjectElement } from "../Common";
 import Image from "next/image";
-import { ProductType } from "@/database/collections";
+import { ProductType } from "@/app/utils/database/collections";
 import { DelProduct } from "@/app/utils/database/collections";
 export interface ProductElement extends ObjectElement {
   product: ProductType;

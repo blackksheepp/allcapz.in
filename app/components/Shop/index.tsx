@@ -1,13 +1,11 @@
 "use client";
-import Image from "next/image";
-import React, { FC, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { GetCollections, GetProducts } from "@/app/utils/database/collections";
 import {
   CollectionType,
   ProductType,
-  getCollections,
-} from "@/database/collections";
-import { TitleSlide } from "./components/TitleSlide";
+} from "@/app/utils/database/collections";
+import { TextSlider } from "./components/TextSlider";
 import { ShowProducts } from "./components/ShowProducts";
 
 const Products = () => {
@@ -41,7 +39,7 @@ const Products = () => {
         <div className="font-retro text-xl  text-center text-gray-400 py-vw-1.5 flex flex-col gap-1 mx-auto">
           <div className="flex flex-row justify-center items-baseline gap-7">
             {collections ? (
-              <TitleSlide
+              <TextSlider
                 titles={collections.map((c) => c.name)}
                 active={active}
                 setActive={setActive}

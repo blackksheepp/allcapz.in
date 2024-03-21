@@ -51,6 +51,8 @@ jobs:
       NODEMAILER_EMAIL: ${{secrets.NODEMAILER_EMAIL}}
       AUTH_URL: ${{secrets.AUTH_URL}}
       JWT_SECRET: ${{secrets.JWT_SECRET}}
+      GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
+      GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -78,7 +80,7 @@ jobs:
 
       - name: Run new container
         run: |
-          ssh -o StrictHostKeyChecking=no -i key.pem ${{ env.AWS_HOST }} 'docker run -d -p 8000:8000 --name ${{ env.REPO }} --env REDIS_URI="${{ env.REDIS_URI }}" --env DATABASE_URL="${{ env.DATABASE_URL }}" --env NODEMAILER_PW="${{ env.NODEMAILER_PW }}" --env NODEMAILER_EMAIL="${{ env.NODEMAILER_EMAIL }}" --env AUTH_URL="${{ env.AUTH_URL }}" --env JWT_SECRET="${{ env.JWT_SECRET }}" ${{ env.DOCKERHUB_USERNAME }}/${{ env.REPO }}:latest'
+          ssh -o StrictHostKeyChecking=no -i key.pem ${{ env.AWS_HOST }} 'docker run -d -p 8000:8000 --name ${{ env.REPO }} --env REDIS_URI="${{ env.REDIS_URI }}" --env DATABASE_URL="${{ env.DATABASE_URL }}" --env NODEMAILER_PW="${{ env.NODEMAILER_PW }}" --env NODEMAILER_EMAIL="${{ env.NODEMAILER_EMAIL }}" --env AUTH_URL="${{ env.AUTH_URL }}" --env JWT_SECRET="${{ env.JWT_SECRET }}" --env GOOGLE_CLIENT_ID="${{ env.GOOGLE_CLIENT_ID }}" --env GOOGLE_CLIENT_SECRET="${{ env.GOOGLE_CLIENT_SECRET }}" ${{ env.DOCKERHUB_USERNAME }}/${{ env.REPO }}:latest'
       - name: Copy nginx.conf to EC2
         run: |
           scp -o StrictHostKeyChecking=no -i key.pem .nginx/nginx.conf ${{ env.AWS_HOST }}:~/.nginx/
