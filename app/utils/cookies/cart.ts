@@ -25,7 +25,7 @@ export const AddToCartCookies = async (product: ProductType) => {
         maxAge: 60 * 60 * 24 * 30, // 30 Days,
         sameSite: true
     })
-    
+
     return response.has("cart");
 }
 
@@ -35,4 +35,73 @@ export const GetCartFromCookies = async () => {
 
 export const ClearSessionCookie = async () => {
     cookies().delete("session");
+}
+
+export const RemoveFromCartCookies = async (product: ProductType) => {
+    const cartCookie = await GetCartFromCookies();
+    if (cartCookie) {
+        const cart: CartType = JSON.parse(cartCookie)
+        if (cart.products) {
+            cart.products = cart.products.filter((p) => p.title != product.title)
+            const response = cookies().set("cart", JSON.stringify(cart), {
+                httpOnly: true,
+                maxAge: 60 * 60 * 24 * 30,
+                sameSite: true
+            })
+            return cart;
+        }
+
+    }
+}
+
+export const IncreaseQntyCookies = async (product: ProductType) => {
+    const cartCookie = await GetCartFromCookies();
+    if (cartCookie) {
+        const cart: CartType = JSON.parse(cartCookie)
+        if (cart.products) {
+            cart.products = cart.products.map((p) => {
+                if (p.title == product.title) {
+                    if (p.quantity) {
+                        p.quantity = p.quantity + 1
+                    }
+                }
+                return p
+            })
+
+            cookies().set("cart", JSON.stringify(cart), {
+                httpOnly: true,
+                maxAge: 60 * 60 * 24 * 30,
+                sameSite: true
+            })
+
+            return cart.products.filter(x => x.title == product.title)[0];
+        }
+    }
+}
+
+export const DecreaseQntyCookies = async (product: ProductType) => {
+    const cartCookie = await GetCartFromCookies();
+    if (cartCookie) {
+        const cart: CartType = JSON.parse(cartCookie)
+        if (cart.products) {
+            cart.products = cart.products.map((p) => {
+                if (p.title == product.title) {
+                    if (p.quantity) {
+                        if (p.quantity - 1 >= 1) {
+                            p.quantity = p.quantity - 1
+                        }
+                    }
+                }
+                return p
+            })
+
+            cookies().set("cart", JSON.stringify(cart), {
+                httpOnly: true,
+                maxAge: 60 * 60 * 24 * 30,
+                sameSite: true
+            })
+
+            return cart.products.filter(x => x.title == product.title)[0];
+        }
+    }
 }

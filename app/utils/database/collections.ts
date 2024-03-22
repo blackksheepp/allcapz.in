@@ -11,6 +11,7 @@ export interface ProductType {
     title: string;
     price: number;
     size: string;
+    quantity?: number | null;
 }
 
 export const CreateCollection = async (name: string) => {
@@ -170,14 +171,10 @@ export const RenameProduct = async (
             })
         )?.products;
         products = products?.map((product) => {
-            return product.title != oldProductTitle
-                ? product
-                : {
-                    image: product.image,
-                    title: newProductTitle,
-                    price: product.price,
-                    size: product.size,
-                };
+            if (product.title = oldProductTitle) {
+                product.title = newProductTitle;
+            } 
+            return product
         });
         await prisma.collections.update({
             where: {

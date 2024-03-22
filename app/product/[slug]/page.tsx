@@ -28,6 +28,7 @@ export default function Product({ params }: { params: { slug: string } }) {
   const { session } = useSession();
   const addToCart = async () => {
     if (product) {
+      product.quantity = 1;
       if (session) {
         await AddToCart(session.email, product);
       } else {
@@ -45,8 +46,20 @@ export default function Product({ params }: { params: { slug: string } }) {
       setProduct(product);
     })();
 
+    const handleEscapeKeyPress = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setCart(false);
+      }
+    };
+
+    document.addEventListener('keydown', handleEscapeKeyPress);
+
     setMobile(window.innerWidth < 640);
     setTimeout(() => setIsTransitioning(true), 100)
+
+    return () => {
+      document.removeEventListener('keydown', handleEscapeKeyPress);
+    }
   }, [params.slug]);
 
   return (
