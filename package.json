@@ -39,6 +39,7 @@
     "react-dnd-html5-backend": "^16.0.1",
     "react-dom": "^18",
     "react-slick": "^0.29.0",
+    "react-spring": "^9.7.3",
     "react-transition-group": "^4.4.5",
     "redis": "^4.6.12",
     "sharp": "^0.33.1",

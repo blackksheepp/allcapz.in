@@ -21,13 +21,17 @@ export default function Product({ params }: { params: { slug: string } }) {
   const [product, setProduct] = useState<ProductType | null>(null);
   const [zoom, setZoom] = useState(false);
   const [mobile, setMobile] = useState(false);
-  const [spin, setSpin] = useState(true);
+  const [size, setSize] = useState<boolean>(true);
+  const sizes = ["Small", "Medium", "Large"];
+  const [selectSize, setSelectSize] = useState<string>(sizes[1]);
 
   const [isTransitioning, setIsTransitioning] = useState(false);
 
   const { session } = useSession();
   const addToCart = async () => {
     if (product) {
+      product.size = selectSize;
+      product.quantity = 1;
       if (session) {
         await AddToCart(session.email, product);
       } else {
@@ -45,8 +49,20 @@ export default function Product({ params }: { params: { slug: string } }) {
       setProduct(product);
     })();
 
+    const handleEscapeKeyPress = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setCart(false);
+      }
+    };
+
+    document.addEventListener('keydown', handleEscapeKeyPress);
+
     setMobile(window.innerWidth < 640);
     setTimeout(() => setIsTransitioning(true), 100)
+
+    return () => {
+      document.removeEventListener('keydown', handleEscapeKeyPress);
+    }
   }, [params.slug]);
 
   return (
@@ -108,8 +124,8 @@ export default function Product({ params }: { params: { slug: string } }) {
               className="absolute lg:h-[500px] md:h-[500px] h-[300px] w-auto"
             />
           </div>
-          <div className="text-accent font-retro lg:h-[500px] md:h-[500px] lg:w-[400px] md:w-[400px] w-[250px] flex flex-col items-center justify-between gap-vw-10-min@xs place-self-center">
-            <div className="flex flex-col gap-3">
+          <div className="text-accent font-retro lg:h-[520px] md:h-[500px] lg:w-[400px] md:w-[400px] w-[250px] flex flex-col items-center justify-between gap-vw-10-min@xs place-self-center">
+            <div className="flex flex-col self-center gap-3">
               <div className="flex flex-col items-center gap-3">
                 <p className="lg:text-4xl md:text-4xl text-2xl text-center">{product?.title}</p>
                 <hr className="w-36" />
@@ -118,16 +134,50 @@ export default function Product({ params }: { params: { slug: string } }) {
                 <p className="lg:text-2xl md:text-2xl text-lg  font-retro">
                   {product?.price.toFixed(2)}
                 </p>
-                <p className="font-ibm lg:text-lg text-xs">(Regular Size)</p>
+                
               </div>
             </div>
-            <p className="lg:text-lg md:text-lg text-sm  font-ibm mt-10">
-              ENG // 27.8×39.4 inches
+            <p className="text-start lg:text-lg md:text-lg text-sm font-ibm mt-10">
+            <div className="mt-2 lg:text-lg md:text-lg text-sm font-ibm font-[600] flex w-full flex-row justify-start items-center">
+                  {
+                    size ? (<div className="flex flex-row items-center justify-center">
+                      <p className="lg:w-[130px] md:w-[130px] w-[105px]">Select Size:</p>
+                      {sizes.flatMap((size, index) => (
+                        <p
+                          key={index}
+                          onClick={() => {setSelectSize(size); setSize(false)}}
+                          className="cursor-pointer ml-2"
+                        >
+                          {size}{index !== sizes.length - 1 && ","}
+                        </p>
+                      ))}
+                    </div>): (<>
+                      <p onClick={() => setSize(!size)} className="cursor-pointer">Size: {selectSize}</p>
+                    </>)
+                  }
+                  <Image
+                    onClick={() => setSize(!size)}
+                    src="/img/drop.svg"
+                    alt="trash"
+                    width={0}
+                    height={0}
+                    sizes="100vw"
+                    style={{filter: "invert(1) hue-rotate(180deg)"}}
+                    className={`w-[25px] cursor-pointer opacity-90 ${size ? "hidden" : "rotate-[270deg]"}`}
+                  />
+                </div>
+              <br/>
+              16.4×24 inches (Small)
               <br />
-              120 g/m² Magistra Deluxe Blueback paper Digital Color Printing
+              27.8×39.4 inches (Medium)
               <br />
-              Limited Edition Serialized and Signed by the Author
+              32.4×48 inches (Large)
+              <br /><br />
+              ENG // 120 g/m² Paper Digital Color Printing.
               <br />
+              Limited Edition Serialized and Signed by the Author.
+
+              
             </p>
             <button className="mt-10 btn w-full h-bh font-retro text-black"
               onClick={() => { addToCart() }}>
