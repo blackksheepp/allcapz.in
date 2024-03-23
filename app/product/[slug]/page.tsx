@@ -70,6 +70,7 @@ export default function Product({ params }: { params: { slug: string } }) {
     }
   }, [params.slug]);
 
+
   return (
     <>
       <div
