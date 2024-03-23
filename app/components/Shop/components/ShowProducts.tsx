@@ -21,7 +21,7 @@ export const ShowProducts: React.FC<ProductsProps> = ({ products, collection }) 
   return (
     <div>
       <div className="font-retro text-gray-400 text-lg flex flex-row gap-7 justify-center items-baseline">
-        <div className="  my-vw-14-min@sm-max@lg grid lg:grid-cols-3 md:grid-cols-3 sm:grid-cols-2 grid-cols-2 place-items-center gap-vw-20">
+        <div className="  my-vw-14-min@sm-max@lg grid lg:grid-cols-3 md:grid-cols-3 sm:grid-cols-2 grid-cols-1 place-items-center gap-vw-20">
           {transitions((styles, item) => (
             <Link href={`/product/${btoa(item.title + "." + collection)}`}>
               <animated.p style={styles}>
