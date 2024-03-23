@@ -45,6 +45,10 @@ html body {
 }
 
 
+.dropshadow:active {
+    filter: none;
+}
+
 @keyframes rotation {
     from {
         transform: perspective(1000px) rotateY(0deg);

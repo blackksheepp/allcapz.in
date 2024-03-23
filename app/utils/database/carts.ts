@@ -1,36 +1,66 @@
 "use server"
 import prisma from "@/lib/prisma";
 import { ProductType } from "./collections";
-import { useSession } from "@/app/Providers/Session";
 
 export interface CartType {
     user: string;
     products: ProductType[]
 }
 
-export const AddToCart = async (user: string, product: ProductType) => {
+export const AddToCart = async (user: string, product: ProductType): Promise<boolean> => {
     try {
         const cart = await GetCart(user);
+        let success;
         if (cart) {
-            await prisma.carts.update({
-                where: {
-                    user: user
-                },
-                data: {
-                    products: {
-                        push: product
-                    }
+            const productExists = cart.products.filter(p => p.title === product.title);
+            if (productExists.length > 0) {
+                const existingProduct = productExists[0];
+                let quantity: number;
+                if (existingProduct.quantity) {
+                    quantity = existingProduct.quantity + 1
+                } else {
+                    quantity = 1
                 }
-            })
+
+                success = await prisma.carts.update({
+                    where: {
+                        user: user,
+                    },
+                    data: {
+                        products: {
+                            updateMany: {
+                                where: {
+                                    title: product.title
+                                },
+                                data: {
+                                    quantity: quantity
+                                }
+                            }
+                        }
+                    }
+                })
+            } else {
+                success = await prisma.carts.update({
+                    where: {
+                        user: user
+                    },
+                    data: {
+                        products: {
+                            push: product
+                        }
+                    }
+                })
+            }
         } else {
-            await prisma.carts.create({
+            success = await prisma.carts.create({
                 data: {
                     user: user,
                     products: [product]
                 }
             })
         }
-        return true;
+        console.log(success)
+        return (success ? true : false)
     } catch (error) {
         console.log(error);
         return false;

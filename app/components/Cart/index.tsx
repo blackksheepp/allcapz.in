@@ -8,24 +8,34 @@ import Image from "next/image";
 import { ProductType } from "@/app/utils/database/collections";
 import { useSession } from "@/app/Providers/Session";
 import { motion, useMotionValue } from 'framer-motion';
+import Link from "next/link";
 
 const CartProduct = ({ product, onClick }: { product: ProductType, onClick: () => void }) => {
-    const [stateProduct, setStateProduct] = useState(product);
+  const [stateProduct, setStateProduct] = useState<ProductType | null>();
+
+  const [size, setSize] = useState<boolean>(false);
+  const sizes = ["Small", "Medium", "Large"];
 
   const [x, setX] = useState("0");
   const removeProduct = () => {
     setX("100%");
-    onClick();
+    setTimeout(() => onClick(), 1000)
   };
 
   const { session } = useSession();
 
+  useEffect(() => {
+    setStateProduct(product)
+  }, [product])
+
   const decreaseQnty = async () => {
     var updatedProduct: ProductType | undefined = undefined;
-    if (session) {
-      updatedProduct = await DecreaseQnty(session?.email, stateProduct);
-    } else {
-      updatedProduct = await DecreaseQntyCookies(stateProduct);
+    if (stateProduct) {
+      if (session) {
+        updatedProduct = await DecreaseQnty(session?.email, stateProduct);
+      } else {
+        updatedProduct = await DecreaseQntyCookies(stateProduct);
+      }
     }
     if (updatedProduct) {
       setStateProduct(updatedProduct);
@@ -35,10 +45,12 @@ const CartProduct = ({ product, onClick }: { product: ProductType, onClick: () =
 
   const increaseQnty = async () => {
     var updatedProduct: ProductType | undefined = undefined;
-    if (session) {
-      updatedProduct = await IncreaseQnty(session?.email, stateProduct);
-    } else {
-      updatedProduct = await IncreaseQntyCookies(stateProduct);
+    if (stateProduct) {
+      if (session) {
+        updatedProduct = await IncreaseQnty(session?.email, stateProduct);
+      } else {
+        updatedProduct = await IncreaseQntyCookies(stateProduct);
+      }
     }
     if (updatedProduct) {
       setStateProduct(updatedProduct);
@@ -51,36 +63,44 @@ const CartProduct = ({ product, onClick }: { product: ProductType, onClick: () =
       initial={{ opacity: 1, x: x, width: "100%" }}
       animate={{ opacity: 1, x: x, width: "100%" }}
       exit={{ opacity: 0, x: x, width: "100%" }}
-      transition={{ duration: 1, type: "tween" }}
+      transition={{ duration: 0.8, type: "keyframes" }}
     >
-      <div className="w-full flex flex-row justify-center gap-5 px-10">
-        <div className="w-full flex flex-row justify-center gap-5"><Image
+      {stateProduct && (<div className="w-full flex flex-row justify-center gap-5 px-5">
+        <div className="bg-[#c7c7c7] border-black border-[1px] shadow-[5px_5px_0px_0px_rgba(70,70,70)] pt-3 pb-2 w-full flex flex-row justify-center gap-5"><Image
           src={stateProduct.image}
           alt=""
           width={0}
           height={0}
           sizes="100vw"
-          className="w-[90px] h-auto self-start opacity-90"
+          className="w-[90px] h-auto self-start ml-2 shadow-lg"
         />
-          <div className="w-full py-1 flex flex-col justify-between gap-2 text-accent opacity-80 font-retro text-sm">
-            <div className="flex flex-col gap-2"><p>{stateProduct.title}</p>
-              <p>{stateProduct.price.toFixed(2)}</p></div>
-            <div className="flex flex-row items-center justify-center gap-2 bg-accent text-black w-20 dropshadow mb-1">
-              <p onClick={decreaseQnty} className="cursor-pointer text-[32px] border-black border-x-[2px] px-[4px] py-[2px]">-</p>
-              <p className="text-[17px]  px-[2px]">{stateProduct.quantity}</p>
-              <p onClick={increaseQnty} className="cursor-pointer text-[22px] border-black border-x-[2px] px-[3px] py-[2px]">+</p>
+          <div className="w-full py-1 flex flex-col justify-between text-black opacity-80 font-ibm font-[600] text-sm">
+            <div className="flex flex-col gap-2">
+              <p>{stateProduct.title}</p>
+              <p onClick={() => setSize(!size)} className="cursor-pointer">Size: {size ? (<div className="flex flex-col py-2">
+                {sizes.map((size, index) => (
+                  <p onClick={() => { stateProduct.size = size; setStateProduct(stateProduct) }} className="cursor-pointer" key={index}>{size}</p>
+                ))}
+              </div>) : (stateProduct.size)}
+              </p>
             </div>
-          </div></div>
-        <Image
-          src="/img/trash.svg"
-          alt="trash"
-          width={0}
-          height={0}
-          sizes="100vw"
-          className="w-[25px] cursor-pointer mb-4 mr-2 opacity-90"
-          onClick={removeProduct}
-        />
-      </div>
+            <div className="mb-1.5 active:mb-0.5 active:ml-0.5 duration-[300ms] ease-in-out flex flex-row items-center justify-center gap-2 bg-[#c7c7c7] text-black w-20 dropshadow border-black border-[1px] mb-1">
+              <p onClick={decreaseQnty} className="font-retro  font-[400] cursor-pointer text-[28px] border-black border-r-[2px] px-[4px] py-[1px]">-</p>
+              <p className="text-[14px]  px-[1px]">{stateProduct.quantity}</p>
+              <p onClick={increaseQnty} className="font-retro  font-[400] cursor-pointer text-[20px] border-black border-l-[2px] px-[3px] py-[1px]">+</p>
+            </div>
+          </div>
+          <div className="flex h-full flex-row items-center justify-center opacity-80">
+            <div className="w-[2px] h-full bg-[#333333]" />
+            <div className="flex flex-col h-full justify-between pt-1 ">
+              <p className="font-ibm text-sm font-[600] text-center mx-4">Price<br />{(stateProduct.price * stateProduct.quantity!).toFixed(2)}</p>
+              <p onClick={() => { setTimeout(() => removeProduct(), 50) }} className="mb-2.5 active:mb-2 active:mr-[10px] duration-50 cursor-pointer font-ibm text-sm font-[600] text-center mx-4 px-2 py-[1px] bg-red-700 text-accent border-black border-[1px] dropshadow">Remove</p>
+            </div>
+
+          </div>
+        </div>
+
+      </div>)}
     </motion.div>
   )
 }
@@ -97,23 +117,6 @@ const Cart = ({
 
   const [productToRemove, setProductToRemove] = useState<ProductType | null>(null);
 
-  const removeFromCart = async (product: ProductType) => {
-    if (productToRemove) {
-      var updatedCart: CartType | undefined = undefined;
-
-      if (session) {
-        updatedCart = await RemoveFromCart(session.email, productToRemove);
-      } else {
-        updatedCart = await RemoveFromCartCookies(productToRemove);
-      }
-
-      if (updatedCart) {
-        setProductToRemove(null)
-        return updatedCart
-      }
-    }
-  }
-
   useEffect(() => {
     (async () => {
       if (session) {
@@ -122,6 +125,23 @@ const Cart = ({
         const cartCookie = await GetCartFromCookies();
         if (cartCookie) {
           setCart(JSON.parse(cartCookie))
+        }
+      }
+
+      const removeFromCart = async (product: ProductType) => {
+        if (productToRemove) {
+          var updatedCart: CartType | undefined = undefined;
+
+          if (session) {
+            updatedCart = await RemoveFromCart(session.email, productToRemove);
+          } else {
+            updatedCart = await RemoveFromCartCookies(productToRemove);
+          }
+
+          if (updatedCart) {
+            setProductToRemove(null)
+            return updatedCart
+          }
         }
       }
 
@@ -151,17 +171,17 @@ const Cart = ({
     <CartTransition animate={showCart} mobile={mobile}>
       <div className="w-full h-full flex flex-col items-center justify-center overflow-y-scroll">
         <FitTexture />
-        <div className="w-full flex flex-row items-center justify-between px-10 pt-8">
+        <div className="w-full flex flex-row items-center justify-between pl-6 pr-4 pt-8">
           <p className="text-accent font-retro text-xl">
             CART
           </p>
-          <button
-            className="btn w-[85px] h-[35px] font-retro text-black"
+          <div
+            className="w-[85px] h-[30px] border-black border-[1px] dropshadow font-ibm font-[800] text-black bg-[#c7c7c7] cursor-pointer flex items-center justify-center active:mt-1 mr-2 active:mr-1 duration-50"
             style={{ fontSize: "14px" }}
-            onClick={onClick}
+            onClick={(e) => { setTimeout(() => onClick(e), 50) }}
           >
             CLOSE
-          </button>
+          </div>
         </div>
         <div className="z-10 w-full h-screen flex flex-col mt-10">
           {cart && cart.products.length > 0 ? (<div className="w-full flex flex-col gap-5 items-start justify-center">
@@ -170,6 +190,11 @@ const Cart = ({
             })}
           </div>) : <p className="text-accent font-retro text-sm box-border w-full h-[400px] grid place-items-center">Nothing to see here.</p>}
         </div>
+        {cart && cart.products.length > 0 &&
+          <Link href="/checkout" className="cursor-pointer w-full h-[55px] flex items-center justify-center bg-[#c7c7c7] text-xl text-black font-ibm font-[600]">
+              Checkout
+          </Link>
+        }
       </div>
     </CartTransition>
   );
