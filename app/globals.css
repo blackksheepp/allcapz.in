@@ -44,6 +44,9 @@ html body {
     filter: drop-shadow(3px 3px rgb(70, 70, 70));
 }
 
+.logoshadow {
+    filter: drop-shadow(1px 1px rgb(50, 50, 50));
+}
 
 .dropshadow:active {
     filter: none;

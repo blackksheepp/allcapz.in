@@ -17,12 +17,12 @@ const Navbar: React.FC<NavbarProps> = ({ onCart: onCart, onLogin: onLogin }) => 
         <div className="w-full flex flex-row items-center justify-between px-vw-14 mt-vw-7-min@xl">
           <Link href="/">
             <Image
-              src="/img/LOGO.png"
+              src="/img/LOGO NEW.png"
               alt="logo"
               width={0}
               height={0}
               sizes="100vw"
-              className="dropshadow w-auto h-vw-10-min@lg-max@xl"
+              className="logoshadow w-auto h-vw-12-min@lg-max@xl"
             />
           </Link>
           <div className="flex flex-row items-center lg:gap-5 md:gap-4 sm:gap-3 gap-2">
