@@ -12,7 +12,7 @@ const config: Config = {
   theme: {
     extend: {
       animation: {
-        'spin-slow': 'spin 17s linear infinite',
+        'spin-slow': 'spin 20s linear infinite',
       },
       fontSize: {
         f1: "clamp(1.5rem, calc(0.4286rem + 5.3571vw), 3rem)",

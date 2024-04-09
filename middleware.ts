@@ -6,7 +6,8 @@ const publicRoutes = [
     "/product/.*",
     "/email",
     "/admin",
-    "/google"
+    "/google",
+    "/checkout"
 ];
 
 export const middleware = async (request: NextRequest) => {
