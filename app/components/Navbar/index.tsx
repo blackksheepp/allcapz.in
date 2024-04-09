@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useSession } from "@/app/Providers/Session";
@@ -11,10 +11,18 @@ interface NavbarProps {
 
 const Navbar: React.FC<NavbarProps> = ({ onCart: onCart, onLogin: onLogin }) => {
   const { session, logout } = useSession();
+  const [scroll, setScroll] = useState(false)
+
+  useEffect(() => {
+    document.addEventListener("scroll", () => {
+      setScroll(window.scrollY > 30)
+    })
+  }, [scroll])
+
   return (
     <>
-      <nav className="sticky top-7 z-40">
-        <div className="w-full flex flex-row items-center justify-between px-vw-14 mt-vw-7-min@xl">
+      <nav style={{ top: scroll ? 0 : 10 }} className={`sticky z-40 ${scroll && `transition-all ease-in-out duration-[300ms] bg-[#1b1b1bc7] border-accent border-b-[1px]`}`}>
+        <div className="w-full flex flex-row items-center justify-between px-vw-14 py-4">
           <Link href="/">
             <Image
               src="/img/LOGO NEW.png"
@@ -26,7 +34,7 @@ const Navbar: React.FC<NavbarProps> = ({ onCart: onCart, onLogin: onLogin }) => 
             />
           </Link>
           <div className="flex flex-row items-center lg:gap-5 md:gap-4 sm:gap-3 gap-2">
-            <div className="text-accent font-retro cursor-pointer" onClick={() => {!session && onLogin()}}>
+            <div className="text-accent font-retro cursor-pointer" onClick={() => { !session && onLogin() }}>
               <p className="lg:text-[14px] text-[11px]">Hey, {session ? session.name : "Login"}</p>
               <p className="lg:text-[10px] text-[8px]" onClick={() => { session && logout() }}>{session ? "Your Profile" : "Or Sign Up"}</p>
             </div>
