@@ -74,7 +74,7 @@ export default function Product({ params }: { params: { slug: string } }) {
   return (
     <>
       <div
-        className="absolute z-80 w-full h-screen min-h-[700px] overflow-y-hidden"
+        className="absolute z-80 w-full h-[110%] min-h-[700px] overflow-y-hidden"
         onClick={() => {
           setZoom(false);
         }}
@@ -98,66 +98,69 @@ export default function Product({ params }: { params: { slug: string } }) {
         className={`absolute w-full ${login || cart || zoom ? `transition-all delay-${zoom ? "50" : "500"} duration-${zoom ? "50" : "200"} ease-in blur-lg pointer-events-none ` : `transition-all delay-${zoom ? "50" : "200"} duration-${zoom ? "50" : "200"} ease-in blur-none`
           }`}
       >
-        <Navbar onCart={() => setCart(!cart)} onLogin={() => setLogin(!login)} />
-        <div className="flex lg:flex-row md:flex-row flex-col justify-center gap-vw-16-min@sm mx-vw-52 mt-vw-16-max@lg  mb-vw-10">
-          <div className="relative place-self-center lg:w-[400px] md:w-[400px] lg:min-w-[400px] md:min-w-[400px] w-full lg:h-[500px] md:h-[500px] h-[300px] grid place-items-center">
-
-            <Image
-              src={product?.image!}
-              alt={product?.title!}
-              width={0}
-              height={0}
-              sizes="100vh"
-              onClick={() => setZoom(true)}
-              className="absolute mt-6 mr-6 lg:h-[500px] md:h-[500px] h-[300px] w-auto blur-[0px]"
-            />
-            <Image
-              src={product?.image!}
-              alt={product?.title!}
-              width={0}
-              height={0}
-              sizes="100vh"
-              onClick={() => setZoom(true)}
-              className="absolute mt-3 mr-3 lg:h-[500px] md:h-[500px] h-[300px] w-auto blur-[0px]"
-            />
-            <Image
-              src={product?.image!}
-              alt={product?.title!}
-              width={0}
-              height={0}
-              sizes="100vh"
-              onClick={() => setZoom(true)}
-              className="absolute lg:h-[500px] md:h-[500px] h-[300px] w-auto"
-            />
+        <div>
+          <div className="absolute w-full" style={{top: mobile ? 10 : 20}}>
+            <Navbar onCart={() => setCart(!cart)} onLogin={() => setLogin(!login)} />
           </div>
-          <div className="text-accent font-retro lg:h-[520px] md:h-[500px] lg:w-[400px] md:w-[400px] w-[250px] flex flex-col items-center justify-between gap-vw-10-min@xs place-self-center">
-            <div className="flex flex-col self-center gap-3">
-              <div className="flex flex-col items-center gap-3">
-                <p className="lg:text-4xl md:text-4xl text-2xl text-center">{product?.title}</p>
-                <hr className="w-36" />
-              </div>
-              <div className="text-center">
-                <p className="lg:text-2xl md:text-2xl text-lg  font-retro">
-                  {product?.price.toFixed(2)}
-                </p>
-                
-              </div>
+          <div className="absolute w-full h-screen mt-vw-20-min@md xl:mt-vw-g5 2xl:mt-0 flex lg:flex-row md:flex-row flex-col justify-center gap-vw-16-min@sm  mb-vw-10">
+            <div className="relative place-self-center lg:w-[400px] md:w-[400px] lg:min-w-[400px] md:min-w-[400px] w-full lg:h-[500px] md:h-[500px] h-[300px] grid place-items-center">
+
+              <Image
+                src={product?.image!}
+                alt={product?.title!}
+                width={0}
+                height={0}
+                sizes="100vh"
+                onClick={() => setZoom(true)}
+                className="absolute mt-6 mr-6 lg:h-[500px] md:h-[500px] h-[300px] w-auto blur-[0px]"
+              />
+              <Image
+                src={product?.image!}
+                alt={product?.title!}
+                width={0}
+                height={0}
+                sizes="100vh"
+                onClick={() => setZoom(true)}
+                className="absolute mt-3 mr-3 lg:h-[500px] md:h-[500px] h-[300px] w-auto blur-[0px]"
+              />
+              <Image
+                src={product?.image!}
+                alt={product?.title!}
+                width={0}
+                height={0}
+                sizes="100vh"
+                onClick={() => setZoom(true)}
+                className="absolute lg:h-[500px] md:h-[500px] h-[300px] w-auto"
+              />
             </div>
-            <p className="text-start lg:text-lg md:text-lg text-sm font-ibm mt-10">
-            <div className="mt-2 lg:text-lg md:text-lg text-sm font-ibm font-[600] flex w-full flex-row justify-start items-center">
+            <div className="text-accent font-retro lg:h-[520px] md:h-[500px] lg:w-[400px] md:w-[400px] w-[250px] flex flex-col items-center justify-between gap-vw-10-min@xs place-self-center">
+              <div className="flex flex-col self-center gap-3">
+                <div className="flex flex-col items-center gap-3">
+                  <p className="lg:text-4xl md:text-4xl text-2xl text-center">{product?.title}</p>
+                  <hr className="w-36" />
+                </div>
+                <div className="text-center">
+                  <p className="lg:text-2xl md:text-2xl text-lg  font-retro">
+                    {product?.price.toFixed(2)}
+                  </p>
+
+                </div>
+              </div>
+              <p className="text-start lg:text-lg md:text-lg text-sm font-ibm mt-10">
+                <div className="mt-2 lg:text-lg md:text-lg text-sm font-ibm font-[600] flex w-full flex-row justify-start items-center">
                   {
                     size ? (<div className="flex flex-row items-center justify-center">
                       <p className="lg:w-[130px] md:w-[130px] w-[105px]">Select Size:</p>
                       {sizes.flatMap((size, index) => (
                         <p
                           key={index}
-                          onClick={() => {setSelectSize(size); setSize(false)}}
+                          onClick={() => { setSelectSize(size); setSize(false) }}
                           className="cursor-pointer ml-2"
                         >
                           {size}{index !== sizes.length - 1 && ","}
                         </p>
                       ))}
-                    </div>): (<>
+                    </div>) : (<>
                       <p onClick={() => setSize(!size)} className="cursor-pointer">Size: {selectSize}</p>
                     </>)
                   }
@@ -168,27 +171,28 @@ export default function Product({ params }: { params: { slug: string } }) {
                     width={0}
                     height={0}
                     sizes="100vw"
-                    style={{filter: "invert(1) hue-rotate(180deg)"}}
+                    style={{ filter: "invert(1) hue-rotate(180deg)" }}
                     className={`w-[25px] cursor-pointer opacity-90 ${size ? "hidden" : "rotate-[270deg]"}`}
                   />
                 </div>
-              <br/>
-              16.4×24 inches (Small)
-              <br />
-              27.8×39.4 inches (Medium)
-              <br />
-              32.4×48 inches (Large)
-              <br /><br />
-              ENG // 120 g/m² Paper Digital Color Printing.
-              <br />
-              Limited Edition Serialized and Signed by the Author.
+                <br />
+                16.4×24 inches (Small)
+                <br />
+                27.8×39.4 inches (Medium)
+                <br />
+                32.4×48 inches (Large)
+                <br /><br />
+                ENG // 120 g/m² Paper Digital Color Printing.
+                <br />
+                Limited Edition Serialized and Signed by the Author.
 
-              
-            </p>
-            <button className="mt-10 btn w-full h-bh font-retro text-black"
-              onClick={() => { addToCart() }}>
-              ADD TO CART
-            </button>
+
+              </p>
+              <button className="mt-10 btn w-full h-bh font-retro text-black"
+                onClick={() => { addToCart() }}>
+                ADD TO CART
+              </button>
+            </div>
           </div>
         </div>
       </div>
