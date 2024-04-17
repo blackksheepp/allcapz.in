@@ -102,7 +102,7 @@ export default function Product({ params }: { params: { slug: string } }) {
           <div className="absolute w-full" style={{top: mobile ? 10 : 20}}>
             <Navbar onCart={() => setCart(!cart)} onLogin={() => setLogin(!login)} />
           </div>
-          <div className="absolute w-full h-screen mt-vw-20-min@md xl:mt-vw-g5 2xl:mt-0 flex lg:flex-row md:flex-row flex-col justify-center gap-vw-16-min@sm  mb-vw-10">
+          <div className="absolute w-full h-screen mt-vw-20-min@md xl:mt-vw-5 2xl:mt-0 flex lg:flex-row md:flex-row flex-col justify-center gap-vw-16-min@sm  mb-vw-10">
             <div className="relative place-self-center lg:w-[400px] md:w-[400px] lg:min-w-[400px] md:min-w-[400px] w-full lg:h-[500px] md:h-[500px] h-[300px] grid place-items-center">
 
               <Image

@@ -31,7 +31,7 @@ const Navbar: React.FC<NavbarProps> = ({ onCart: onCart, onLogin: onLogin }) => 
               width={0}
               height={0}
               sizes="100vw"
-              className="logoshadow w-auto h-vw-12-min@lg-max@xl"
+              className="w-auto h-vw-12-min@lg-max@xl"
             />
           </Link>
           <div className="flex flex-row items-center lg:gap-5 md:gap-4 sm:gap-3 gap-2">

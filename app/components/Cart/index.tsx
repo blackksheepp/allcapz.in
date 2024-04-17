@@ -84,7 +84,7 @@ const CartProduct = ({ product, onClick }: { product: ProductType, onClick: () =
               </div>) : (stateProduct.size)}
               </p>
             </div>
-            <div className="mb-1.5 active:mb-0.5 active:ml-0.5 duration-[300ms] ease-in-out flex flex-row items-center justify-center gap-2 bg-[#c7c7c7] text-black w-20 dropshadow border-black border-[1px] mb-1">
+            <div className="active:mb-0.5 active:ml-0.5 duration-[300ms] ease-in-out flex flex-row items-center justify-center gap-2 bg-[#c7c7c7] text-black w-20 dropshadow border-black border-[1px] mb-1">
               <p onClick={decreaseQnty} className="font-retro  font-[400] cursor-pointer text-[28px] border-black border-r-[2px] px-[4px] py-[1px]">-</p>
               <p className="text-[14px]  px-[1px]">{stateProduct.quantity}</p>
               <p onClick={increaseQnty} className="font-retro  font-[400] cursor-pointer text-[20px] border-black border-l-[2px] px-[3px] py-[1px]">+</p>
