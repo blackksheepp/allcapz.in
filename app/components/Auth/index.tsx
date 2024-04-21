@@ -95,9 +95,9 @@ const Auth = ({
         e.preventDefault();
         if (await validateEmail(email)) {
             setEmailSent(`Check your email App
-                        <br />
-                        We&apos;ve sent you a ${authType} url at
-                        <br />
+                        \n
+                        We've sent you a ${authType} url at
+                        \n
                         ${email}`);
             setSendEmail(true);
         }

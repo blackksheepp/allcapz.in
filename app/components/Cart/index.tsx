@@ -7,10 +7,11 @@ import { CartCookieType, DecreaseQntyCookies, GetCartFromCookies, IncreaseQntyCo
 import Image from "next/image";
 import { ProductType } from "@/app/utils/database/collections";
 import { useSession } from "@/app/Providers/Session";
-import { motion, useMotionValue } from 'framer-motion';
-import Link from "next/link";
+import { motion } from 'framer-motion';
+import { useRouter, usePathname } from "next/navigation";
 
 const CartProduct = ({ product, onClick }: { product: ProductType, onClick: () => void }) => {
+
   const [stateProduct, setStateProduct] = useState<ProductType | null>();
 
   const [size, setSize] = useState<boolean>(false);
@@ -111,6 +112,12 @@ const Cart = ({
   showCart: boolean;
   onClick: React.MouseEventHandler;
 }) => {
+  const router = useRouter();
+  const path = usePathname();
+  const goToCheckout = () => {
+    router.push("/checkout?path=" + path);
+  }
+  
   const [mobile, setMobile] = useState(false);
   const [cart, setCart] = useState<CartType | CartCookieType | null>(null);
   const { session } = useSession();
@@ -169,7 +176,7 @@ const Cart = ({
 
   return (
     <CartTransition animate={showCart} mobile={mobile}>
-      <div className="w-full h-full flex flex-col items-center justify-center overflow-y-scroll">
+      <div className="w-full h-full flex flex-col items-center justify-start overflow-y-scroll">
         <FitTexture />
         <div className="w-full flex flex-row items-center justify-between pl-6 pr-4 pt-8">
           <p className="text-accent font-retro text-xl">
@@ -183,7 +190,7 @@ const Cart = ({
             CLOSE
           </div>
         </div>
-        <div className="z-10 w-full h-screen flex flex-col mt-10">
+        <div className="z-10 w-full mb-10 flex flex-col mt-10">
           {cart && cart.products.length > 0 ? (<div className="w-full flex flex-col gap-5 items-start justify-center">
             {cart.products.map((product) => {
               return <CartProduct key={product.title} product={product} onClick={() => { setProductToRemove(product) }} />
@@ -191,9 +198,9 @@ const Cart = ({
           </div>) : <p className="text-accent font-retro text-sm box-border w-full h-[400px] grid place-items-center">Nothing to see here.</p>}
         </div>
         {cart && cart.products.length > 0 &&
-          <Link href="/checkout" className="cursor-pointer w-full h-[55px] flex items-center justify-center bg-[#c7c7c7] text-xl text-black font-ibm font-[600]">
+          <p onClick={goToCheckout} className="cursor-pointer dropshadow w-[90%] py-vw-2 flex items-center justify-center bg-[#c7c7c7] text-lg text-black font-ibm font-[600]">
               Checkout
-          </Link>
+          </p>
         }
       </div>
     </CartTransition>

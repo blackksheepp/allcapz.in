@@ -3,14 +3,18 @@
 import React from "react";
 import { useState } from "react";
 
+import { useSearchParams } from "next/navigation";
+
 import Cart from "./components/Cart";
 import Auth from "./components/Auth";
 import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
 import Products from "./components/Shop";
 
+
 const HomePage = () => {
-  var [cart, setCart] = useState(false);
+  const params = useSearchParams();
+  var [cart, setCart] = useState(params.get("cart") === "true");
   var [login, setLogin] = useState(false);
 
   return (

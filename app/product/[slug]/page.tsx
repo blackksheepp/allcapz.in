@@ -12,10 +12,12 @@ import { AddToCart } from "@/app/utils/database/carts";
 import { AddToCartCookies } from "@/app/utils/cookies/cart";
 import { useSession } from "@/app/Providers/Session";
 import { BackgroundTexture } from "@/app/components/TextureOverlay";
+import { useSearchParams } from "next/navigation";
 
 
 export default function Product({ params }: { params: { slug: string } }) {
-  const [cart, setCart] = useState(false);
+  const search = useSearchParams();
+  var [cart, setCart] = useState(search.get("cart") === "true");
   const [login, setLogin] = useState(false);
 
   const [product, setProduct] = useState<ProductType | null>(null);

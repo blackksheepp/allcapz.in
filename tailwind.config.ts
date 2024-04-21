@@ -32,10 +32,12 @@ const config: Config = {
         itmd: "clamp(0.6875rem, calc(0.5652rem + 0.5435vw), 1rem); ",
         inpt: "clamp(0.8125rem, calc(0.7391rem + 0.3261vw), 1rem);",
         inpf: "clamp(0.5rem, calc(0.3043rem + 0.8696vw), 1rem);",
+        xsTosm: "clamp(0.75rem, calc(0.6968rem + 0.198vi), 0.875rem);",
         lgTo2xl: "clamp(1.125rem, calc(1rem + 0.625vw), 1.5rem);",
         smTolg: "clamp(0.875rem, calc(0.8333rem + 0.2083vw), 1rem);",
         t2xlTo4xl: "clamp(1.5rem, calc(1.25rem + 1.25vw), 2.25rem);",
         xlTo3xl: "clamp(1.25rem, calc(0.3125rem + 1.9531vw), 1.875rem);",
+        lgToxl: "clamp(1.125rem, calc(0.9375rem + 0.3906vi), 1.25rem);",
       },
       spacing: {
         s1: "clamp(2rem, calc(-0.1429rem + 10.7143vw), 5rem)",
@@ -71,7 +73,7 @@ const config: Config = {
   plugins: [
     require("tailwindcss-fluid-spacing")({
       extend: {
-        sizes: [30, 46, 47, 51, 54, 300, 150],
+        sizes: [35, 46, 47, 51, 54, 70, 100, 120, 130, 140, 150, 170, 180, 200, 220, 300],
       },
     }),
   ],
