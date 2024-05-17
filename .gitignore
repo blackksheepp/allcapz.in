@@ -40,3 +40,5 @@ public/img/posters/
 app/api/
 
 .vscode/
+yarn.lock
+api.py

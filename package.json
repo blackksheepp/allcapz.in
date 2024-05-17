@@ -47,7 +47,9 @@
     "shortid": "^2.2.16",
     "slick-carousel": "^1.8.1",
     "tailwindcss-fluid-type": "^2.0.3",
-    "telegraph-uploader": "^2.0.0"
+    "telegraph-uploader": "^2.0.0",
+    "zod": "^3.23.8",
+    "zustand": "^4.5.2"
   },
   "devDependencies": {
     "@types/node": "^20",

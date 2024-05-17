@@ -9,6 +9,7 @@ import { ProductType } from "@/app/utils/database/collections";
 import { useSession } from "@/app/Providers/Session";
 import { motion } from 'framer-motion';
 import { useRouter, usePathname } from "next/navigation";
+import { useCartStore } from "@/app/utils/store/cartStore";
 
 const CartProduct = ({ product, onClick }: { product: ProductType, onClick: () => void }) => {
 
@@ -105,13 +106,7 @@ const CartProduct = ({ product, onClick }: { product: ProductType, onClick: () =
     </motion.div>
   )
 }
-const Cart = ({
-  showCart,
-  onClick,
-}: {
-  showCart: boolean;
-  onClick: React.MouseEventHandler;
-}) => {
+const Cart = () => {
   const router = useRouter();
   const path = usePathname();
   const goToCheckout = () => {
@@ -123,16 +118,22 @@ const Cart = ({
   const { session } = useSession();
 
   const [productToRemove, setProductToRemove] = useState<ProductType | null>(null);
+  const { showCart, switchCart, setIsFull } = useCartStore((state) => state)
 
   useEffect(() => {
     (async () => {
+      var cart: CartType | CartCookieType | null = null;
       if (session) {
-        setCart(await GetCart(session.email))
+        cart = await GetCart(session.email)
       } else {
         const cartCookie = await GetCartFromCookies();
         if (cartCookie) {
-          setCart(JSON.parse(cartCookie))
+          cart = JSON.parse(cartCookie)
         }
+      }
+      if (cart) {
+        if (cart.products.length > 0) setIsFull(true);
+        setCart(cart)
       }
 
       const removeFromCart = async (product: ProductType) => {
@@ -155,6 +156,7 @@ const Cart = ({
       if (productToRemove) {
         const updatedCart = await removeFromCart(productToRemove);
         if (updatedCart) {
+          if (updatedCart.products.length === 0) setIsFull(false);
           setCart(updatedCart)
         }
       }
@@ -185,7 +187,7 @@ const Cart = ({
           <div
             className="w-[85px] h-[30px] border-black border-[1px] dropshadow font-ibm font-[800] text-black bg-[#c7c7c7] cursor-pointer flex items-center justify-center active:mt-1 mr-2 active:mr-1 duration-50"
             style={{ fontSize: "14px" }}
-            onClick={(e) => { setTimeout(() => onClick(e), 50) }}
+            onClick={() => { setTimeout(() => switchCart(), 50) }}
           >
             CLOSE
           </div>

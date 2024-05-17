@@ -3,22 +3,46 @@ import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useSession } from "@/app/Providers/Session";
+import { CartType, GetCart } from "@/app/utils/database/carts";
+import { CartCookieType, GetCartFromCookies } from "@/app/utils/cookies/cart";
+import { useCartStore } from "@/app/utils/store/cartStore";
+import { useLoginStore } from "@/app/utils/store/loginStore";
 
-interface NavbarProps {
-  onCart: () => void;
-  onLogin: () => void;
-}
 
-const Navbar: React.FC<NavbarProps> = ({ onCart: onCart, onLogin: onLogin }) => {
+
+const Navbar: React.FC = () => {
   const { session, logout } = useSession();
   const [scroll, setScroll] = useState(false);
+  const { isFull } = useCartStore((state) => state);
+  const { switchCart } = useCartStore((state) => state);
+
+  const { showLogin, setLogin } = useLoginStore((state) => state);
+  useEffect(() => {
+    (async () => {
+      var cart: CartType | CartCookieType | null = null;
+      if (session) {
+        cart = await GetCart(session.email);
+      } else {
+        const cartCookie = await GetCartFromCookies();
+        if (cartCookie) {
+          cart = JSON.parse(cartCookie);
+        }
+      }
+    })()
+  }, [session])
 
   useEffect(() => {
+    const scrollCallback = () => {
+      setScroll(window.scrollY > 30);
+    }
 
-    document.addEventListener("scroll", () => {
-        setScroll(window.scrollY > 30);
-    })
+    document.addEventListener("scroll", scrollCallback)
+
+    return () => {
+      document.removeEventListener("scroll", scrollCallback);
+    }
   }, [scroll])
+
 
   return (
     <>
@@ -35,18 +59,18 @@ const Navbar: React.FC<NavbarProps> = ({ onCart: onCart, onLogin: onLogin }) => 
             />
           </Link>
           <div className="flex flex-row items-center lg:gap-5 md:gap-4 sm:gap-3 gap-2">
-            <div className="text-accent font-retro cursor-pointer" onClick={() => { !session && onLogin() }}>
+            <div className="text-accent font-retro cursor-pointer" onClick={() => { !session && setLogin(true); setTimeout(() => console.log(showLogin, "yp"), 100)} }>
               <p className="lg:text-[14px] text-[11px]">Hey, {session ? session.name : "Login"}</p>
               <p className="lg:text-[10px] text-[8px]" onClick={() => { session && logout() }}>{session ? "Your Profile" : "Or Sign Up"}</p>
             </div>
             <Image
-              src="/img/cart.png"
+              src={isFull ? "/img/full-cart.png" : "/img/cart.png"}
               alt="cart"
               width={0}
               height={0}
               sizes="100vw"
-              className="dropshadow w-auto h-vw-10-min@lg-max@xl cursor-pointer"
-              onClick={onCart}
+              className="w-auto h-vw-10-min@lg-max@xl cursor-pointer"
+              onClick={switchCart}
             />
           </div>
         </div>

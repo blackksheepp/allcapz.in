@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 
 import Image from "next/image";
 import Link from "next/link";
@@ -10,7 +10,53 @@ import { CartCookieType, GetCartFromCookies } from "../utils/cookies/cart";
 import { useRouter, useSearchParams } from "next/navigation";
 import { getRazorpayData } from "../utils/actions";
 import { Product } from "@prisma/client";
+import { z } from "zod";
+import { error } from "console";
 
+interface FormError {
+  for: string;
+  message: string;
+}
+
+interface FormInputProps {
+  name: string;
+  placeholder: string;
+  value: string;
+  onChange: (value: string) => void;
+  formErrors: FormError[] | undefined,
+  setFormErrors: React.Dispatch<React.SetStateAction<FormError[] | undefined>>;
+}
+
+const FormInput: React.FC<FormInputProps> = ({ name, placeholder, value, onChange, formErrors, setFormErrors }) => {
+  const isError = formErrors?.find(error => error.for === name);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    onChange(e.target.value);
+    if (isError) {
+      setFormErrors(formErrors?.filter(e => e.for !== name));
+    }
+  };
+
+  return (
+    <div className="flex flex-col w-full gap-1">
+      <label
+        className={`flex flex-col justify-center w-full text-[12px] pl-3 ${value ? 'py-2' : 'py-4'} rounded-[2px] border-[1px] border-[#a4a4a4] focus:border-[2px] ${value && !isError ? 'border-white' : ''} ${isError ? 'border-red-500' : ''}  text-[#a4a4a4]`}
+      >
+        {value && placeholder}
+        <div className="flex flex-row gap-2">
+          {name === "phone" && <p>+91</p>}
+          <input
+            placeholder={placeholder}
+            className="w-full bg-transparent outline-none placeholder:text-sm placeholder:text-[16px] placeholder:text-[a4a4a4]  text-accent"
+            value={value}
+            onChange={handleChange}
+          />
+        </div>
+      </label>
+      <p className="text-red-500 text-[12px]">{isError?.message}</p>
+    </div>
+  );
+};
 
 const CheckoutProduct = ({ product }: { product: ProductType }) => {
   return (
@@ -56,6 +102,8 @@ export default function Checkout({ params }: { params: { slug: string } }) {
 
   const [showProducts, setShowProducts] = useState<boolean>(false);
 
+
+  const { session } = useSession();
   useEffect(() => {
     (async () => {
       if (session) {
@@ -67,11 +115,9 @@ export default function Checkout({ params }: { params: { slug: string } }) {
         }
       }
     })();
+  }, [session]);
 
 
-  }, []);
-
-  const { session } = useSession();
   useEffect(() => {
     window.addEventListener("resize", () => setMobile(window.innerWidth < 640));
     return () => {
@@ -124,9 +170,8 @@ export default function Checkout({ params }: { params: { slug: string } }) {
   }
 
   const nextSection = () => {
-    
     setActive(sections.slice(0, active.length + 1));
-  
+
   }
 
   const makePayment = async () => {
@@ -163,8 +208,54 @@ export default function Checkout({ params }: { params: { slug: string } }) {
       const paymentObject = new (window as any).Razorpay(options);
       paymentObject.open();
     }
-
   };
+
+  const [formErrors, setFormErrors] = useState<FormError[]>();
+
+  const onSubmit = useCallback(async () => {
+    if (sections[active.length]) {
+
+      if (active[active.length - 1] == "Summary") {
+        const summaryValidate = z.object({
+          email: z.string().email({ message: "Enter a valid email" }),
+          fname: z.string().min(2, { message: "First name is required" }),
+          lname: z.string().min(2, { message: "Last name is required" }),
+          street: z.string().min(10, { message: "Street is required" }),
+          address: z.string().min(10, { message: "Address is required" }),
+          postalCode: z.string().regex(/^\d{6}$/g, { message: "Enter a valid postal code" }),
+          city: z.string().min(2, { message: "City is required" }),
+          phone: z.string().regex(/^\d{10}$/g, { message: "Enter a valid phone number" }),
+        });
+
+        const summaryResponse = summaryValidate.safeParse({ email: session?.email ?? email, fname, lname, street, address, postalCode, city, phone })
+        if (!summaryResponse.success) {
+          const errors = summaryResponse.error.errors.map(
+            e => {
+              return { for: e.path[0], message: e.message } as FormError
+            }
+          )
+          setFormErrors(errors)
+          return
+        }
+      }
+
+      nextSection()
+    }
+    else makePayment();
+  }, [active, session?.email, email, fname, lname, street, address, postalCode, city, phone, cart, sections, active.length])
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Enter') {
+        onSubmit();
+      }
+    };
+    document.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [onSubmit]); 
+
 
   return (
     <div className="lg:absolute w-full h-full flex flex-col">
@@ -256,13 +347,15 @@ export default function Checkout({ params }: { params: { slug: string } }) {
           <div className="lg:max-w-[55%] md:max-w-[60%] max-w-[360px] w-[100%]  h-[1px] lg:my-vw-7 my-5 bg-accent opacity-50"><p className="invisble">a</p></div>
 
           {active.slice(active.length - 1)[0] === "Summary" && (
-            <div className="lg:w-vw-140-max@xl lg:min-w-0 min-w-vw-180-min@sm max-[388px]:min-w-5 max-[388px]:w-vw-300 flex flex-col pb-vw-10 ">
+            <div className="lg:w-vw-140-max@xl lg:min-w-0 min-w-vw-180-min@sm max-[388px]:min-w-5 max-[388px]:w-vw-300 flex flex-col pb-vw-2 ">
               <form className="w-full font-ibm text-accent flex flex-col items-end gap-2">
                 <div className="flex flex-row w-full justify-between items-baseline">
                   <label className="text-xsTosm text-green-600 cursor-pointer">Change Email?</label>
                   <label className="text-lgTo2xl max-[388px]:text-smTolg">Contact</label>
                 </div>
-                <input className={`w-full bg-transparent rounded-[2px] outline-none px-3 py-3 placeholder:text-sm border-[1px] border-[#a4a4a4] focus:border-[2px] focus:border-accent text-accent text-smTolg placeholder:text-gray ${session?.email && `pointer-events-none text-[#a4a4a4]`}`} placeholder="Your Email" value={session?.email || email} onChange={(e) => { setEmail(e.target.value) }} />
+                <div className={`w-full ${session?.email && `pointer-events-none text-[#a4a4a4]`}`}>
+                  <FormInput value={session?.email || email} name="email" placeholder="Email" onChange={setEmail} formErrors={formErrors} setFormErrors={setFormErrors} />
+                </div>
               </form>
 
               <form className="w-full pt-vw-5-min@xl font-ibm text-accent flex flex-col items-end gap-7">
@@ -279,47 +372,16 @@ export default function Checkout({ params }: { params: { slug: string } }) {
 
                 </div>
                 <div className="w-full flex lg:flex-row md:flex-row flex-col lg:gap-4 md:gap-4 gap-7">
-                  <label className={`flex flex-col justify-center w-full text-[12px] pl-3 ${fname ? `py-2` : `py-4`} rounded-[2px] border-[1px] border-[#a4a4a4] focus:border-[2px] focus:border-white text-[#a4a4a4]`}>
-                    {fname && "First Name"}
-                    <input placeholder={"First Name"} className={`w-full bg-transparent outline-none placeholder:text-sm placeholder:text-[16px] placeholder:text-[a4a4a4] pointer-events-none text-accent`} value={fname} onChange={(e) => setFname(e.target.value)} />
-                  </label>
-
-                  <label className={`flex flex-col justify-center w-full text-[12px] pl-3 ${lname ? `py-2` : `py-4`} rounded-[2px] border-[1px] border-[#a4a4a4] focus:border-[2px] focus:border-white text-[#a4a4a4]`}>
-                    {lname && "Last Name"}
-                    <input placeholder={"Last Name"} className={`w-full bg-transparent outline-none placeholder:text-sm placeholder:text-[16px] placeholder:text-[a4a4a4] pointer-events-none text-accent`} value={lname} onChange={(e) => setLname(e.target.value)} />
-                  </label>
+                  <FormInput value={fname} name="fname" placeholder="First Name" onChange={setFname} formErrors={formErrors} setFormErrors={setFormErrors} />
+                  <FormInput value={lname} name="lname" placeholder="Last Name" onChange={setLname} formErrors={formErrors} setFormErrors={setFormErrors} />
                 </div>
-
-                <label className={`flex flex-col justify-center w-full text-[12px] pl-3 ${street ? `py-2` : `py-4`} rounded-[2px] border-[1px] border-[#a4a4a4] focus:border-[2px] focus:border-white text-[#a4a4a4]`}>
-                  {street && "Apartment, Landmark, Street"}
-                  <input placeholder={"Apartment, Landmark, Street"} className={`w-full bg-transparent outline-none placeholder:text-sm placeholder:text-[16px] placeholder:text-[a4a4a4] pointer-events-none text-accent`} value={street} onChange={(e) => setStreet(e.target.value)} />
-                </label>
-
-                <label className={`flex flex-col justify-center w-full text-[12px] pl-3 ${address ? `py-2` : `py-4`} rounded-[2px] border-[1px] border-[#a4a4a4] focus:border-[2px] focus:border-white text-[#a4a4a4]`}>
-                  {address && "Address"}
-                  <input placeholder={"Address"} className={`w-full bg-transparent outline-none placeholder:text-sm placeholder:text-[16px] placeholder:text-[a4a4a4] pointer-events-none text-accent`} value={address} onChange={(e) => setAddress(e.target.value)} />
-                </label>
-
-
-
+                <FormInput value={street} onChange={setStreet} name="street" placeholder="Apartment, Landmark, Street" formErrors={formErrors} setFormErrors={setFormErrors} />
+                <FormInput value={address} onChange={setAddress} name="address" placeholder="Address" formErrors={formErrors} setFormErrors={setFormErrors} />
                 <div className="w-full flex lg:flex-row md:flex-row flex-col lg:gap-4 md:gap-4 gap-7">
-                  <label className={`flex flex-col justify-center w-full text-[12px] pl-3 ${postalCode ? `py-2` : `py-4`} rounded-[2px] border-[1px] border-[#a4a4a4] focus:border-[2px] focus:border-white text-[#a4a4a4]`}>
-                    {postalCode && "Postal Code"}
-                    <input placeholder={"Postal Code"} className={`w-full bg-transparent outline-none placeholder:text-sm placeholder:text-[16px] placeholder:text-[a4a4a4] pointer-events-none text-accent`} value={postalCode} onChange={(e) => setPostalCode(e.target.value)} />
-                  </label>
-
-                  <label className={`flex flex-col justify-center w-full text-[12px] pl-3 ${city ? `py-2` : `py-4`} rounded-[2px] border-[1px] border-[#a4a4a4] focus:border-[2px] focus:border-white text-[#a4a4a4]`}>
-                    {city && "City"}
-                    <input placeholder={"City"} className={`w-full bg-transparent outline-none placeholder:text-sm placeholder:text-[16px] placeholder:text-[a4a4a4] pointer-events-none text-accent`} value={city} onChange={(e) => setCity(e.target.value)} />
-                  </label>
+                  <FormInput value={postalCode} onChange={setPostalCode} name="postalCode" placeholder="Postal Code" formErrors={formErrors} setFormErrors={setFormErrors} />
+                  <FormInput value={city} onChange={setCity} name="city" placeholder="City" formErrors={formErrors} setFormErrors={setFormErrors} />
                 </div>
-
-                <label className={`flex flex-col justify-center w-full text-[12px] pl-3 ${phone ? `py-2` : `py-4`} rounded-[2px] border-[1px] border-[#a4a4a4] focus:border-[2px] focus:border-white text-[#a4a4a4]`}>
-                  {phone && "Phone Number"}
-                  <input placeholder={"Phone Number"} className={`w-full bg-transparent outline-none placeholder:text-sm placeholder:text-[16px] placeholder:text-[a4a4a4] pointer-events-none text-accent`} value={phone} onChange={(e) => setPhone(e.target.value)} />
-                </label>
-
-
+                <FormInput value={phone} onChange={setPhone} name="phone" placeholder="Phone No." formErrors={formErrors} setFormErrors={setFormErrors} />
               </form>
             </div>
           )}
@@ -330,7 +392,7 @@ export default function Checkout({ params }: { params: { slug: string } }) {
                 <div className="flex flex-row items-center justify-between text-xsTosm">
                   <div className="flex flex-row gap-vw-8">
                     <p className="text-[#c4c4c4] max-w-16 min-w-14">Contact</p>
-                    <p>{session?.email || email}</p>
+                    <p>{(session?.email || email) + ", +91" + phone}</p>
                   </div>
                   <p onClick={() => setActive(active.slice(0, 2))} className="text-[#c4c4c4] text-sm underline underline-offset-2 cursor-pointer">Change</p>
                 </div>
@@ -340,7 +402,7 @@ export default function Checkout({ params }: { params: { slug: string } }) {
                 <div className="flex flex-row items-center justify-between">
                   <div className="flex flex-row gap-vw-8 text-xsTosm">
                     <p className="text-[#c4c4c4] max-w-16 min-w-14">Ship To</p>
-                    <p>{`${address + ", " + street + ", " + postalCode + " " + city}`}</p>
+                    <p>{`${street + ", " + address + ", " + postalCode + " " + city}`}</p>
                   </div>
                   <p onClick={() => setActive(active.slice(0, 2))} className="text-[#c4c4c4] text-sm underline underline-offset-2 cursor-pointer">Change</p>
                 </div>
@@ -426,7 +488,7 @@ export default function Checkout({ params }: { params: { slug: string } }) {
               <Prev />
               <p onClick={previousSection} className="cursor-pointer text-xsTosm">Return to {active[active.length - 2]}</p>
             </div>
-            <p onClick={sections[active.length] ? nextSection : makePayment} className={`cursor-pointer text-xsTosm ${sections[active.length] ? "bg-accent text-background py-3 hover:bg-[#c4c4c4]" : "py-2.5 bg-blue-600 text-accent hover:bg-[#3998FE] active:bg-[#3998FE] font-extrabold"}  active:bg-[#c4c4c4] text-center  px-4 lg:w-auto md:w-auto w-full rounded-sm font-[500]`}>
+            <p onClick={onSubmit} className={`cursor-pointer text-xsTosm ${sections[active.length] ? "bg-accent text-background py-3 hover:bg-[#c4c4c4]" : "py-2.5 bg-blue-600 text-accent hover:bg-[#3998FE] active:bg-[#3998FE] font-extrabold"}  active:bg-[#c4c4c4] text-center  px-4 lg:w-auto md:w-auto w-full rounded-sm font-[500]`}>
               {sections[active.length] ? "Continue to " + sections[active.length] : "Pay with Razorpay"}
             </p>
           </div>

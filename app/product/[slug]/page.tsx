@@ -13,13 +13,11 @@ import { AddToCartCookies } from "@/app/utils/cookies/cart";
 import { useSession } from "@/app/Providers/Session";
 import { BackgroundTexture } from "@/app/components/TextureOverlay";
 import { useSearchParams } from "next/navigation";
+import { useCartStore } from "@/app/utils/store/cartStore";
+import { useLoginStore } from "@/app/utils/store/loginStore";
 
 
 export default function Product({ params }: { params: { slug: string } }) {
-  const search = useSearchParams();
-  var [cart, setCart] = useState(search.get("cart") === "true");
-  const [login, setLogin] = useState(false);
-
   const [product, setProduct] = useState<ProductType | null>(null);
   const [zoom, setZoom] = useState(false);
   const [mobile, setMobile] = useState(false);
@@ -29,6 +27,9 @@ export default function Product({ params }: { params: { slug: string } }) {
 
   const [isTransitioning, setIsTransitioning] = useState(false);
 
+  const { showCart, setCart } = useCartStore((state) => state);
+  const { showLogin } = useLoginStore((state) => state);
+  const { setIsFull } = useCartStore((state) => state);
   const { session } = useSession();
   const addToCart = async () => {
     if (product) {
@@ -43,7 +44,8 @@ export default function Product({ params }: { params: { slug: string } }) {
       
       if (success) {
         console.log(success)
-        setCart(success)
+        setIsFull(true);
+        setCart(true);
       }
     }
   }
@@ -82,7 +84,7 @@ export default function Product({ params }: { params: { slug: string } }) {
         }}
       >
         <BackgroundTexture />
-        <div className={`w-full h-full max-h-max flex items-center blur-[100px] justify-center transition-all ease-linear duration-1000 ${isTransitioning ? 'opacity-100' : 'opacity-0 '} ${(!login && !cart) && "animate-spin-slow"}`}>
+        <div className={`w-full h-full max-h-max flex items-center blur-[100px] justify-center transition-all ease-linear duration-1000 ${isTransitioning ? 'opacity-100' : 'opacity-0 '} ${(!showLogin && !showCart) && "animate-spin-slow"}`}>
           <Image
             src={product?.image!}
             alt={product?.title!}
@@ -94,15 +96,15 @@ export default function Product({ params }: { params: { slug: string } }) {
           />
         </div>
       </div>
-      <Cart onClick={() => setCart(!cart)} showCart={cart} />
-      <Auth onClick={() => setLogin(!login)} showLogin={login} />
+      <Cart />
+      <Auth />
       <div
-        className={`absolute w-full ${login || cart || zoom ? `transition-all delay-${zoom ? "50" : "500"} duration-${zoom ? "50" : "200"} ease-in blur-lg pointer-events-none ` : `transition-all delay-${zoom ? "50" : "200"} duration-${zoom ? "50" : "200"} ease-in blur-none`
+        className={`absolute w-full ${showLogin || showCart || zoom ? `transition-all delay-${zoom ? "50" : "500"} duration-${zoom ? "50" : "200"} ease-in blur-lg pointer-events-none ` : `transition-all delay-${zoom ? "50" : "200"} duration-${zoom ? "50" : "200"} ease-in blur-none`
           }`}
       >
         <div>
           <div className="absolute w-full" style={{top: mobile ? 10 : 20}}>
-            <Navbar onCart={() => setCart(!cart)} onLogin={() => setLogin(!login)} />
+            <Navbar />
           </div>
           <div className="absolute w-full h-screen mt-vw-20-min@md xl:mt-vw-5 2xl:mt-0 flex lg:flex-row md:flex-row flex-col justify-center gap-vw-16-min@sm  mb-vw-10">
             <div className="relative place-self-center lg:w-[400px] md:w-[400px] lg:min-w-[400px] md:min-w-[400px] w-full lg:h-[500px] md:h-[500px] h-[300px] grid place-items-center">

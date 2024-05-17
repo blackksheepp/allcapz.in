@@ -5,6 +5,7 @@ import { useSession } from "@/app/Providers/Session";
 import { GetUser } from "@/app/utils/database/users";
 import { GetGoogleAuthLink } from "@/app/utils/auth";
 import { useRouter } from "next/navigation";
+import { useLoginStore } from "@/app/utils/store/loginStore";
 
 const Minimize = ({
     onClick,
@@ -52,13 +53,7 @@ const capitalize = (str: string) => {
     return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
-const Auth = ({
-    showLogin: showLogin,
-    onClick,
-}: {
-    showLogin: boolean;
-    onClick: React.MouseEventHandler;
-}) => {
+const Auth = () => {
     const [mobile, setMobile] = useState(false);
     const [width, setWidth] = useState(0);
     const [authType, setAuthType] = useState<"login" | "sign up">("sign up");
@@ -71,9 +66,11 @@ const Auth = ({
 
     const { session, authenticate, logout } = useSession();
 
+    const { showLogin, setLogin } = useLoginStore((state) => state);
+    
     const close = (e: React.MouseEvent) => {
         setEmail("")
-        onClick(e)
+        setLogin(false);
     }
     const [emailError, setEmailError] = useState<string>("");
     const validateEmail = async (email: string) => {
@@ -133,7 +130,6 @@ const Auth = ({
         return () => {
             document.body.classList.remove("overflow-hidden")
         };
-
 
 
     }, [showLogin, mobile, emailSent, authType, email, authenticate, sendEmail, width]);
