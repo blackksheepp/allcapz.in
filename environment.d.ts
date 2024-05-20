@@ -9,6 +9,10 @@ declare global {
       AUTH_URL: string;
       GOOGLE_CLIENT_ID: string;
       GOOGLE_CLIENT_SECRET: string;
+      RAZORPAY_ID: string;
+      RAZORPAY_KEY: string;
+      SHIPROCKET_EMAIL: string;
+      SHIPROCKET_PASSWORD: string;
       NODE_ENV: "development" | "production";
       PORT?: string;
       PWD: string;

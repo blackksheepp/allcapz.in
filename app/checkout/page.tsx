@@ -12,6 +12,7 @@ import { getRazorpayData } from "../utils/actions";
 import { Product } from "@prisma/client";
 import { z } from "zod";
 import { error } from "console";
+import { CheckServiceAvailability, GetToken } from "../utils/shipping/shiprocket";
 
 interface FormError {
   for: string;
@@ -124,6 +125,7 @@ export default function Checkout({ params }: { params: { slug: string } }) {
       window.removeEventListener("resize", () => setMobile(window.innerWidth < 640));
     }
   }, []);
+
 
 
   const Next = ({ active }: { active: boolean }) => {
@@ -254,10 +256,39 @@ export default function Checkout({ params }: { params: { slug: string } }) {
     return () => {
       document.removeEventListener('keydown', handleKeyDown);
     };
-  }, [onSubmit]); 
+  }, [onSubmit]);
 
 
-  return (
+  const CapitalText = (text: string) => {
+    return text[0].toUpperCase() + text.slice(1).toLowerCase() 
+  }
+  useEffect(
+    () => {
+      (async () => {
+        if (postalCode.length==6) {
+          const shippingData = await CheckServiceAvailability(+postalCode);
+          if (shippingData) {
+            setCity(CapitalText(shippingData.city))
+          } else {
+            setCity("")
+            if (formErrors) {
+              setFormErrors([...formErrors, { for: "postalCode", message: "Invalid postal code" }])
+            } else {
+              setFormErrors([{ for: "postalCode", message: "Invalid postal code" }])
+            }
+          }
+        } else if (postalCode.length > 6) {
+          if (formErrors) {
+            setFormErrors([...formErrors, { for: "postalCode", message: "Invalid postal code" }])
+          } else {
+            setFormErrors([{ for: "postalCode", message: "Invalid postal code" }])
+          }
+        }
+      })()
+    }
+    , [postalCode])
+  
+    return (
     <div className="lg:absolute w-full h-full flex flex-col">
       <div className="w-full py-vw-7-min@lg lg:hidden flex items-center justify-center">
         <Link href="/">
@@ -379,7 +410,9 @@ export default function Checkout({ params }: { params: { slug: string } }) {
                 <FormInput value={address} onChange={setAddress} name="address" placeholder="Address" formErrors={formErrors} setFormErrors={setFormErrors} />
                 <div className="w-full flex lg:flex-row md:flex-row flex-col lg:gap-4 md:gap-4 gap-7">
                   <FormInput value={postalCode} onChange={setPostalCode} name="postalCode" placeholder="Postal Code" formErrors={formErrors} setFormErrors={setFormErrors} />
-                  <FormInput value={city} onChange={setCity} name="city" placeholder="City" formErrors={formErrors} setFormErrors={setFormErrors} />
+                  <div className="pointer-events-none w-full">
+                    <FormInput value={city} onChange={setCity} name="city" placeholder="City" formErrors={formErrors} setFormErrors={setFormErrors} />
+                  </div>
                 </div>
                 <FormInput value={phone} onChange={setPhone} name="phone" placeholder="Phone No." formErrors={formErrors} setFormErrors={setFormErrors} />
               </form>
