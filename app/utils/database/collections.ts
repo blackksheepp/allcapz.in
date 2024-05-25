@@ -39,11 +39,13 @@ export const GetCollections = async () => {
 
 export const DelCollection = async (name: string) => {
     try {
-        await prisma.collections.delete({
+        const collection: CollectionType = await prisma.collections.delete({
             where: {
                 name: name,
             },
         });
+
+        return collection;
     } catch (error) {
         console.log(error);
         return null;

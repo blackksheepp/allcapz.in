@@ -91,13 +91,13 @@ export default function Checkout({ params }: { params: { slug: string } }) {
   const [active, setActive] = useState<string[]>(sections.slice(0, 2));
 
   const [email, setEmail] = useState<string>("")
-  const [fname, setFname] = useState<string>("")
-  const [lname, setLname] = useState<string>("")
-  const [address, setAddress] = useState<string>("")
-  const [street, setStreet] = useState<string>("")
-  const [postalCode, setPostalCode] = useState<string>("")
+  const [fname, setFname] = useState<string>("Harsh")
+  const [lname, setLname] = useState<string>("Raj")
+  const [address, setAddress] = useState<string>("Danapur, Patna")
+  const [street, setStreet] = useState<string>("Anand Bazar")
+  const [postalCode, setPostalCode] = useState<string>("801503")
   const [city, setCity] = useState<string>("")
-  const [phone, setPhone] = useState<string>("")
+  const [phone, setPhone] = useState<string>("8804819471")
 
   const [cart, setCart] = useState<CartType | CartCookieType | null>(null);
 
@@ -262,6 +262,7 @@ export default function Checkout({ params }: { params: { slug: string } }) {
   const CapitalText = (text: string) => {
     return text[0].toUpperCase() + text.slice(1).toLowerCase() 
   }
+  const [shippingServices, setShippingServices] = useState<any | null>(null);
   useEffect(
     () => {
       (async () => {
@@ -269,6 +270,7 @@ export default function Checkout({ params }: { params: { slug: string } }) {
           const shippingData = await CheckServiceAvailability(+postalCode);
           if (shippingData) {
             setCity(CapitalText(shippingData.city))
+            setShippingServices(shippingData.services)
           } else {
             setCity("")
             if (formErrors) {
@@ -334,7 +336,7 @@ export default function Checkout({ params }: { params: { slug: string } }) {
                   </div>
                   <div className="pt-vw-1 w-full flex flex-row justify-between items-baseline">
                     <p className="text-smTolg">Shipping</p>
-                    <p className="text-xsTosm">(Calculated at next step)</p>
+                      <p className="text-xsTosm">{active.includes("Shipping") ? "₹0" : "(Calculated at next step)"}</p>
                   </div>
                   <div className="py-vw-4 text-xl w-full flex flex-row justify-between items-baseline">
                     <p className="text-lgTo2xl">Total</p>
@@ -446,7 +448,7 @@ export default function Checkout({ params }: { params: { slug: string } }) {
                   <div className="flex flex-row items-center justify-between">
                     <div className="flex flex-row gap-vw-8 text-xsTosm">
                       <p className="text-[#c4c4c4] max-w-16 min-w-14">Ship By</p>
-                      <p>{`Free Shipping - Free`}</p>
+                        <p>{`Free Shipping -  ₹0`}</p>
                     </div>
                   </div>
                 </div>)}
@@ -475,8 +477,8 @@ export default function Checkout({ params }: { params: { slug: string } }) {
                 <p className="mt-10 font-ibm text-lgToxl text-white">Shipping Method</p>
                 <div className="mt-3 w-full font-ibm text-accent flex flex-col gap-2 border-[1px] border-white px-4 py-3 rounded-[4px]">
                   <div className="flex flex-row items-center justify-between">
-                    <p className="text-[#c4c4c4]">Free Shipping</p>
-                    <p className="text-[#c4c4c4] text-sm ">Free</p>
+                      <p className="text-[#c4c4c4]">Free Shipping - ₹0</p>
+                      <p className="text-[#c4c4c4] text-sm ">Within a Week</p>
                   </div>
                 </div>
               </div>
@@ -505,7 +507,7 @@ export default function Checkout({ params }: { params: { slug: string } }) {
                   </div>
                   <div className="w-full flex flex-row justify-between items-baseline">
                     <p className="text-smTolg">Shipping</p>
-                    <p className="text-xsTosm">Free</p>
+                      <p className="text-xsTosm"> ₹0</p>
                   </div>
                   <div className="py-vw-2 text-xl w-full flex flex-row justify-between items-baseline">
                     <p className="text-lgTo2xl">Total</p>
