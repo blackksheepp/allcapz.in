@@ -159,11 +159,13 @@ export const DelProduct = async (collection: string, title: string) => {
     }
 };
 
-export const RenameProduct = async (
+export const EditProduct = async (
     collection: string,
     oldProductTitle: string,
-    newProductTitle: string
+    newProductTitle: string,
+    newPrice: number
 ) => {
+    console.log("EDIT", collection, oldProductTitle, newProductTitle, newPrice);
     try {
         var products = (
             await prisma.collections.findFirst({
@@ -173,9 +175,10 @@ export const RenameProduct = async (
             })
         )?.products;
         products = products?.map((product) => {
-            if (product.title = oldProductTitle) {
+            if (product.title === oldProductTitle) {
                 product.title = newProductTitle;
-            } 
+                product.price = newPrice;
+            }
             return product
         });
         await prisma.collections.update({
