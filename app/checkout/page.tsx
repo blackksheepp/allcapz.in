@@ -91,13 +91,13 @@ export default function Checkout({ params }: { params: { slug: string } }) {
   const [active, setActive] = useState<string[]>(sections.slice(0, 2));
 
   const [email, setEmail] = useState<string>("")
-  const [fname, setFname] = useState<string>("Harsh")
-  const [lname, setLname] = useState<string>("Raj")
-  const [address, setAddress] = useState<string>("Danapur, Patna")
-  const [street, setStreet] = useState<string>("Anand Bazar")
-  const [postalCode, setPostalCode] = useState<string>("801503")
+  const [fname, setFname] = useState<string>("")
+  const [lname, setLname] = useState<string>("")
+  const [address, setAddress] = useState<string>("")
+  const [street, setStreet] = useState<string>("")
+  const [postalCode, setPostalCode] = useState<string>("")
   const [city, setCity] = useState<string>("")
-  const [phone, setPhone] = useState<string>("8804819471")
+  const [phone, setPhone] = useState<string>("")
 
   const [cart, setCart] = useState<CartType | CartCookieType | null>(null);
 
@@ -183,9 +183,10 @@ export default function Checkout({ params }: { params: { slug: string } }) {
       const data = await getRazorpayData(cart.products as Product[], session?.email || email, price);
 
       if (!data) return
-      console.log(data);
 
       var options = {
+        callback_url: 'http://allcapz.in/',
+        redirect: true,
         key: process.env.RAZORPAY_KEY,
         name: "ALLCAPZ",
         currency: data?.currency,
@@ -198,12 +199,12 @@ export default function Checkout({ params }: { params: { slug: string } }) {
           console.log(response.razorpay_order_id);
           console.log(response.razorpay_signature);
         },
-        email: "rafftar98@gmail.com",
-        contact: "8804819471",
+        email: session?.email ?? email,
+        contact: phone,
         prefill: {
-          name: "Harsh Raj",
-          email: "rafftar98@gmail.com",
-          contact: "8804819471",
+          name: fname + " " + lname,
+          email: session?.email ?? email,
+          contact: phone,
         },
       };
 
@@ -523,7 +524,7 @@ export default function Checkout({ params }: { params: { slug: string } }) {
               <Prev />
               <p onClick={previousSection} className="cursor-pointer text-xsTosm">Return to {active[active.length - 2]}</p>
             </div>
-            <p onClick={onSubmit} className={`cursor-pointer text-xsTosm ${sections[active.length] ? "bg-accent text-background py-3 hover:bg-[#c4c4c4]" : "py-2.5 bg-blue-600 text-accent hover:bg-[#3998FE] active:bg-[#3998FE] font-extrabold"}  active:bg-[#c4c4c4] text-center  px-4 lg:w-auto md:w-auto w-full rounded-sm font-[500]`}>
+            <p onClick={onSubmit} className={`cursor-pointer text-xsTosm ${sections[active.length] ? "bg-accent text-background py-3 hover:bg-[#c4c4c4]" : "py-2.5 bg-blue-600 text-accent hover:bg-[#3998FE] active:bg-[#3998FE] font-extrabold"}  active:bg-[#c4c4c4] text-center  px-4 lg:w-auto md:w-auto w-full rounded-sm font-[500] mt-3 md:mt-2  lg:mt-0`}>
               {sections[active.length] ? "Continue to " + sections[active.length] : "Pay with Razorpay"}
             </p>
           </div>

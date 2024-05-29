@@ -16,11 +16,13 @@ model Collections {
 }
 
 type Product {
+  id String
   image String
   title String
   price Int
   size String
   quantity Int?
+  collection String
 }
 
 model Users {

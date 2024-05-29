@@ -41,7 +41,6 @@ export const Collection: React.FC<CollectionProps> = ({ data: { name, products }
     const handleUpvoteProduct = (index: number) => {
         if (products) {
             if (index > 0) {
-                console.log(index, "INDEXX UP")
 
                 const newProducts = [...products];
                 [newProducts[index], newProducts[index - 1]] = [newProducts[index - 1], newProducts[index]];
@@ -99,23 +98,22 @@ export const Collection: React.FC<CollectionProps> = ({ data: { name, products }
                         />
                         <Image
                             onClick={downvote}
-                            src="/img/upvote.svg"
+                            src="/img/downvote.svg"
                             alt="logo"
                             width={20}
                             height={20}
                             className="w-auto lg:h-7 md:h-5 h-4 rotate-[180deg] cursor-pointer"
                         />
                     </div>
-
                     <p
                         onClick={rename ? renameCollection : addProduct}
-                        className="active:mt-[2px] active:mr-[2px] duration-50 cursor-pointer font-ibm text-xs md:text-[16px] font-[600] grid place-items-center px-2 py-0.5 bg-[#c4c4c4] text-background border-black border-[1px] dropshadow"
+                        className="mx-vw-2 md:mx-0 active:mt-[2px] active:mr-[2px] duration-50 cursor-pointer font-ibm text-xs md:text-[16px] font-[600] grid place-items-center px-2 py-0.5 bg-green-500 text-background border-black border-[1px] dropshadow"
                     >
                         {rename ? "Save" : "Add"}
                     </p>
                     <p
                         onClick={rename ? () => setRename(false) : () => deleteCollection(name)}
-                        className="active:mt-[2px] active:mr-[2px] duration-50 cursor-pointer font-ibm text-xs md:text-[16px] font-[600] grid place-items-center px-2 py-0.5 bg-[#c4c4c4] text-background border-black border-[1px] dropshadow"
+                        className="mx-vw-2 md:mx-0 active:mt-[2px] active:mr-[2px] duration-50 cursor-pointer font-ibm text-xs md:text-[16px] font-[600] grid place-items-center px-2 py-0.5 bg-red-700  text-accent border-black border-[1px] dropshadow"
                     >
                         {rename ? "Cancel" : "Remove"}
                     </p>
@@ -185,11 +183,11 @@ export const NewCollection = ({ refresh, hide }: { refresh: () => void, hide: ()
                 <div className="flex flex-col min-[320px]:flex-row gap-1 min-[320px]:gap-vw-5">
                     <p
                         onClick={finalAddCollection}
-                        className="active:mt-[2px] active:mr-[2px] duration-50 cursor-pointer font-ibm text-xs md:text-[16px] font-[600] grid place-items-center px-2 h-[24px] lg:h-[28px] bg-[#c4c4c4] text-background border-black border-[1px] dropshadow"
+                        className="active:mt-[2px] active:mr-[2px] duration-50 cursor-pointer font-ibm text-xs md:text-[16px] font-[600] grid place-items-center px-2 h-[24px] lg:h-[28px] 5 bg-green-500 text-background border-black border-[1px] dropshadow"
                     >
                         Add
                     </p>
-                    <p onClick={hide} className="active:mt-[2px] active:mr-[2px] duration-50 cursor-pointer font-ibm text-xs md:text-[16px] font-[600] grid place-items-center px-2 h-[24px] lg:h-[28px] bg-[#c4c4c4] text-background border-black border-[1px] dropshadow">
+                    <p onClick={hide} className="active:mt-[2px] active:mr-[2px] duration-50 cursor-pointer font-ibm text-xs md:text-[16px] font-[600] grid place-items-center px-2 h-[24px] lg:h-[28px]  bg-red-700  text-accent border-black border-[1px] dropshadow">
                         Remove
                     </p>
                 </div>

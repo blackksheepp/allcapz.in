@@ -16,7 +16,7 @@ const Products = () => {
   useEffect(() => {
     (async () => {
       const cls = await GetCollections();
-      if (cls) {
+      if (cls && cls?.length > 0) {
         setCollections(cls);
         var actv;
         if (!active) {

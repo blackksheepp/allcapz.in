@@ -1,5 +1,6 @@
 "use server"
 import prisma from "@/lib/prisma";
+import { v4 as uuidv4 } from 'uuid';
 
 export interface CollectionType {
     name: string;
@@ -7,11 +8,13 @@ export interface CollectionType {
 }
 
 export interface ProductType {
+    id: string;
     image: string;
     title: string;
     price: number;
     size: string;
     quantity?: number | null;
+    collection: string
 }
 
 export const CreateCollection = async (name: string) => {
@@ -37,15 +40,13 @@ export const GetCollections = async () => {
     }
 };
 
-export const DelCollection = async (name: string) => {
+export const DeleteCollection = async (name: string) => {
     try {
-        const collection: CollectionType = await prisma.collections.delete({
+        return await prisma.collections.delete({
             where: {
-                name: name,
+                name
             },
         });
-
-        return collection;
     } catch (error) {
         console.log(error);
         return null;
@@ -72,6 +73,7 @@ export const RenameCollection = async (
         return false;
     }
 };
+
 
 export const ReOrderCollections = async (collections: CollectionType[]) => {
     try {
@@ -102,10 +104,12 @@ export const CreateProduct = async (
                 products: {
                     push: [
                         {
-                            image: image,
-                            title: title,
-                            price: price,
-                            size: size,
+                            id: uuidv4(),
+                            image,
+                            title,
+                            price,
+                            size,
+                            collection,
                         },
                     ],
                 },
@@ -132,7 +136,7 @@ export const GetProducts = async (collection: string) => {
     }
 };
 
-export const DelProduct = async (collection: string, title: string) => {
+export const DeleteProduct = async (collection: string, title: string) => {
     try {
         const products = (
             await prisma.collections.findFirst({
@@ -142,7 +146,6 @@ export const DelProduct = async (collection: string, title: string) => {
             })
         )?.products;
 
-        const product = (products?.filter((product) => product.title == title))![0];
 
         await prisma.collections.update({
             where: {
@@ -150,7 +153,7 @@ export const DelProduct = async (collection: string, title: string) => {
             },
             data: {
                 products: {
-                    set: products?.filter((product) => product.title != title),
+                    set: products?.filter((p) => p.title != title),
                 },
             },
         });
@@ -165,7 +168,6 @@ export const EditProduct = async (
     newProductTitle: string,
     newPrice: number
 ) => {
-    console.log("EDIT", collection, oldProductTitle, newProductTitle, newPrice);
     try {
         var products = (
             await prisma.collections.findFirst({
@@ -216,16 +218,6 @@ export const ReOrderProduct = async (collection: string, products: ProductType[]
         return false;
     }
 };
-export const ReOrder = async (
-    objects: (CollectionType | ProductType)[],
-    collection: string | false
-) => {
-    if (collection) {
-        return await ReOrderProduct(collection, objects as ProductType[]);
-    } else {
-        return await ReOrderCollections(objects as CollectionType[]);
-    }
-};
 
 export const GetProductByTitle = async (collection: string, title: string) => {
     try {
@@ -234,7 +226,7 @@ export const GetProductByTitle = async (collection: string, title: string) => {
                 name: collection,
             },
         });
-        let i: ProductType[] | undefined = c?.products.filter((i) => i.title == title);
+        let i: ProductType[] | undefined = c?.products.filter((i) => i.title === title);
         let product = i?.at(0);
         return product ? product : null;
     } catch (error) {

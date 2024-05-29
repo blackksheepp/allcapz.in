@@ -1,11 +1,11 @@
-import { CreateProduct, DelProduct, EditProduct, ProductType, SaveImage } from "@/app/utils/database/collections";
+import { CreateProduct, DeleteProduct, EditProduct, ProductType, SaveImage } from "@/app/utils/database/collections";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
 
 interface ProductProps {
     data: ProductType;
     refresh: () => void;
-    hide: () => void; 
+    hide: () => void;
     collection: string;
     upvote: () => void;
     downvote: () => void;
@@ -16,7 +16,6 @@ export const Product: React.FC<ProductProps> = ({ data: { image, title, price },
     const [newPrice, setNewPrice] = useState(price);
 
     const handleEdit = async () => {
-        console.log("editing", collection, title)
         await EditProduct(collection, title, newTitle, newPrice);
         refresh();
         setEditMode(false);
@@ -38,11 +37,11 @@ export const Product: React.FC<ProductProps> = ({ data: { image, title, price },
                             />
                             <Image
                                 onClick={downvote}
-                                src="/img/upvote.svg"
+                                src="/img/downvote.svg"
                                 alt="logo"
                                 width={0}
                                 height={0}
-                                className="w-auto lg:h-7 md:h-5 h-4 rotate-[180deg] cursor-pointer"
+                                className="w-auto lg:h-7 md:h-5 h-4 rotate-[180deg] cursor-pointer "
                             />
                         </div>
                         <Image
@@ -92,13 +91,13 @@ export const Product: React.FC<ProductProps> = ({ data: { image, title, price },
 
             <div className="flex flex-row sm:flex-col md:flex-row self-start md:self-auto md:gap-5 sm:gap-0 gap-5 pl-8 pr-vw-7 pt-vw-10 sm:pt-0">
                 <p onClick={editMode ? handleEdit : () => setEditMode(true)}
-                    className="active:mt-[2px] active:mr-[2px] duration-50 cursor-pointer font-ibm text-xs lg:text-[16px] md:text-sm font-[600] grid place-items-center px-2 h-[23px] lg:h-[25px] bg-[#c4c4c4] text-background border-black border-[1px] dropshadow"
+                    className="active:mt-[2px] active:mr-[2px] duration-50 cursor-pointer font-ibm text-xs lg:text-[16px] md:text-sm font-[600] grid place-items-center px-2 h-[23px] lg:h-[25px] bg-green-500 text-background border-black border-[1px] dropshadow"
                 >
                     {editMode ? "Save" : "Edit"}
                 </p>
                 <p
-                    onClick={editMode ? () => { setEditMode(false) } : () => { DelProduct(collection, title); hide(); refresh(); }}
-                    className="active:mt-[2px] active:mr-[2px] duration-50 cursor-pointer font-ibm text-xs lg:text-[16px] md:text-sm font-[600] grid place-items-center px-2 h-[23px] lg:h-[25px] bg-[#c4c4c4] text-background border-black border-[1px] dropshadow"
+                    onClick={editMode ? () => { setEditMode(false) } : () => { DeleteProduct(collection, title); hide(); refresh(); }}
+                    className="active:mt-[2px] active:mr-[2px] duration-50 cursor-pointer font-ibm text-xs lg:text-[16px] md:text-sm font-[600] grid place-items-center px-2 h-[23px] lg:h-[25px] bg-red-700 text-accent border-black border-[1px] dropshadow"
                 >
                     {editMode ? "Cancel" : "Remove"}
                 </p>
@@ -120,11 +119,9 @@ export const NewProduct = ({ refresh, hide, collection }: { refresh: () => void,
 
     useEffect(() => {
         if (newProductImage) {
-            console.log("yes new")
             const form = new FormData();
             form.append("photo", newProductImage);
             SaveImage(form).then(url => {
-                console.log("URL", url)
                 if (url) {
                     setNewProductImageUrl(url);
                     setTakeInputImage(true);
@@ -166,7 +163,7 @@ export const NewProduct = ({ refresh, hide, collection }: { refresh: () => void,
                                 className="w-auto lg:h-7 md:h-5 h-4 cursor-pointer"
                             />
                             <Image
-                                src="/img/upvote.svg"
+                                src="/img/downvote.svg"
                                 alt="logo"
                                 width={0}
                                 height={0}
@@ -232,8 +229,8 @@ export const NewProduct = ({ refresh, hide, collection }: { refresh: () => void,
             </div>
 
             <div className="flex flex-row sm:flex-col md:flex-row self-start md:self-auto md:gap-5 sm:gap-0 gap-5 pl-8 pr-vw-7 pt-vw-10 sm:pt-0">
-                <p onClick={finalAddProduct} className="active:mt-[2px] active:mr-[2px] duration-50 cursor-pointer font-ibm text-xs lg:text-[16px] md:text-sm font-[600] grid place-items-center px-2 h-[23px] lg:h-[25px] bg-[#c4c4c4] text-background border-black border-[1px] dropshadow">Add</p>
-                <p onClick={hide} className="active:mt-[2px] active:mr-[2px] duration-50 cursor-pointer font-ibm text-xs lg:text-[16px] md:text-sm font-[600] grid place-items-center px-2 h-[23px] lg:h-[25px] bg-[#c4c4c4] text-background border-black border-[1px] dropshadow">Remove</p>
+                <p onClick={finalAddProduct} className="active:mt-[2px] active:mr-[2px] duration-50 cursor-pointer font-ibm text-xs lg:text-[16px] md:text-sm font-[600] grid place-items-center px-2 h-[23px] lg:h-[25px] bg-green-500 text-background border-black border-[1px] dropshadow">Add</p>
+                <p onClick={hide} className="active:mt-[2px] active:mr-[2px] duration-50 cursor-pointer font-ibm text-xs lg:text-[16px] md:text-sm font-[600] grid place-items-center px-2 h-[23px] lg:h-[25px] bg-red-700 text-accent border-black border-[1px] dropshadow">Remove</p>
             </div>
 
         </div>

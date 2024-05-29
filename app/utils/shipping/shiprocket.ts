@@ -55,7 +55,6 @@ export async function CheckServiceAvailability(postalCode: number) {
         const data = response.data;
         const recommendedServiceId = data.data.recommended_courier_company_id;
         const recommendedService = data.data.available_courier_companies.find((service: any) => service.courier_company_id === recommendedServiceId);
-        console.log(recommendedService, "DATAAAA")
         const filteredServices = data.data.available_courier_companies.filter((service: any) =>
             service.call_before_delivery === "Available" &&
             service.blocked === 0 && 

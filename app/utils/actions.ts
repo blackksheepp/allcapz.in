@@ -2,8 +2,8 @@
 
 import { Product } from "@prisma/client";
 
-export const verifyPassword = async (inputPassword: string) => {
-  if (inputPassword == "saul") {
+export const verifyPassword = async (password: string) => {
+  if (password == process.env.ADMIN_PASSWORD) {
     return true;
   } else {
     return false;
@@ -19,25 +19,24 @@ export const getRazorpayData = async (products: Product[], user:string, price: n
     key_secret: process.env.RAZORPAY_KEY,
   });
 
-  const product = products.map((product) => product.title).join(", ");
   const payment_capture = 1;
   const amount = price * 100;
   const currency = "INR";
   const options = {
+
     amount: (amount).toString(),
     currency,
     receipt: shortid.generate(),
     payment_capture,
     notes: {
-      paymentFor: `${product}`,
-      userId: user,
-      productId: btoa(product)
+      paymentFor: products.flatMap((p) => p.title),
+      user: user,
+      productId: products.flatMap((p) => p.id),
     }
   };
 
   try {
     const response = await razorpay.orders.create(options);
-    console.log(response)
     return {
       id: response.id,
       currency: response.currency,

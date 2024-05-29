@@ -119,7 +119,12 @@ const Auth = () => {
         })()
 
         setMobile(window.innerWidth < 640);
+        
         setWidth(window.innerWidth)
+        window.addEventListener('resize', () => setWidth(window.innerWidth));
+        return () => {
+            window.removeEventListener('resize', () => setWidth(window.innerWidth));
+        }
 
         if (showLogin) {
             document.body.classList.add("overflow-hidden");

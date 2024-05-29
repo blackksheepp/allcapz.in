@@ -13,6 +13,7 @@ declare global {
       RAZORPAY_KEY: string;
       SHIPROCKET_EMAIL: string;
       SHIPROCKET_PASSWORD: string;
+      ADMIN_PASSWORD: string;
       NODE_ENV: "development" | "production";
       PORT?: string;
       PWD: string;

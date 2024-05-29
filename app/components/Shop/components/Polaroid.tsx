@@ -7,7 +7,6 @@ export const Polaroid = ({ title, url, collection }: { title: string; url: strin
 
   const handleOnLoad = (url: string) => {
     loadImage(collection, url);
-    console.log(images)
   }
 
   return (

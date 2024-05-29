@@ -80,9 +80,7 @@ export const ShowProducts: React.FC<ProductsProps> = ({ products, collection }) 
   const { images, setAreLoaded } = useImagesStore((state) => state);
   useEffect(() => {
     const productImages = images?.filter((image) => image.collection === collection);
-    console.log(productImages?.length, products.length, "here")
     if (productImages?.length === products.length) {
-      console.log("setting")
       setAreLoaded(true)
     }
   }, [images])

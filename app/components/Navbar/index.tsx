@@ -59,7 +59,7 @@ const Navbar: React.FC = () => {
             />
           </Link>
           <div className="flex flex-row items-center lg:gap-5 md:gap-4 sm:gap-3 gap-2">
-            <div className="text-accent font-retro cursor-pointer" onClick={() => { !session && setLogin(true); setTimeout(() => console.log(showLogin, "yp"), 100)} }>
+            <div className="text-accent font-retro cursor-pointer" onClick={() => { !session && setLogin(true)} }>
               <p className="lg:text-[14px] text-[11px]">Hey, {session ? session.name : "Login"}</p>
               <p className="lg:text-[10px] text-[8px]" onClick={() => { session && logout() }}>{session ? "Your Profile" : "Or Sign Up"}</p>
             </div>
