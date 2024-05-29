@@ -55,6 +55,9 @@ jobs:
       GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
       RAZORPAY_ID: ${{ secrets.RAZORPAY_ID }}
       RAZORPAY_KEY: ${{ secrets.RAZORPAY_KEY }}
+      SHIPROCKET_EMAIL: ${{ secrets.SHIPROCKET_EMAIL }}
+      SHIPROCKET_PASSWORD: ${{ secrets.SHIPROCKET_PASSWORD }}
+      ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -80,9 +83,27 @@ jobs:
         run: |
           ssh -o StrictHostKeyChecking=no -i key.pem ${{ env.AWS_HOST }} 'docker pull ${{ env.DOCKERHUB_USERNAME }}/${{ env.REPO }}:latest'
 
+      - name: Create .env file
+        run:  |
+          echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> .env
+          echo "REDIS_URI=${{ secrets.REDIS_URI }}" >> .env
+          echo "NODEMAILER_PW=${{ secrets.NODEMAILER_PW }}" >> .env
+          echo "NODEMAILER_EMAIL=${{ secrets.NODEMAILER_EMAIL }}" >> .env
+          echo "AUTH_URL=${{ secrets.AUTH_URL }}" >> .env
+          echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env
+          echo "GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}" >> .env
+          echo "GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}" >> .env
+          echo "RAZORPAY_ID=${{ secrets.RAZORPAY_ID }}" >> .env
+          echo "RAZORPAY_KEY=${{ secrets.RAZORPAY_KEY }}" >> .env
+          echo "SHIPROCKET_EMAIL=${{ secrets.SHIPROCKET_EMAIL }}" >> .env
+          echo "SHIPROCKET_PASSWORD=${{ secrets.SHIPROCKET_PASSWORD }}" >> .env
+          echo "ADMIN_PASSWORD=${{ secrets.ADMIN_PASSWORD }}" >> .env
+
+          scp -o StrictHostKeyChecking=no -i key.pem .env ${{ env.AWS_HOST }}:~/
+
       - name: Run new container
         run: |
-          ssh -o StrictHostKeyChecking=no -i key.pem ${{ env.AWS_HOST }} 'docker run -d -p 8000:8000 --name ${{ env.REPO }} --env REDIS_URI="${{ env.REDIS_URI }}" --env DATABASE_URL="${{ env.DATABASE_URL }}" --env NODEMAILER_PW="${{ env.NODEMAILER_PW }}" --env NODEMAILER_EMAIL="${{ env.NODEMAILER_EMAIL }}" --env AUTH_URL="${{ env.AUTH_URL }}" --env JWT_SECRET="${{ env.JWT_SECRET }}" --env GOOGLE_CLIENT_ID="${{ env.GOOGLE_CLIENT_ID }}" --env GOOGLE_CLIENT_SECRET="${{ env.GOOGLE_CLIENT_SECRET }}" --env RAZORPAY_ID="${{ env.RAZORPAY_ID }}" --env RAZORPAY_KEY="${{ env.RAZORPAY_KEY }}" ${{ env.DOCKERHUB_USERNAME }}/${{ env.REPO }}:latest'
+          ssh -o StrictHostKeyChecking=no -i key.pem ${{ env.AWS_HOST }} 'docker run -d -p 8000:8000 --env-file .env --name ${{ env.REPO }} ${{ env.DOCKERHUB_USERNAME }}/${{ env.REPO }}:latest'
       - name: Copy nginx.conf to EC2
         run: |
           scp -o StrictHostKeyChecking=no -i key.pem .nginx/nginx.conf ${{ env.AWS_HOST }}:~/.nginx/
