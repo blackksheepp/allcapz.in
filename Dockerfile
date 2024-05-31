@@ -1,4 +1,4 @@
-FROM node:current-alpine
+FROM node:16-alpine AS build
 
 WORKDIR /app
 
@@ -10,14 +10,18 @@ COPY . .
 
 RUN npm run build
 
-ENV NODE_ENV production
-ENV PORT 8000
+FROM node:16-alpine
+
+ENV NODE_ENV=production
+ENV PORT=8000
+
+WORKDIR /app
+
+COPY --from=build /app ./
+
 EXPOSE 8000
 
-ARG DATABASE_URL
-ARG REDIS_URI
-
-ENV DATABASE_URL=$DATABASE_URL
-ENV REDIS_URI=$REDIS_URI
+RUN addgroup -S appgroup && adduser -S appuser -G appgroup
+USER appuser
 
 CMD ["npm", "start"]
