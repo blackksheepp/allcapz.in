@@ -1,4 +1,4 @@
-FROM node:16-alpine AS build
+FROM node:22-alpine AS build
 
 WORKDIR /app
 
@@ -10,7 +10,7 @@ COPY . .
 
 RUN npm run build
 
-FROM node:16-alpine
+FROM node:22-alpine
 
 ENV NODE_ENV=production
 ENV PORT=8000
