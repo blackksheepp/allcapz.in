@@ -91,7 +91,7 @@ export const Product: React.FC<ProductProps> = ({ data: { image, title, price },
 
             <div className="flex flex-row sm:flex-col md:flex-row self-start md:self-auto md:gap-5 sm:gap-0 gap-5 pl-8 pr-vw-7 pt-vw-10 sm:pt-0">
                 <p onClick={editMode ? handleEdit : () => setEditMode(true)}
-                    className="active:mt-[2px] active:mr-[2px] duration-50 cursor-pointer font-ibm text-xs lg:text-[16px] md:text-sm font-[600] grid place-items-center px-2 h-[23px] lg:h-[25px] bg-green-500 text-background border-black border-[1px] dropshadow"
+                    className="active:mt-[2px] active:mr-[2px] duration-50 cursor-pointer font-ibm text-xs lg:text-[16px] md:text-sm font-[600] grid place-items-center px-2 h-[23px] lg:h-[25px] bg-accent text-background border-black border-[1px] dropshadow"
                 >
                     {editMode ? "Save" : "Edit"}
                 </p>
@@ -229,7 +229,7 @@ export const NewProduct = ({ refresh, hide, collection }: { refresh: () => void,
             </div>
 
             <div className="flex flex-row sm:flex-col md:flex-row self-start md:self-auto md:gap-5 sm:gap-0 gap-5 pl-8 pr-vw-7 pt-vw-10 sm:pt-0">
-                <p onClick={finalAddProduct} className="active:mt-[2px] active:mr-[2px] duration-50 cursor-pointer font-ibm text-xs lg:text-[16px] md:text-sm font-[600] grid place-items-center px-2 h-[23px] lg:h-[25px] bg-green-500 text-background border-black border-[1px] dropshadow">Add</p>
+                <p onClick={finalAddProduct} className="active:mt-[2px] active:mr-[2px] duration-50 cursor-pointer font-ibm text-xs lg:text-[16px] md:text-sm font-[600] grid place-items-center px-2 h-[23px] lg:h-[25px] bg-accent text-background border-black border-[1px] dropshadow">Add</p>
                 <p onClick={hide} className="active:mt-[2px] active:mr-[2px] duration-50 cursor-pointer font-ibm text-xs lg:text-[16px] md:text-sm font-[600] grid place-items-center px-2 h-[23px] lg:h-[25px] bg-red-700 text-accent border-black border-[1px] dropshadow">Remove</p>
             </div>
 

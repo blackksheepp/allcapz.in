@@ -85,7 +85,7 @@ export default function Dashboard() {
                     {/* Store Title */}
                     <div className="w-full min-h-10 bg-[#c4c4c4] flex items-center flex-row gap-vw-7-max@sm">
                         <p className="text-background text-xl pl-3 font-ibm font-[600]">Store</p>
-                        <p onClick={addCollecion} className="active:mt-[2px] active:mr-[2px] duration-50 cursor-pointer font-ibm text-xs lg:text-[16px] md:text-sm font-[600] grid place-items-center px-2 h-[22px] lg:h-[24px] bg-green-500 text-background border-black border-[1px] dropshadow">Add Collection</p>
+                        <p onClick={addCollecion} className="active:mt-[2px] active:mr-[2px] duration-50 cursor-pointer font-ibm text-xs lg:text-[16px] md:text-sm font-[600] grid place-items-center px-2 h-[22px] lg:h-[24px] bg-background text-accent border-black border-[1px] dropshadow">Add Collection</p>
                     </div>
 
                     {/* Collections */}

@@ -94,7 +94,7 @@ export const WithAuth = ({ children }: { children: React.ReactNode }) => {
                                 (c) AllCapz Corp. All rights reserved.
                             </p>
 
-                            <form onSubmit={handleSubmit} className="self-center flex flex-col items-center justify-center gap-vw-2.5 mt-8">
+                            <form onSubmit={handleSubmit} className="self-center flex flex-col items-center justify-center gap-vw-2.5-min@xl mt-8">
                                 <input
                                     type="password"
                                     name="password"

@@ -13,7 +13,26 @@ export const AddToCartCookies = async (product: ProductType) => {
 
     if (cartCookie?.value) {
         cart = JSON.parse(cartCookie.value);
-        cart?.products.push(product)
+        if (cart) {
+            const productExists = cart.products.filter(p => p.title === product.title);
+            if (productExists.length > 0) {
+                const existingProduct = productExists[0];
+                let quantity: number;
+                if (existingProduct.quantity) {
+                    quantity = existingProduct.quantity + 1
+                } else {
+                    quantity = 1
+                }
+                cart.products = cart.products.map((p) => {
+                    if (p.title == product.title) {
+                        p.quantity = quantity
+                    }
+                    return p
+                })
+            }  else {
+                cart.products.push(product)
+            }            
+        }
     } else {
         cart = {
             products: [product]

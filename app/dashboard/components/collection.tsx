@@ -107,7 +107,7 @@ export const Collection: React.FC<CollectionProps> = ({ data: { name, products }
                     </div>
                     <p
                         onClick={rename ? renameCollection : addProduct}
-                        className="mx-vw-2 md:mx-0 active:mt-[2px] active:mr-[2px] duration-50 cursor-pointer font-ibm text-xs md:text-[16px] font-[600] grid place-items-center px-2 py-0.5 bg-green-500 text-background border-black border-[1px] dropshadow"
+                        className="mx-vw-2 md:mx-0 active:mt-[2px] active:mr-[2px] duration-50 cursor-pointer font-ibm text-xs md:text-[16px] font-[600] grid place-items-center px-2 py-0.5 bg-accent text-background border-black border-[1px] dropshadow"
                     >
                         {rename ? "Save" : "Add"}
                     </p>
@@ -183,7 +183,7 @@ export const NewCollection = ({ refresh, hide }: { refresh: () => void, hide: ()
                 <div className="flex flex-col min-[320px]:flex-row gap-1 min-[320px]:gap-vw-5">
                     <p
                         onClick={finalAddCollection}
-                        className="active:mt-[2px] active:mr-[2px] duration-50 cursor-pointer font-ibm text-xs md:text-[16px] font-[600] grid place-items-center px-2 h-[24px] lg:h-[28px] 5 bg-green-500 text-background border-black border-[1px] dropshadow"
+                        className="active:mt-[2px] active:mr-[2px] duration-50 cursor-pointer font-ibm text-xs md:text-[16px] font-[600] grid place-items-center px-2 h-[24px] lg:h-[28px] 5 bg-accent text-background border-black border-[1px] dropshadow"
                     >
                         Add
                     </p>

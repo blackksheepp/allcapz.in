@@ -11,7 +11,7 @@ import { motion } from 'framer-motion';
 import { useRouter, usePathname } from "next/navigation";
 import { useCartStore } from "@/app/utils/store/cartStore";
 
-const CartProduct = ({ product, onClick }: { product: ProductType, onClick: () => void }) => {
+const CartProduct = ({ product, onClick, updateTotal }: { product: ProductType, onClick: () => void, updateTotal: () => void }) => {
 
   const [stateProduct, setStateProduct] = useState<ProductType | null>();
 
@@ -41,6 +41,7 @@ const CartProduct = ({ product, onClick }: { product: ProductType, onClick: () =
     }
     if (updatedProduct) {
       setStateProduct(updatedProduct);
+      updateTotal()
     }
   }
 
@@ -56,6 +57,7 @@ const CartProduct = ({ product, onClick }: { product: ProductType, onClick: () =
     }
     if (updatedProduct) {
       setStateProduct(updatedProduct);
+      updateTotal()
     }
   }
 
@@ -112,98 +114,117 @@ const Cart = () => {
   const goToCheckout = () => {
     router.push("/checkout?path=" + path);
   }
-  
+
   const [mobile, setMobile] = useState(false);
   const [cart, setCart] = useState<CartType | CartCookieType | null>(null);
   const { session } = useSession();
 
   const [productToRemove, setProductToRemove] = useState<ProductType | null>(null);
   const { showCart, switchCart, setIsFull } = useCartStore((state) => state)
+    
+  const refreshCart = async () => {
+    var cart: CartType | CartCookieType | null = null;
+    if (session) {
+      cart = await GetCart(session.email)
+    } else {
+      const cartCookie = await GetCartFromCookies();
+      if (cartCookie) {
+        cart = JSON.parse(cartCookie)
+      }
+    }
+    setCart(cart)
+  }
+
 
   useEffect(() => {
-    (async () => {
-      var cart: CartType | CartCookieType | null = null;
+    refreshCart()
+  }, [showCart, session])
+
+  const removeFromCart = async () => {
+    if (productToRemove) {
+      var updatedCart: CartType | undefined = undefined;
+
       if (session) {
-        cart = await GetCart(session.email)
+        updatedCart = await RemoveFromCart(session.email, productToRemove);
       } else {
-        const cartCookie = await GetCartFromCookies();
-        if (cartCookie) {
-          cart = JSON.parse(cartCookie)
-        }
-      }
-      if (cart) {
-        if (cart.products.length > 0) setIsFull(true);
-        setCart(cart)
+        updatedCart = await RemoveFromCartCookies(productToRemove);
       }
 
-      const removeFromCart = async (product: ProductType) => {
-        if (productToRemove) {
-          var updatedCart: CartType | undefined = undefined;
-
-          if (session) {
-            updatedCart = await RemoveFromCart(session.email, productToRemove);
-          } else {
-            updatedCart = await RemoveFromCartCookies(productToRemove);
-          }
-
-          if (updatedCart) {
-            setProductToRemove(null)
-            return updatedCart
-          }
-        }
+      if (updatedCart) {
+        setProductToRemove(null)
+        return updatedCart
       }
+    }
+  }
 
-      if (productToRemove) {
-        const updatedCart = await removeFromCart(productToRemove);
-        if (updatedCart) {
-          if (updatedCart.products.length === 0) setIsFull(false);
-          setCart(updatedCart)
-        }
-      }
-    })()
+  useEffect(() => {
+    if (productToRemove) {
+      removeFromCart().then((cart) => cart && setCart(cart))
+    }
+  }, [productToRemove])
 
+  useEffect(() => {
     setMobile(window.innerWidth < 640);
-
     if (showCart) {
       document.body.classList.add("overflow-hidden");
     } else {
       document.body.classList.remove("overflow-hidden");
     }
 
-
     return () => {
       document.body.classList.remove("overflow-hidden");
     };
-  }, [showCart, mobile, session, productToRemove]);
+  }, [showCart, mobile]);
+
+
+  const [total, setTotal] = useState(0);
+  useEffect(() => {
+    setTotal(cart?.products.reduce((a, b) => a + (b.price * (b.quantity || 1)), 0) || 0)
+    cart && setIsFull(cart?.products.length > 0)
+  }, [cart])
+
+  const updateTotal = () => {
+    refreshCart().then(() => setTotal(cart?.products.reduce((a, b) => a + (b.price * (b.quantity || 1)), 0) || 0))
+  }
 
   return (
     <CartTransition animate={showCart} mobile={mobile}>
-      <div className="w-full h-full flex flex-col items-center justify-start overflow-y-scroll">
+      <div className="w-full h-full flex flex-col items-center justify-between overflow-y-scroll">
         <FitTexture />
-        <div className="w-full flex flex-row items-center justify-between pl-6 pr-4 pt-8">
-          <p className="text-accent font-retro text-xl">
-            CART
-          </p>
-          <div
-            className="w-[85px] h-[30px] border-black border-[1px] dropshadow font-ibm font-[800] text-black bg-[#c7c7c7] cursor-pointer flex items-center justify-center active:mt-1 mr-2 active:mr-1 duration-50"
-            style={{ fontSize: "14px" }}
-            onClick={() => { setTimeout(() => switchCart(), 50) }}
-          >
-            CLOSE
+        <div className="w-full">
+          <div className="w-full flex flex-row items-center justify-between pl-6 pr-4 pt-8">
+            <p className="text-accent font-retro text-lg">
+              {cart?.products && cart?.products.length > 0 ? `${cart.products.length} Product${cart.products.length > 1 ? "s" : ""}` : "CART"}
+            </p>
+            <div
+              className="w-[85px] h-[30px] border-black border-[1px] dropshadow font-ibm font-[800] text-black bg-[#c7c7c7] cursor-pointer flex items-center justify-center active:mt-1 mr-2 active:mr-1 duration-50"
+              style={{ fontSize: "14px" }}
+              onClick={() => { setTimeout(() => switchCart(), 50) }}
+            >
+              CLOSE
+            </div>
+          </div>
+          <div className="w-full mb-10 flex flex-col mt-10">
+            {cart && cart.products.length > 0 ? (<div className="w-full flex flex-col gap-5 items-start justify-center">
+              {cart.products.map((product) => {
+                return <CartProduct key={product.title} product={product} onClick={() => { setProductToRemove(product) }} updateTotal={updateTotal}/>
+              })}
+            </div>) : <p className="text-accent font-retro text-sm box-border w-full h-[400px] grid place-items-center">Nothing to see here.</p>}
           </div>
         </div>
-        <div className="z-10 w-full mb-10 flex flex-col mt-10">
-          {cart && cart.products.length > 0 ? (<div className="w-full flex flex-col gap-5 items-start justify-center">
-            {cart.products.map((product) => {
-              return <CartProduct key={product.title} product={product} onClick={() => { setProductToRemove(product) }} />
-            })}
-          </div>) : <p className="text-accent font-retro text-sm box-border w-full h-[400px] grid place-items-center">Nothing to see here.</p>}
+        <div className="w-full flex flex-col gap-vw-2-min@xl items-center justify-center py-9">
+          {cart && cart.products.length > 0 &&
+            <>
+              <div onClick={goToCheckout} className="cursor-pointer dropshadow w-[85%] py-vw-1-min@xl flex flex-row items-center justify-between px-vw-4-min@xl bg-[#c7c7c7] text-smTolg text-black font-ibm font-[600]">
+                <p>CHECKOUT</p>
+                <p>
+                  ₹{total} INR
+                </p>
+              </div>
+              <p className="text-accent font-ibm text-xs text-center w-full">Tax incl. Shipping calculated at checkout. </p>
+            </>
+          }
         </div>
-        {cart && cart.products.length > 0 &&
-          <p onClick={goToCheckout} className="cursor-pointer dropshadow w-[90%] py-vw-2 flex items-center justify-center bg-[#c7c7c7] text-lg text-black font-ibm font-[600]">
-              Checkout
-          </p>
-        }
       </div>
     </CartTransition>
   );
