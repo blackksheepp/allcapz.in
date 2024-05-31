@@ -34,8 +34,10 @@ jobs:
       - name: Build and Push Docker Image
         uses: docker/build-push-action@v5
         with:
-          context: ./
+          context: .
           push: true
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
           dockerfile: ./Dockerfile
           tags: ${{ env.DOCKERHUB_USERNAME }}/${{ env.REPO }}:latest
 
