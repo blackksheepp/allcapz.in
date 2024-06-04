@@ -5,51 +5,14 @@ import { GetRazorpayPayment } from '@/app/utils/payment'
 import { useSearchParams } from 'next/navigation'
 import React, { FC, useEffect, useState } from 'react'
 
-interface FieldProps {
-    label: string
-    value: string
-    setValue: React.Dispatch<React.SetStateAction<string>>
-    editable?: boolean
-}
-
-const Field: React.FC<FieldProps> = ({ label, value, setValue, editable = true }) => {
-    const [edit, setEdit] = useState(false);
-    const [inputValue, setInputValue] = useState(value);
-    const onSave = () => {
-        setValue(inputValue);
-        setEdit(false);
-    }
-    console.log(label, value)
-    return (
-        <div className="w-[80%] py-2 flex flex-col gap-2">
-            <p className="text-xl font-ibm text-accent">{label}</p>
-            {edit ? (
-                <div className="border-[2px] border-white rounded-sm flex flex-row items-center justify-between px-4">
-                    <input
-                        className="bg-transparent outline-none py-1 font-ibm placeholder:font-ibm placeholder:text-lg placeholder:text-[#a4a4a4] text-lg text-[#a4a4a4] flex-1"
-                        placeholder={`Enter ${label}`}
-                        onChange={e => setInputValue(e.target.value)}
-                    />
-                    {editable && <p onClick={() => setEdit(!edit)} className="cursor-pointer text-ibm text-lg text-green-700 ">Save</p>}
-                </div>
-            ) : (
-                <>
-                    <p className={`text-[19px] px-4 py-1 font-ibm text-[#a4a4a4] border-[2px] border-white rounded-sm flex flex-row items-center ${inputValue ? "justify-between" : "justify-center"}`}>{inputValue}
-                        {editable && <p onClick={() => setEdit(!edit)} className="cursor-pointer text-ibm text-lg text-green-700 text-center">{inputValue ? "Edit" : "Enter"}</p>}
-                    </p>
-                </>
-            )}
-        </div>
-    )
-}
-
 interface DetailsProps {
     order: OrderType
 }
 
 export const Details: FC<DetailsProps> = ({ order }) => {
     const { session } = useSession();
-    const date = new Date().toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" });
+    var date = new Date(new Date().getTime() + (5 * 24 * 60 * 60 * 1000));
+    const edd = date.toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" });
 
     const searchParams = useSearchParams();
     const [address, setAddress] = useState<AddressType | null>(null);
@@ -62,16 +25,16 @@ export const Details: FC<DetailsProps> = ({ order }) => {
         }
     }, [])
 
-    const [razorpayPayment, setRazorpayPayment] = useState<any>(null);
+    const [razorpayPayment, setRazorpayPayment] = useState<any | null>(null);
     useEffect(() => {
         const paymentId = searchParams.get("paymentId");
-        if (paymentId) {
-            GetRazorpayPayment(paymentId).then((payment) => {
-                if (payment) {
+        setTimeout(() => {
+            if (paymentId) {
+                GetRazorpayPayment(paymentId).then((payment) => {
                     setRazorpayPayment(payment);
-                }
-            })
-        }
+                })
+            }
+        }, 500)
     }, [])
 
     const supportEmail = "support@allcapz.com";
@@ -86,7 +49,7 @@ export const Details: FC<DetailsProps> = ({ order }) => {
             <div className="w-full h-full border-[3px] border-dashed border-[#c4c4c4] flex flex-col py-10 px-14 gap-6">
                 <div className="w-full flex flex-row items-center justify-between">
                     <p className="text-xl font-ibm font-[500] text-white">Estimated Delivery</p>
-                    <p className="text-lg font-ibm font-[400] text-[#FFD600]">{date}</p>
+                    <p className="text-lg font-ibm font-[400] text-[#FFD600]">{edd}</p>
                 </div>
 
                 <div className="w-full flex flex-col gap-2">
@@ -112,7 +75,7 @@ export const Details: FC<DetailsProps> = ({ order }) => {
 
                 <div className="w-full flex flex-row items-center justify-between">
                     <p className="text-xl font-ibm font-[500] text-white">Payment Method</p>
-                    <p className="text-lg font-ibm font-[400] text-[#a4a4a4]">{razorpayPayment.method.toUpperCase()}</p>
+                    <p className="text-lg font-ibm font-[400] text-[#a4a4a4]">{razorpayPayment?.method.toUpperCase()}</p>
                 </div>
 
                 <div className="w-full flex flex-col gap-2">
