@@ -1,7 +1,6 @@
 "use server"
 import prisma from "@/lib/prisma";
-import { v4 as uuidv4 } from 'uuid';
-
+const bson = require("bson");
 export interface CollectionType {
     name: string;
     products: ProductType[];
@@ -96,6 +95,7 @@ export const CreateProduct = async (
     collection: string
 ) => {
     try {
+        const id = new bson.ObjectId().toString();
         await prisma.collections.update({
             where: {
                 name: collection,
@@ -104,7 +104,7 @@ export const CreateProduct = async (
                 products: {
                     push: [
                         {
-                            id: uuidv4(),
+                            id,
                             image,
                             title,
                             price,

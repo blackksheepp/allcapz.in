@@ -59,7 +59,6 @@ export const AddToCart = async (user: string, product: ProductType): Promise<boo
                 }
             })
         }
-        console.log(success)
         return (success ? true : false)
     } catch (error) {
         console.log(error);
@@ -158,6 +157,24 @@ export const DecreaseQnty = async (user: string, product: ProductType) => {
             })
             return cart.products.filter(x => x.title == product.title)[0];
         }
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+
+export const ClearCart = async (user: string) => {
+    try {
+        await prisma.carts.update({
+            where: {
+                user: user
+            },
+            data: {
+                products: {
+                    set: []
+                }
+            }
+        })
     } catch (error) {
         console.log(error);
     }

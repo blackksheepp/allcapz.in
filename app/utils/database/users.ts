@@ -4,6 +4,9 @@ import prisma from "@/lib/prisma";
 export interface UserType {
     name: string;
     email: string;
+    alterEmail?: string;
+    phone?: string;
+    alterPhone?: string;
 }
 
 export const CreateUser = async (user: UserType) => {
@@ -50,6 +53,21 @@ export const UpdateName = async (email: string, name: string) => {
             data: {
                 name: name,
             },
+        });
+        return true;
+    } catch (error) {
+        console.log(error);
+        return false;
+    }
+}
+
+export const UpdateUser = async (user: UserType) => {
+    try {
+        await prisma.users.update({
+            where: {
+                email: user.email,
+            },
+            data: user,
         });
         return true;
     } catch (error) {

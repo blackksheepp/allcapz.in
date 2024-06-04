@@ -1,7 +1,7 @@
 import { CollectionType, CreateCollection, ReOrderProduct, RenameCollection } from "@/app/utils/database/collections";
 import Image from "next/image";
 import React, { useEffect, useRef, useState } from "react";
-import { NewProduct, Product } from "./product";
+import { NewProduct, Product } from "./Product";
 
 interface CollectionProps {
     data: CollectionType,

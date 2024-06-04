@@ -3,23 +3,25 @@ import React, { useCallback, useEffect, useState } from "react";
 
 import Image from "next/image";
 import Link from "next/link";
-import { useSession } from "../Providers/Session";
+import { useSession } from "../providers/Session";
 import { ProductType } from "../utils/database/collections";
-import { CartType, GetCart } from "../utils/database/carts";
+import { CartType, ClearCart, GetCart } from "../utils/database/carts";
 import { CartCookieType, GetCartFromCookies } from "../utils/cookies/cart";
 import { useRouter, useSearchParams } from "next/navigation";
-import { getRazorpayData } from "../utils/actions";
+import { CreateRazorpayPayment } from "../utils/payment";
 import { Product } from "@prisma/client";
 import { z } from "zod";
-import { error } from "console";
 import { CheckServiceAvailability, GetToken } from "../utils/shipping/shiprocket";
+import { UpdateUser } from "../utils/database/users";
+import { SaveAddress } from "../utils/database/addresses";
+import { CreateOrder, PriceType } from "../utils/database/orders";
 
 interface FormError {
   for: string;
   message: string;
 }
 
-interface FormInputProps {
+interface FieldProps {
   name: string;
   placeholder: string;
   value: string;
@@ -28,7 +30,7 @@ interface FormInputProps {
   setFormErrors: React.Dispatch<React.SetStateAction<FormError[] | undefined>>;
 }
 
-const FormInput: React.FC<FormInputProps> = ({ name, placeholder, value, onChange, formErrors, setFormErrors }) => {
+const Field: React.FC<FieldProps> = ({ name, placeholder, value, onChange, formErrors, setFormErrors }) => {
   const isError = formErrors?.find(error => error.for === name);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -84,9 +86,40 @@ const CheckoutProduct = ({ product }: { product: ProductType }) => {
   )
 }
 
-export default function Checkout({ params }: { params: { slug: string } }) {
-  const [mobile, setMobile] = useState(false);
+const Next = ({ active }: { active: boolean }) => {
+  return <Image
+    src={active ? "/img/arrow-active.svg" : "/img/arrow.svg"}
+    alt="show"
+    width={0}
+    height={0}
+    sizes="100vw"
+    className="w-[20px] h-auto"
+  />
+}
 
+const Prev = () => {
+  return <Image
+    src={"/img/arrow.svg"}
+    alt="show"
+    width={0}
+    height={0}
+    sizes="100vw"
+    className="w-[25px] h-auto rotate-[180deg] mt-0.5"
+  />
+}
+
+const RazorPay = () => {
+  return <Image
+    src={"/img/razorpay.png"}
+    alt="show"
+    width={0}
+    height={0}
+    sizes="100vw"
+    className="w-[150px] h-auto"
+  />
+}
+
+export default function Checkout({ params }: { params: { slug: string } }) {
   const sections = ["Cart", "Summary", "Shipping", "Payment", "Review"];
   const [active, setActive] = useState<string[]>(sections.slice(0, 2));
 
@@ -107,59 +140,20 @@ export default function Checkout({ params }: { params: { slug: string } }) {
   const { session } = useSession();
   useEffect(() => {
     (async () => {
+      var getCart: CartType | CartCookieType | null = null;
       if (session) {
-        setCart(await GetCart(session.email))
+        getCart = await GetCart(session.email)
       } else {
         const cartCookie = await GetCartFromCookies();
         if (cartCookie) {
-          setCart(JSON.parse(cartCookie))
+          getCart = JSON.parse(cartCookie)
         }
       }
-    })();
+      if (getCart && getCart?.products?.length > 0) setCart(getCart)
+      else router.push("/")
+    })()
   }, [session]);
 
-
-  useEffect(() => {
-    window.addEventListener("resize", () => setMobile(window.innerWidth < 640));
-    return () => {
-      window.removeEventListener("resize", () => setMobile(window.innerWidth < 640));
-    }
-  }, []);
-
-
-
-  const Next = ({ active }: { active: boolean }) => {
-    return <Image
-      src={active ? "/img/arrow-active.svg" : "/img/arrow.svg"}
-      alt="show"
-      width={0}
-      height={0}
-      sizes="100vw"
-      className="w-[20px] h-auto"
-    />
-  }
-
-  const Prev = () => {
-    return <Image
-      src={"/img/arrow.svg"}
-      alt="show"
-      width={0}
-      height={0}
-      sizes="100vw"
-      className="w-[25px] h-auto rotate-[180deg] mt-0.5"
-    />
-  }
-
-  const RazorPay = () => {
-    return <Image
-      src={"/img/razorpay.png"}
-      alt="show"
-      width={0}
-      height={0}
-      sizes="100vw"
-      className="w-[150px] h-auto"
-    />
-  }
 
   const router = useRouter();
   const search = useSearchParams();
@@ -177,27 +171,79 @@ export default function Checkout({ params }: { params: { slug: string } }) {
   }
 
   const makePayment = async () => {
-
     if (cart?.products) {
       const price = cart?.products.reduce((a, b) => a + (b.price * (b.quantity || 1)), 0)
-      const data = await getRazorpayData(cart.products as Product[], session?.email || email, price);
+      const data = await CreateRazorpayPayment(cart.products as Product[], session?.email || email, price);
 
       if (!data) return
 
       var options = {
-        callback_url: 'http://allcapz.in/',
-        redirect: true,
         key: process.env.RAZORPAY_KEY,
         name: "ALLCAPZ",
         currency: data?.currency,
         amount: data?.amount,
         order_id: data?.id,
-        description: "Your Purchase has been made.",
+        description: "Your Order has been comfirmed.",
         image: "https://images2.imgbox.com/cc/5f/07cbMQOO_o.png",
-        handler: function (response: any) {
-          console.log(response.razorpay_payment_id);
-          console.log(response.razorpay_order_id);
-          console.log(response.razorpay_signature);
+        handler: async function (response: any) {
+          // response 
+          // {
+          //   "razorpay_payment_id": "pay_OIn0yBKCyg2yYZ",
+          //   "razorpay_order_id": "order_OIn0pqStDPkVCc",
+          //   "razorpay_signature": "06110a56e69ff29a70597dc27a54f26056eef0ed7a6513f8971be0505c8a01bf"
+          // }
+
+          // Update User
+          if (!session?.phone) {
+            await UpdateUser({
+              name: session!.name,
+              email: session!.email,
+              phone: phone
+            })
+          }
+
+          // Save Address
+          const addressId = await SaveAddress({
+            email: session?.email ?? email,
+            fname: fname,
+            lname: lname,
+            street: street,
+            address: address,
+            postalCode: postalCode,
+            city: city,
+            phone: phone
+          })
+
+          // Create Order
+          const totalAmount = data?.amount / 100;
+          const shippingCost = 0;
+          const taxAmount = 0;
+          const discount = 0;
+          const subtotal = totalAmount + shippingCost + taxAmount - discount;
+          const pricing = {
+            totalAmount,
+            shippingCost,
+            taxAmount,
+            discount,
+            subtotal,
+          } as PriceType
+
+
+          await CreateOrder({
+            id: response.razorpay_order_id,
+            confirmedAt: new Date(),
+            status: "processing",
+            user: session!.email,
+            products: cart.products,
+            pricing
+          })
+
+          // Clear Cart 
+          ClearCart(session!.email)
+
+          // Redirect to Order Confirmation Page
+          router.push("/confirmed?id=" + response.razorpay_order_id + "&addressId=" + addressId + "&paymentId=" + response.razorpay_payment_id);
+
         },
         email: session?.email ?? email,
         contact: phone,
@@ -261,17 +307,15 @@ export default function Checkout({ params }: { params: { slug: string } }) {
 
 
   const CapitalText = (text: string) => {
-    return text[0].toUpperCase() + text.slice(1).toLowerCase() 
+    return text[0].toUpperCase() + text.slice(1).toLowerCase()
   }
-  const [shippingServices, setShippingServices] = useState<any | null>(null);
   useEffect(
     () => {
       (async () => {
-        if (postalCode.length==6) {
+        if (postalCode.length == 6) {
           const shippingData = await CheckServiceAvailability(+postalCode);
           if (shippingData) {
             setCity(CapitalText(shippingData.city))
-            setShippingServices(shippingData.services)
           } else {
             setCity("")
             if (formErrors) {
@@ -290,8 +334,8 @@ export default function Checkout({ params }: { params: { slug: string } }) {
       })()
     }
     , [postalCode])
-  
-    return (
+
+  return (
     <div className="lg:absolute w-full h-full flex flex-col">
       <div className="w-full py-vw-7-min@lg lg:hidden flex items-center justify-center">
         <Link href="/">
@@ -337,7 +381,7 @@ export default function Checkout({ params }: { params: { slug: string } }) {
                   </div>
                   <div className="pt-vw-1 w-full flex flex-row justify-between items-baseline">
                     <p className="text-smTolg">Shipping</p>
-                      <p className="text-xsTosm">{active.includes("Shipping") ? "₹0" : "(Calculated at next step)"}</p>
+                    <p className="text-xsTosm">{active.includes("Shipping") ? "₹0" : "(Calculated at next step)"}</p>
                   </div>
                   <div className="py-vw-4 text-xl w-full flex flex-row justify-between items-baseline">
                     <p className="text-lgTo2xl">Total</p>
@@ -388,7 +432,7 @@ export default function Checkout({ params }: { params: { slug: string } }) {
                   <label className="text-lgTo2xl max-[388px]:text-smTolg">Contact</label>
                 </div>
                 <div className={`w-full ${session?.email && `pointer-events-none text-[#a4a4a4]`}`}>
-                  <FormInput value={session?.email || email} name="email" placeholder="Email" onChange={setEmail} formErrors={formErrors} setFormErrors={setFormErrors} />
+                  <Field value={session?.email || email} name="email" placeholder="Email" onChange={setEmail} formErrors={formErrors} setFormErrors={setFormErrors} />
                 </div>
               </form>
 
@@ -401,23 +445,23 @@ export default function Checkout({ params }: { params: { slug: string } }) {
 
                   <label className={`flex flex-col justify-center w-full text-[12px] pl-3 py-2 rounded-[2px] border-[1px] border-[#a4a4a4] focus:border-[2px] focus:border-white text-[#a4a4a4] pointer-events-none`}>
                     Country
-                    <input className={`w-full bg-transparent outline-none placeholder:text-sm text-[16px] placeholder:text-gray pointer-events-none text-accent`} placeholder="Country" value={"India"} onChange={(e) => { console.log(e) }} />
+                    <input className={`w-full bg-transparent outline-none placeholder:text-sm text-[16px] placeholder:text-gray pointer-events-none text-accent`} placeholder="Country" value={"India"} onChange={(e) => { }} />
                   </label>
 
                 </div>
                 <div className="w-full flex lg:flex-row md:flex-row flex-col lg:gap-4 md:gap-4 gap-7">
-                  <FormInput value={fname} name="fname" placeholder="First Name" onChange={setFname} formErrors={formErrors} setFormErrors={setFormErrors} />
-                  <FormInput value={lname} name="lname" placeholder="Last Name" onChange={setLname} formErrors={formErrors} setFormErrors={setFormErrors} />
+                  <Field value={fname} name="fname" placeholder="First Name" onChange={setFname} formErrors={formErrors} setFormErrors={setFormErrors} />
+                  <Field value={lname} name="lname" placeholder="Last Name" onChange={setLname} formErrors={formErrors} setFormErrors={setFormErrors} />
                 </div>
-                <FormInput value={street} onChange={setStreet} name="street" placeholder="Apartment, Landmark, Street" formErrors={formErrors} setFormErrors={setFormErrors} />
-                <FormInput value={address} onChange={setAddress} name="address" placeholder="Address" formErrors={formErrors} setFormErrors={setFormErrors} />
+                <Field value={street} onChange={setStreet} name="street" placeholder="Apartment, Landmark, Street" formErrors={formErrors} setFormErrors={setFormErrors} />
+                <Field value={address} onChange={setAddress} name="address" placeholder="Address" formErrors={formErrors} setFormErrors={setFormErrors} />
                 <div className="w-full flex lg:flex-row md:flex-row flex-col lg:gap-4 md:gap-4 gap-7">
-                  <FormInput value={postalCode} onChange={setPostalCode} name="postalCode" placeholder="Postal Code" formErrors={formErrors} setFormErrors={setFormErrors} />
+                  <Field value={postalCode} onChange={setPostalCode} name="postalCode" placeholder="Postal Code" formErrors={formErrors} setFormErrors={setFormErrors} />
                   <div className="pointer-events-none w-full">
-                    <FormInput value={city} onChange={setCity} name="city" placeholder="City" formErrors={formErrors} setFormErrors={setFormErrors} />
+                    <Field value={city} onChange={setCity} name="city" placeholder="City" formErrors={formErrors} setFormErrors={setFormErrors} />
                   </div>
                 </div>
-                <FormInput value={phone} onChange={setPhone} name="phone" placeholder="Phone No." formErrors={formErrors} setFormErrors={setFormErrors} />
+                <Field value={phone} onChange={setPhone} name="phone" placeholder="Phone No." formErrors={formErrors} setFormErrors={setFormErrors} />
               </form>
             </div>
           )}
@@ -449,7 +493,7 @@ export default function Checkout({ params }: { params: { slug: string } }) {
                   <div className="flex flex-row items-center justify-between">
                     <div className="flex flex-row gap-vw-8 text-xsTosm">
                       <p className="text-[#c4c4c4] max-w-16 min-w-14">Ship By</p>
-                        <p>{`Free Shipping -  ₹0`}</p>
+                      <p>{`Free Shipping -  ₹0`}</p>
                     </div>
                   </div>
                 </div>)}
@@ -478,8 +522,8 @@ export default function Checkout({ params }: { params: { slug: string } }) {
                 <p className="mt-10 font-ibm text-lgToxl text-white">Shipping Method</p>
                 <div className="mt-3 w-full font-ibm text-accent flex flex-col gap-2 border-[1px] border-white px-4 py-3 rounded-[4px]">
                   <div className="flex flex-row items-center justify-between">
-                      <p className="text-[#c4c4c4]">Free Shipping - ₹0</p>
-                      <p className="text-[#c4c4c4] text-sm ">Within a Week</p>
+                    <p className="text-[#c4c4c4]">Free Shipping - ₹0</p>
+                    <p className="text-[#c4c4c4] text-sm ">Within a Week</p>
                   </div>
                 </div>
               </div>
@@ -508,7 +552,7 @@ export default function Checkout({ params }: { params: { slug: string } }) {
                   </div>
                   <div className="w-full flex flex-row justify-between items-baseline">
                     <p className="text-smTolg">Shipping</p>
-                      <p className="text-xsTosm"> ₹0</p>
+                    <p className="text-xsTosm"> ₹0</p>
                   </div>
                   <div className="py-vw-2 text-xl w-full flex flex-row justify-between items-baseline">
                     <p className="text-lgTo2xl">Total</p>

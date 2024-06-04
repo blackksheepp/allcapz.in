@@ -1,8 +1,8 @@
 "use client"
-import React, {useEffect} from 'react'
+import React, { useEffect } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { GetGoogleUser } from '../utils/auth';
-import { useSession } from '../Providers/Session';
+import { useSession } from '../providers/Session';
 export default function Google() {
     const searchParams = useSearchParams();
     const code = searchParams.get("code");

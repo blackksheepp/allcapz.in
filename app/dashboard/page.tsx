@@ -9,7 +9,7 @@ import {
     DeleteCollection,
     ReOrderCollections
 } from "@/app/utils/database/collections";
-import { Collection, NewCollection } from "./components/collection";
+import { Collection, NewCollection } from "./components/Collection";
 import { WithAuth } from "../components/WithAuth";
 
 

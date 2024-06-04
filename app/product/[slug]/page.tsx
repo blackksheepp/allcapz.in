@@ -10,7 +10,7 @@ import Navbar from "@/app/components/Navbar";
 import Image from "next/image";
 import { AddToCart } from "@/app/utils/database/carts";
 import { AddToCartCookies } from "@/app/utils/cookies/cart";
-import { useSession } from "@/app/Providers/Session";
+import { useSession } from "@/app/providers/Session";
 import { BackgroundTexture } from "@/app/components/TextureOverlay";
 import { useSearchParams } from "next/navigation";
 import { useCartStore } from "@/app/utils/store/cartStore";
@@ -41,9 +41,8 @@ export default function Product({ params }: { params: { slug: string } }) {
       } else {
         success = await AddToCartCookies(product);
       }
-      
+
       if (success) {
-        console.log(success)
         setIsFull(true);
         setCart(true);
       }
@@ -103,7 +102,7 @@ export default function Product({ params }: { params: { slug: string } }) {
           }`}
       >
         <div>
-          <div className="absolute w-full" style={{top: mobile ? 10 : 20}}>
+          <div className="absolute w-full" style={{ top: mobile ? 10 : 20 }}>
             <Navbar />
           </div>
           <div className="absolute w-full h-screen mt-vw-20-min@md xl:mt-vw-5 2xl:mt-0 flex lg:flex-row md:flex-row flex-col justify-center gap-vw-16-min@sm  mb-vw-10">

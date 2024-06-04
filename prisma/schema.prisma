@@ -10,29 +10,68 @@ datasource db {
 }
 
 model Collections {
-  id String @id @default(auto()) @map("_id") @db.ObjectId
-  name String @unique
-  products Product[]  
+  id       String    @id @default(auto()) @map("_id") @db.ObjectId
+  name     String    @unique
+  products Product[]
 }
 
 type Product {
-  id String
-  image String
-  title String
-  price Int
-  size String
-  quantity Int?
+  id         String
+  image      String
+  title      String
+  price      Int
+  size       String
+  quantity   Int?
   collection String
 }
 
 model Users {
-  id String @id @default(auto()) @map("_id") @db.ObjectId
-  name String
-  email String @unique  
+  id    String @id @default(auto()) @map("_id") @db.ObjectId
+  name  String
+  email String @unique
+  alterEmail String?
+  phone String?
+  alterPhone String?
 }
 
 model Carts {
-  id String @id @default(auto()) @map("_id") @db.ObjectId
-  user String @unique  
+  id       String    @id @default(auto()) @map("_id") @db.ObjectId
+  user     String    @unique
   products Product[]
+}
+
+model Address {
+  id         String @id @default(auto()) @map("_id") @db.ObjectId
+  email      String
+  fname      String
+  lname      String
+  street     String
+  address    String
+  postalCode String
+  city       String
+  phone      String
+}
+
+type Price {
+  totalAmount  Int
+  shippingCost Int
+  taxAmount    Int
+  discount     Int
+  subtotal     Int
+}
+
+type Shipping {
+  method                String
+  trackingId            String
+  estimatedDeliveryDate DateTime
+}
+
+model Order {
+  id          String    @id @map("_id")
+  confirmedAt DateTime
+  status      String
+  user        String
+  products    Product[]
+  pricing     Price
+  shipping    Shipping?
 }

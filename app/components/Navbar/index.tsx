@@ -2,15 +2,19 @@
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { useSession } from "@/app/Providers/Session";
+import { useSession } from "@/app/providers/Session";
 import { CartType, GetCart } from "@/app/utils/database/carts";
 import { CartCookieType, GetCartFromCookies } from "@/app/utils/cookies/cart";
 import { useCartStore } from "@/app/utils/store/cartStore";
 import { useLoginStore } from "@/app/utils/store/loginStore";
+import { useRouter } from "next/navigation";
 
+interface NavbarProps {
+  showProfile?: boolean
+}
 
-
-const Navbar: React.FC = () => {
+const Navbar: React.FC<NavbarProps> = ({ showProfile = true }) => {
+  const router = useRouter();
   const { session, logout } = useSession();
   const [scroll, setScroll] = useState(false);
   const { isFull } = useCartStore((state) => state);
@@ -59,10 +63,10 @@ const Navbar: React.FC = () => {
             />
           </Link>
           <div className="flex flex-row items-center lg:gap-5 md:gap-4 sm:gap-3 gap-2">
-            <div className="text-accent font-retro cursor-pointer" onClick={() => { !session && setLogin(true)} }>
+            {showProfile && <div className="text-accent font-retro cursor-pointer" onClick={() => { session ? router.push("/profile") : setLogin(true) }}>
               <p className="lg:text-[14px] text-[11px]">Hey, {session ? session.name : "Login"}</p>
-              <p className="lg:text-[10px] text-[8px]" onClick={() => { session && logout() }}>{session ? "Your Profile" : "Or Sign Up"}</p>
-            </div>
+              <p className="lg:text-[10px] text-[8px]">{session ? "Your Profile" : "Or Sign Up"}</p>
+            </div>}
             <Image
               src={isFull ? "/img/full-cart.png" : "/img/cart.png"}
               alt="cart"

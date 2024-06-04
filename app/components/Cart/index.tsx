@@ -6,7 +6,7 @@ import { CartType, DecreaseQnty, GetCart, IncreaseQnty, RemoveFromCart } from "@
 import { CartCookieType, DecreaseQntyCookies, GetCartFromCookies, IncreaseQntyCookies, RemoveFromCartCookies } from "@/app/utils/cookies/cart";
 import Image from "next/image";
 import { ProductType } from "@/app/utils/database/collections";
-import { useSession } from "@/app/Providers/Session";
+import { useSession } from "@/app/providers/Session";
 import { motion } from 'framer-motion';
 import { useRouter, usePathname } from "next/navigation";
 import { useCartStore } from "@/app/utils/store/cartStore";
@@ -121,7 +121,7 @@ const Cart = () => {
 
   const [productToRemove, setProductToRemove] = useState<ProductType | null>(null);
   const { showCart, switchCart, setIsFull } = useCartStore((state) => state)
-    
+
   const refreshCart = async () => {
     var cart: CartType | CartCookieType | null = null;
     if (session) {
@@ -191,8 +191,8 @@ const Cart = () => {
     <CartTransition animate={showCart} mobile={mobile}>
       <div className="w-full h-full flex flex-col items-center justify-between overflow-y-scroll">
         <FitTexture />
-        <div className="w-full">
-          <div className="w-full flex flex-row items-center justify-between pl-6 pr-4 pt-8">
+        <div className="w-full max-h-[75%]">
+          <div className="w-full flex flex-row items-center justify-between pl-6 pr-4 pt-vw-16-max@sm">
             <p className="text-accent font-retro text-lg">
               {cart?.products && cart?.products.length > 0 ? `${cart.products.length} Product${cart.products.length > 1 ? "s" : ""}` : "CART"}
             </p>
@@ -204,10 +204,10 @@ const Cart = () => {
               CLOSE
             </div>
           </div>
-          <div className="w-full mb-10 flex flex-col mt-10">
+          <div className="w-full max-h-[100%] mb-10 flex flex-col mt-vw-16-max@sm overflow-y-scroll">
             {cart && cart.products.length > 0 ? (<div className="w-full flex flex-col gap-5 items-start justify-center">
               {cart.products.map((product) => {
-                return <CartProduct key={product.title} product={product} onClick={() => { setProductToRemove(product) }} updateTotal={updateTotal}/>
+                return <CartProduct key={product.title} product={product} onClick={() => { setProductToRemove(product) }} updateTotal={updateTotal} />
               })}
             </div>) : <p className="text-accent font-retro text-sm box-border w-full h-[400px] grid place-items-center">Nothing to see here.</p>}
           </div>
@@ -215,7 +215,7 @@ const Cart = () => {
         <div className="w-full flex flex-col gap-vw-2-min@xl items-center justify-center py-9">
           {cart && cart.products.length > 0 &&
             <>
-              <div onClick={goToCheckout} className="cursor-pointer dropshadow w-[85%] py-vw-1-min@xl flex flex-row items-center justify-between px-vw-4-min@xl bg-[#c7c7c7] text-smTolg text-black font-ibm font-[600]">
+              <div onClick={goToCheckout} className="cursor-pointer dropshadow w-[85%] py-vw-2-min@xl flex flex-row items-center justify-between px-vw-4-min@xl bg-[#c7c7c7] text-smTolg text-black font-ibm font-[600]">
                 <p>CHECKOUT</p>
                 <p>
                   ₹{total} INR

@@ -2,7 +2,7 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { UserType } from '../utils/database/users';
-import { SendAuthLink, VerifyToken, GetSessionToken, SendWelcome} from '../utils/auth';
+import { SendAuthLink, VerifyToken, GetSessionToken, SendWelcome } from '../utils/auth';
 import { FitTexture } from '../components/TextureOverlay';
 import { CreateUser, GetUser } from '../utils/database/users';
 import { ClearSessionCookie, GetSessionCookie, SetSessionCookie } from '../utils/cookies/auth';
@@ -97,9 +97,9 @@ export const SessionProvider: React.FC<SessionProviderProps> = ({ children }) =>
         e.preventDefault();
         setAskName(false);
 
-        const user = {
-            name: name,
-            email: email
+        const user: UserType = {
+            name,
+            email
         };
 
         const success = await CreateUser(user);

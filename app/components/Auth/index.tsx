@@ -1,7 +1,7 @@
 "use client";
 import React, { FormEvent, useEffect, useState } from "react";
 import { LoginTransition } from "@/layouts/LoginTransition";
-import { useSession } from "@/app/Providers/Session";
+import { useSession } from "@/app/providers/Session";
 import { GetUser } from "@/app/utils/database/users";
 import { GetGoogleAuthLink } from "@/app/utils/auth";
 import { useRouter } from "next/navigation";
@@ -67,7 +67,7 @@ const Auth = () => {
     const { session, authenticate, logout } = useSession();
 
     const { showLogin, setLogin } = useLoginStore((state) => state);
-    
+
     const close = (e: React.MouseEvent) => {
         setEmail("")
         setLogin(false);
@@ -119,7 +119,7 @@ const Auth = () => {
         })()
 
         setMobile(window.innerWidth < 640);
-        
+
         setWidth(window.innerWidth)
         window.addEventListener('resize', () => setWidth(window.innerWidth));
         return () => {
