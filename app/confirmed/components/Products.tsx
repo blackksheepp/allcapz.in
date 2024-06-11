@@ -54,7 +54,7 @@ export const Products: FC<ProductsProps> = ({ order }) => {
                     {order && order.products && order.products.length > 0 && (
                         <div>
                             <div className="max-h-[400px] overflow-scroll">
-                                {[].concat(...Array(1).fill(order.products)).flatMap((product, index) => (
+                                {order.products.flatMap((product, index) => (
                                     <Product
                                         key={index}
                                         product={product}

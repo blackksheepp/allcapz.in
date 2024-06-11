@@ -38,7 +38,9 @@ const config: Config = {
         t2xlTo4xl: "clamp(1.5rem, calc(1.25rem + 1.25vw), 2.25rem);",
         xlTo3xl: "clamp(1.25rem, calc(0.3125rem + 1.9531vw), 1.875rem);",
         lgToxl: "clamp(1.125rem, calc(0.9375rem + 0.3906vi), 1.25rem);",
-        xsTo2xl: "clamp(0.75rem, calc(0.5946rem + 0.663vi), 1.125rem);"
+        xsTo2xl: "clamp(0.75rem, calc(0.5946rem + 0.663vi), 1.125rem);",
+        smToxl: "clamp(0.75rem, calc(0.5655rem + 0.8556vi), 1.25rem);",
+        xxsTosm: "clamp(0.625rem, calc(0.5328rem + 0.4278vi), 0.875rem)"
       },
       spacing: {
         s1: "clamp(2rem, calc(-0.1429rem + 10.7143vw), 5rem)",

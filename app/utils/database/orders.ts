@@ -58,7 +58,7 @@ export const GetOrders = async (user: string) => {
             where: {
                 user
             }
-        });
+        }) as OrderType[];
     } catch (error) {
         console.log(error);
         return null;

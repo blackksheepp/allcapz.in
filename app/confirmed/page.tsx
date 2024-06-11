@@ -30,7 +30,7 @@ export default function Profile() {
                 if (order) setOrder(order)
             })
         }
-    }, [])
+    }, [searchParams])
 
 
     const { showLogin } = useLoginStore((state) => state);

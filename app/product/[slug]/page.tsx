@@ -71,7 +71,7 @@ export default function Product({ params }: { params: { slug: string } }) {
     return () => {
       document.removeEventListener('keydown', handleEscapeKeyPress);
     }
-  }, [params.slug]);
+  }, [params.slug, setCart]);
 
 
   return (

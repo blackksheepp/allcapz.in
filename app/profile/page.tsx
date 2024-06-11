@@ -16,7 +16,7 @@ export default function Profile() {
         if (!session) {
             router.push("/");
         }
-    }, [session])
+    }, [session, router])
 
     return (
         <div>
@@ -27,7 +27,7 @@ export default function Profile() {
                 <Navbar showProfile={false} />
 
                 <div className="w-full h-full grid place-items-center">
-                    <div className="w-full grid grid-cols-1 lg:grid-cols-2">
+                    <div className="w-full grid grid-cols-1 mt-vw-32 lg:mt-0 lg:grid-cols-2">
                         <Orders />
                         <PersonalInformation />
                     </div>
