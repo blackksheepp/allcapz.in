@@ -40,7 +40,7 @@ const Preloader: React.FC<PreloaderProps> = ({ setLoading }) => {
             <BackgroundTexture/>
             <div className="flex flex-col gap-vw-4 justify-center items-center">
                 <Image
-                    src="/img/LOGO NEW.png"
+                    src="/img/logo.avif"
                     alt="logo"
                     width={0}
                     height={0}

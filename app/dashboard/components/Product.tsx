@@ -183,7 +183,7 @@ export const NewProduct = ({ refresh, hide, collection }: { refresh: () => void,
                             />
                             <Image
                                 onClick={() => document.getElementById('file-input')?.click()}
-                                src={newProductImageUrl || "/img/placeholder.png"}
+                                src={newProductImageUrl || "/img/placeholder.svg"}
                                 alt="productimg"
                                 width={0}
                                 height={0}

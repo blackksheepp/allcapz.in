@@ -42,3 +42,5 @@ app/api/
 .vscode/
 yarn.lock
 api.py
+
+./public/img-backup/

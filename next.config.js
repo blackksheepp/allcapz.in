@@ -9,6 +9,7 @@ const nextConfig = {
       },
     ],
   },
+  optimizeFonts: true,
   experimental: {
     serverActions: {
       bodySizeLimit: "10mb",

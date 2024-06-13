@@ -5,7 +5,7 @@ export const BackgroundTexture = () => {
     <div
       className={`fixed top-0 left-0 w-screen h-screen pointer-events-none opacity-[30%]`}
       style={{
-        backgroundImage: `url('/img/grunge.jpg')`,
+        backgroundImage: `url('/img/grunge.avif')`,
         backgroundSize: "cover",
         mixBlendMode: "screen",
       }}
@@ -18,7 +18,7 @@ export const TextureOverlay = () => {
     <div
       className={`fixed top-0 left-0 w-screen h-screen pointer-events-none opacity-[50%]`}
       style={{
-        backgroundImage: `url('/img/grunge.jpg')`,
+        backgroundImage: `url('/img/grunge.avif')`,
         backgroundSize: "cover",
         mixBlendMode: "screen",
       }}
@@ -31,7 +31,7 @@ export const FitTexture = () => {
     <div
       className={`absolute z-20 w-full h-full pointer-events-none opacity-[30%]`}
       style={{
-        backgroundImage: `url('/img/grunge.jpg')`,
+        backgroundImage: `url('/img/grunge.avif')`,
         backgroundSize: "cover",
         mixBlendMode: "screen",
       }}

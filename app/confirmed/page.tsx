@@ -14,12 +14,12 @@ import { GetOrder, OrderType } from '../utils/database/orders';
 export default function Profile() {
     const { showCart } = useCartStore((state) => state);
     const { session } = useSession();
-    // const router = useRouter();
-    // useEffect(() => {
-    //     if (!session) {
-    //         router.push("/");
-    //     }
-    // }, [session])
+    const router = useRouter();
+    useEffect(() => {
+        if (!session) {
+            router.push("/");
+        }
+    }, [session])
 
     const searchParams = useSearchParams();
     const [order, setOrder] = React.useState<OrderType | null>(null);

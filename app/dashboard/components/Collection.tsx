@@ -77,7 +77,7 @@ export const Collection: React.FC<CollectionProps> = ({ data: { name, products }
                         <p className="px-2 text-accent font-ibm font-[500] text-lgTo2xl mr-3">{name}</p>
                     )}
                     <Image
-                        src="/img/edit2.svg"
+                        src="/img/edit.svg"
                         alt="logo"
                         width={20}
                         height={20}

@@ -21,21 +21,21 @@ export default function ImageSlider() {
     <div>
       <Slider {...settings}>
         <Image
-          src="/img/banner.png"
+          src="/img/banner.avif"
           alt="logo"
           width={0}
           height={0}
           sizes="100vh"
         />
         <Image
-          src="/img/banner.png"
+          src="/img/banner.avif"
           alt="logo"
           width={0}
           height={0}
           sizes="100vh"
         />
         <Image
-          src="/img/banner.png"
+          src="/img/banner.avif"
           alt="logo"
           width={0}
           height={0}

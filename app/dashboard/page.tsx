@@ -119,7 +119,7 @@ export default function Dashboard() {
                 {/* Logo */}
                 <Link href="/">
                     <Image
-                        src="/img/LOGO NEW.png"
+                        src="/img/logo-high.svg"
                         alt="logo"
                         width={0}
                         height={0}

@@ -54,7 +54,7 @@ const Navbar: React.FC<NavbarProps> = ({ showProfile = true }) => {
         <div className="w-full flex flex-row items-center justify-between px-vw-14 py-vw-8-max@sm">
           <Link href="/">
             <Image
-              src="/img/LOGO NEW.png"
+              src="/img/logo-low.svg"
               alt="logo"
               width={0}
               height={0}
@@ -68,7 +68,7 @@ const Navbar: React.FC<NavbarProps> = ({ showProfile = true }) => {
               <p className="lg:text-[10px] text-[8px]">{session ? "Your Profile" : "Or Sign Up"}</p>
             </div>}
             <Image
-              src={isFull ? "/img/full-cart.png" : "/img/cart.png"}
+              src={isFull ? "/img/full-cart.svg" : "/img/cart.svg"}
               alt="cart"
               width={0}
               height={0}

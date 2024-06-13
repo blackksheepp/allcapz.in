@@ -68,9 +68,9 @@ const config: Config = {
       },
     },
     fontFamily: {
-      retro: "Retro Gaming",
-      indie: "Indie Flower",
-      ibm: "IBM Plex Mono",
+      retro: "var(--font-retro)",
+      indie: "var(--font-indie-flower)",
+      ibm: "var(--font-ibm-plex-mono)",
     },
   },
   plugins: [

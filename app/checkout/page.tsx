@@ -110,7 +110,7 @@ const Prev = () => {
 
 const RazorPay = () => {
   return <Image
-    src={"/img/razorpay.png"}
+    src={"/img/razorpay.svg"}
     alt="show"
     width={0}
     height={0}
@@ -340,7 +340,7 @@ export default function Checkout({ params }: { params: { slug: string } }) {
       <div className="w-full py-vw-7-min@lg lg:hidden flex items-center justify-center">
         <Link href="/">
           <Image
-            src="/img/LOGO NEW.png"
+            src="/img/logo-low.svg"
             alt="logo"
             width={0}
             height={0}
@@ -355,7 +355,7 @@ export default function Checkout({ params }: { params: { slug: string } }) {
         <div onClick={() => setShowProducts(!showProducts)} className={`lg:hidden font-ibm cursor-pointer flex flex-row w-full items-center justify-between px-vw-20 ${showProducts && `pb-vw-10`}`}>
 
           <div className="flex flex-row gap-1 items-center">
-            <Image src="/img/cart-dark.png" alt="cart" width={0} height={0} sizes="100vw" className="w-[25px] h-auto" />
+            <Image src="/img/cart-dark.svg" alt="cart" width={0} height={0} sizes="100vw" className="w-[25px] h-auto" />
             <p className="text-smTolg font-[500]">{showProducts ? "Hide" : "Show"} Order Summary</p>
             <Image src={showProducts ? "/img/up.svg" : "/img/down.svg"} alt="show" width={0} height={0} sizes="100vw" className={`w-[20px] h-auto mt-1 `} />
           </div>
@@ -402,7 +402,7 @@ export default function Checkout({ params }: { params: { slug: string } }) {
 
           <Link href="/">
             <Image
-              src="/img/LOGO NEW.png"
+              src="/img/logo-high.svg"
               alt="logo"
               width={0}
               height={0}
@@ -505,7 +505,7 @@ export default function Checkout({ params }: { params: { slug: string } }) {
                     <div className="flex flex-row gap-10 text-xsTosm">
                       <p className="text-[#c4c4c4] max-w-16 min-w-14">Payment</p>
                       <p className="flex flex-row gap-1"><Image
-                        src={"/img/razorpay-icon.png"}
+                        src={"/img/razorpay-icon.svg"}
                         alt="show"
                         width={0}
                         height={0}
