@@ -4,14 +4,14 @@ import { ProductType } from "@/app/utils/database/collections";
 import { Polaroid } from "./Polaroid";
 import Link from "next/link";
 import { useImagesStore } from "@/app/utils/store/imagesStore";
-import { useTransitionStore } from "@/app/utils/store/transitionStore";
+import { useMiscStore } from "@/app/utils/store/miscStore";
 interface ProductsProps {
   products: ProductType[];
   collection: string;
 }
 
 export const ShowProducts: React.FC<ProductsProps> = ({ products, collection }) => {
-  const { show: showTransition } = useTransitionStore((state) => state);
+  const {  showTransition } = useMiscStore((state) => state);
   const { images, setAreLoaded } = useImagesStore((state) => state);
   useEffect(() => {
     const productImages = images?.filter((image) => image.collection === collection);

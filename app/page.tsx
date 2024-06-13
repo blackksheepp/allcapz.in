@@ -12,7 +12,6 @@ import Products from "./components/Shop";
 import { useCartStore } from "./utils/store/cartStore";
 import { useLoginStore } from "./utils/store/loginStore";
 import Preloader from "./components/Preloader";
-import { useImagesStore } from "./utils/store/imagesStore";
 
 
 const HomePage = () => {

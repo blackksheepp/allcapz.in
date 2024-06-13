@@ -2,7 +2,7 @@
 import prisma from "@/lib/prisma";
 
 export interface AddressType {
-    _id?: string;
+    id?: string;
     email: string;
     fname: string;
     lname: string;
@@ -53,11 +53,27 @@ export const GetAddresses = async (email: string) => {
 
 export const UpdateAddress = async (address: AddressType) => {
     try {
+        const addressId = address.id;
+        delete address.id;
         await prisma.address.update({
             where: {
-                id: address._id,
+                id: addressId,
             },
             data: address,
+        });
+        return true;
+    } catch (error) {
+        console.log(error);
+        return false;
+    }
+}
+
+export const DeleteAddress = async (id: string) => {
+    try {
+        await prisma.address.delete({
+            where: {
+                id
+            }
         });
         return true;
     } catch (error) {

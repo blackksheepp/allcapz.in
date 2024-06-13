@@ -53,7 +53,7 @@ const capitalize = (str: string) => {
     return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
-const Auth = () => {
+const Auth = ({path = "/"}: {path?: string}) => {
     const [mobile, setMobile] = useState(false);
     const [width, setWidth] = useState(0);
     const [authType, setAuthType] = useState<"login" | "sign up">("sign up");
@@ -104,7 +104,8 @@ const Auth = () => {
     const GoogleAuth = async () => {
         setEmailSent(`We're redirecting you to google ${authType}.`);
         const link = await GetGoogleAuthLink();
-        router.push(link);
+        console.log("link", link)
+        router.push(link + `&state=${path}`);
     }
 
     useEffect(() => {

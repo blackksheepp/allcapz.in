@@ -246,3 +246,17 @@ export const SaveImage = async (form: FormData) => {
     const url = `https://graph.org${json[0].src}`;
     return url;
 };
+
+export const GetProductImages = async () => {
+    const comicsWithImages = await prisma.collections.findMany({
+        select: {
+            products: {
+                select: {
+                    image: true,
+                }
+            }
+        }
+    });
+
+    return comicsWithImages.flatMap(comics => comics.products.map(product => product.image));
+}

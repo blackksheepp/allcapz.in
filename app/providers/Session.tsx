@@ -18,7 +18,7 @@ interface SessionContextType {
     session: UserType | null;
     authenticate: ({ email, authType }: auth) => Promise<boolean>;
     logout: () => void;
-    authGoogle: (user: UserType) => Promise<void>;
+    authGoogle: (user: UserType, path: string) => Promise<void>;
 }
 
 const SessionContext = createContext<SessionContextType | undefined>(undefined);
@@ -75,15 +75,15 @@ export const SessionProvider: React.FC<SessionProviderProps> = ({ children }) =>
         return sendEmail;
     }
 
-    const authGoogle = async (user: UserType) => {
+    const authGoogle = async (user: UserType, path: string) => {
         const checkUser = await GetUser(user.email);
         if (!checkUser) {
             const success = await CreateUser(user);
             const sessionToken = await GetSessionToken(user.email);
-            if (await SetSessionCookie(sessionToken)) router.replace("/");
+            if (await SetSessionCookie(sessionToken)) router.replace(path);
         } else {
             const sessionToken = await GetSessionToken(user.email);
-            if (await SetSessionCookie(sessionToken)) router.replace("/");
+            if (await SetSessionCookie(sessionToken)) router.replace(path);
         }
     }
 

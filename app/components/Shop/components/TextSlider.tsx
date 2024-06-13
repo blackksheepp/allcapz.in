@@ -5,7 +5,7 @@ import "slick-carousel/slick/slick-theme.css";
 import React from "react";
 import Slider from "react-slick";
 import { title } from "process";
-import { useTransitionStore } from "@/app/utils/store/transitionStore";
+import { useMiscStore } from "@/app/utils/store/miscStore";
 
 interface TitleSliderProps {
   titles: string[];
@@ -26,7 +26,7 @@ export const TextSlider: React.FC<TitleSliderProps> = ({ titles, active, setActi
   };
   const showTitles = [titles, titles, titles].flat(2);
 
-  const { set: setShowTransition } = useTransitionStore((state) => state);
+  const { setShowTransition } = useMiscStore((state) => state);
   return (
     <div className="lg:w-[500px] md:w-[400px] w-[300px] text-center">
       <Slider {...settings}>
