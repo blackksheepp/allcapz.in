@@ -17,12 +17,12 @@ const Field: React.FC<FieldProps> = ({ label, value, setValue, editable = true }
     }
     console.log(label, value)
     return (
-        <div className="w-[80%] py-2 flex flex-col gap-2">
+        <div className="w-[80%] py-2.5 flex flex-col gap-2">
             <p className="text-smTolg font-ibm text-accent">{label}</p>
             {edit ?   (
                 <div className="border-[2px] border-white rounded-sm flex flex-row items-center justify-between px-4">
                     <input
-                        className="bg-transparent outline-none py-1 font-ibm placeholder:font-ibm placeholder:text-smTolg placeholder:text-[#a4a4a4] text-smTolg text-[#a4a4a4] flex-1"
+                        className="bg-transparent outline-none py-1.5 font-ibm placeholder:font-ibm placeholder:text-smTolg placeholder:text-[#a4a4a4] text-smTolg text-[#a4a4a4] flex-1"
                         placeholder={`Enter ${label}`}
                         onChange={e => setInputValue(e.target.value)}
                     />
@@ -30,7 +30,7 @@ const Field: React.FC<FieldProps> = ({ label, value, setValue, editable = true }
                 </div>
             ) : (
                 <>
-                        <p className={`text-smTolg px-4 py-1 font-ibm text-[#a4a4a4] border-[2px] border-white rounded-sm flex flex-row items-center ${inputValue ? "justify-between" : "justify-center"}`}>{inputValue}
+                        <p className={`text-smTolg px-4 py-1.5 font-ibm text-[#a4a4a4] border-[2px] border-white rounded-sm flex flex-row items-center ${inputValue ? "justify-between" : "justify-center"}`}>{inputValue}
                             {editable && <p onClick={() => setEdit(!edit)} className="cursor-pointer text-ibm text-smTolg text-[#02CD2F] text-center">{inputValue ? "Edit" : "Enter"}</p>}
                         </p>
                 </>
@@ -39,7 +39,7 @@ const Field: React.FC<FieldProps> = ({ label, value, setValue, editable = true }
     )
 }
 
-export const PersonalInformation = () => {
+export const PersonalInformation = ({ setManageAddress }: { setManageAddress: React.Dispatch<React.SetStateAction<boolean>> }) => {
     const { session } = useSession();
     const [name, setName] = useState(session?.name || "");
     const [alterEmail, setAlterEmail] = useState(session?.alterEmail || "");
@@ -54,7 +54,7 @@ export const PersonalInformation = () => {
             </div>
             <div className="w-full min-h-[600px] min-h-100 border-[3px] border-dashed border-[#c4c4c4] flex flex-col items-center gap-7 py-4">
                 {session && (
-                    <div className="w-full flex flex-col gap-1 items-center justify-center">
+                    <div className="w-[80%] flex flex-col items-center justify-center">
                         <Field label="Username" value={name} setValue={setName} />
                         <Field label="Email" value={session.email} setValue={setName} editable={false} />
                         <Field label="Alternate Email" value={alterEmail} setValue={setAlterEmail} />
@@ -62,8 +62,8 @@ export const PersonalInformation = () => {
                         <Field label="Alternate Phone Number" value={alterPhone} setValue={setAlterPhone} />
                     </div>
                 )}
-                <button className="btn w-[80%] py-1.5">
-                    <p className="w-full font-retro text-center text-smTolg">
+                <button className="btn w-[64%] py-1.5">
+                    <p className="w-full font-retro text-center text-smTolg" onClick={() => setManageAddress(true)}>
                         MANAGE ADDRESSES
                     </p>
                 </button>
