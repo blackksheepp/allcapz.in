@@ -29,6 +29,7 @@ export const Polaroid = ({ title, url, collection }: { title: string; url: strin
             sizes="100vw"
             className="w-full h-auto"
             onLoad={() => handleOnLoad(url)}
+            priority
           />
         </div>
       </div>

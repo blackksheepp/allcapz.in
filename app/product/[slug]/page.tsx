@@ -116,6 +116,7 @@ export default function Product({ params }: { params: { slug: string } }) {
                 sizes="100vh"
                 onClick={() => setZoom(true)}
                 className="absolute mt-6 mr-6 lg:h-[500px] md:h-[500px] h-[300px] w-auto blur-[0px]"
+                priority
               />
               <Image
                 src={product?.image!}
@@ -125,6 +126,7 @@ export default function Product({ params }: { params: { slug: string } }) {
                 sizes="100vh"
                 onClick={() => setZoom(true)}
                 className="absolute mt-3 mr-3 lg:h-[500px] md:h-[500px] h-[300px] w-auto blur-[0px]"
+                priority
               />
               <Image
                 src={product?.image!}
@@ -134,6 +136,7 @@ export default function Product({ params }: { params: { slug: string } }) {
                 sizes="100vh"
                 onClick={() => setZoom(true)}
                 className="absolute lg:h-[500px] md:h-[500px] h-[300px] w-auto"
+                priority
               />
             </div>
             <div className="text-accent font-retro lg:h-[520px] md:h-[500px] lg:w-[400px] md:w-[400px] w-[250px] flex flex-col items-center justify-between gap-vw-10-min@xs place-self-center">
@@ -205,7 +208,7 @@ export default function Product({ params }: { params: { slug: string } }) {
           onClick={() => {
             setZoom(false);
           }}
-        >
+      >
           <div className="h-full max-h-max flex items-center justify-center">
             <Image
               src={product?.image!}

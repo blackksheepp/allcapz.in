@@ -26,6 +26,7 @@ export default function ImageSlider() {
           width={0}
           height={0}
           sizes="100vh"
+          priority
         />
         <Image
           src="/img/banner.avif"
@@ -33,6 +34,7 @@ export default function ImageSlider() {
           width={0}
           height={0}
           sizes="100vh"
+          priority
         />
         <Image
           src="/img/banner.avif"
@@ -40,6 +42,7 @@ export default function ImageSlider() {
           width={0}
           height={0}
           sizes="100vh"
+          priority
         />
       </Slider>
     </div>
