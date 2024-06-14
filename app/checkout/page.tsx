@@ -199,7 +199,8 @@ export default function Checkout({ params }: { params: { slug: string } }) {
             status: "processing",
             user: session!.email,
             products: cart.products,
-            pricing
+            pricing,
+            address: addressId
           })
 
           // Clear Cart 

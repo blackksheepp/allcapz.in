@@ -2,7 +2,8 @@ import { OrderType } from '@/app/utils/database/orders'
 import Image from 'next/image';
 import React, { useEffect, useState } from 'react'
 
-const Order = ({ order: {products, status, confirmedAt} }: { order: OrderType }) => {
+
+const PreviewOrder = ({ order: { products, status, confirmedAt } }: { order: OrderType }) => {
     
     const images = products.map((product) => product.image).slice(0, 2);
 
@@ -33,10 +34,10 @@ const Order = ({ order: {products, status, confirmedAt} }: { order: OrderType })
         (avgSize, productSize) => avgSize === productSize ? avgSize : "Various Sizes",
         products[0].size
     )
-    
+
     const statusColor: Record<string, string> = {
         processing: "#02CD2F",
-        shipping: "#FFD600", 
+        shipping: "#FFD600",
         delivered: "#929292",
     }
 
@@ -71,7 +72,7 @@ const Order = ({ order: {products, status, confirmedAt} }: { order: OrderType })
                     </div>
                 </div>
                 <div className=" text-accent font-ibm flex flex-col items-end">
-                    <p className="text-smToxl" style={{color: statusColor[status]}}>{status[0].toUpperCase() + status.slice(1)}</p>
+                    <p className="text-smToxl" style={{ color: statusColor[status] }}>{status[0].toUpperCase() + status.slice(1)}</p>
                     <p className="text-xxsTosm text-end">Ordered On {date}</p>
                 </div>
             </div>
@@ -79,4 +80,4 @@ const Order = ({ order: {products, status, confirmedAt} }: { order: OrderType })
     )
 }
 
-export default Order
+export default PreviewOrder

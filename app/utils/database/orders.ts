@@ -24,6 +24,7 @@ export interface OrderType {
     products: ProductType[];
     pricing: PriceType;
     shipping?: ShippingType;
+    address: string;
 }
 
 export const CreateOrder = async (order: OrderType) => {

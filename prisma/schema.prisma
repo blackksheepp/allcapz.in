@@ -74,4 +74,5 @@ model Order {
   products    Product[]
   pricing     Price
   shipping    Shipping?
+  address     String
 }

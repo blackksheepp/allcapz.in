@@ -3,10 +3,12 @@ import { AddressType, DeleteAddress, GetAddresses, UpdateAddress } from '@/app/u
 import React, { useCallback, useEffect, useState } from 'react'
 import { Field, FormError } from '@/app/checkout/components/Field';
 import { z } from "zod";
+import { useRouter, useSearchParams } from 'next/navigation';
 
 const Addresses = () => {
     const { session } = useSession();
-
+    const router = useRouter();
+    const searchParams = useSearchParams();
     const [addresses, setAddresses] = useState<AddressType[] | null>(null);
     const refresh = () => {
         if (session) {
@@ -15,11 +17,15 @@ const Addresses = () => {
             })
         }
     }
-    useEffect(() => {
-        refresh()
-    }, [])
+
 
     const [edit, setEdit] = useState<boolean>(false);
+
+    useEffect(() => {
+        refresh()
+        if (searchParams.get("edit")) setEdit(true)
+        else setEdit(false)
+    }, [searchParams])
 
 
     const [addressId, setAddressId] = useState<string>("")
@@ -42,7 +48,7 @@ const Addresses = () => {
         setPostalCode(address.postalCode);
         setCity(address.city);
         setPhone(address.phone);
-        setEdit(true);
+        router.push("/profile?manageAddress=true&edit=true")
     }
 
     const onSubmit = useCallback(async () => {
