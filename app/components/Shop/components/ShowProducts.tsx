@@ -3,7 +3,6 @@ import { useTransition, animated } from "@react-spring/web";
 import { ProductType } from "@/app/utils/database/collections";
 import { Polaroid } from "./Polaroid";
 import Link from "next/link";
-import { useImagesStore } from "@/app/utils/store/imagesStore";
 import { useMiscStore } from "@/app/utils/store/miscStore";
 interface ProductsProps {
   products: ProductType[];
@@ -12,13 +11,6 @@ interface ProductsProps {
 
 export const ShowProducts: React.FC<ProductsProps> = ({ products, collection }) => {
   const {  showTransition } = useMiscStore((state) => state);
-  const { images, setAreLoaded } = useImagesStore((state) => state);
-  useEffect(() => {
-    const productImages = images?.filter((image) => image.collection === collection);
-    if (productImages?.length === products.length) {
-      setAreLoaded(true)
-    }
-  }, [images])
 
   const transitions = useTransition(products, {
     key: (product: ProductType) => product,

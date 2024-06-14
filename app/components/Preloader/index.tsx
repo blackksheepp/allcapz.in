@@ -1,25 +1,21 @@
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { BackgroundTexture } from '../TextureOverlay';
-import { useImagesStore } from '@/app/utils/store/imagesStore';
+import { useMiscStore } from '@/app/utils/store/miscStore';
 
 interface PreloaderProps {
     setLoading: (loading: boolean) => void;
 }
 
 const Preloader: React.FC<PreloaderProps> = ({ setLoading }) => {
+    const { showPreloader } = useMiscStore((state) => state);
     const [progress, setProgress] = useState(0);
-
-    const { areLoaded } = useImagesStore((state) => state);
-    useEffect(() => {
-        setLoading(!areLoaded)
-    }, [areLoaded])
-
     useEffect(() => {
         setTimeout(() => {
             setLoading(false)
-        }, 2000)
+        }, 1000)
     }, [])
+
     useEffect(() => {
         const interval = setInterval(() => {
             setProgress((oldProgress) => {
@@ -27,12 +23,12 @@ const Preloader: React.FC<PreloaderProps> = ({ setLoading }) => {
                     clearInterval(interval);
                     return 100;
                 }
-                const diff = Math.random() * 10;
+                const diff = Math.random() * 3;
                 return Math.min(oldProgress + diff, 100);
             });
         }, 15);
 
-        return () => clearInterval(interval);
+        return () => {clearInterval(interval); showPreloader(false);}
     }, []);
 
     return (

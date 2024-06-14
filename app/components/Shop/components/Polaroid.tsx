@@ -1,14 +1,7 @@
 import React from 'react'
 import Image from 'next/image';
-import { useImagesStore } from '@/app/utils/store/imagesStore';
 
 export const Polaroid = ({ title, url, collection }: { title: string; url: string, collection: string }) => {
-  const { images, loadImage } = useImagesStore((state) => state);
-
-  const handleOnLoad = (url: string) => {
-    loadImage(collection, url);
-  }
-
   return (
     <div className="relative w-vw-52-min@xl sm:w-vw-52-min@lg md:w-vw-52-min@xl mb-vw-14-min@md rotate-1 cursor-pointer" >
       <Image
@@ -28,7 +21,6 @@ export const Polaroid = ({ title, url, collection }: { title: string; url: strin
             height={0}
             sizes="100vw"
             className="w-full h-auto"
-            onLoad={() => handleOnLoad(url)}
             priority
           />
         </div>

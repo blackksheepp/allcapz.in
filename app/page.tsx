@@ -12,16 +12,18 @@ import Products from "./components/Shop";
 import { useCartStore } from "./utils/store/cartStore";
 import { useLoginStore } from "./utils/store/loginStore";
 import Preloader from "./components/Preloader";
+import { useMiscStore } from "./utils/store/miscStore";
 
 
 const HomePage = () => {
   const { showLogin } = useLoginStore((state) => state);
   const { showCart } = useCartStore((state) => state);
+  const { preloader } = useMiscStore((state) => state);
   const [loading, setLoading] = useState(true);
 
   return (
     <>
-      {loading && <Preloader setLoading={setLoading}/>}
+      {preloader && loading && <Preloader setLoading={setLoading}/>}
         <div>
           <Cart />
           <Auth />

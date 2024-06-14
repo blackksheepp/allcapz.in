@@ -1,4 +1,5 @@
 "use client"
+
 import React, { useEffect } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { GetGoogleUser } from '../utils/auth';
