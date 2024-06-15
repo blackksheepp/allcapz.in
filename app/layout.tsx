@@ -47,6 +47,7 @@ export default function RootLayout({
           <main className={`${retro.variable} ${ibmPlexMono.variable} ${indieFlower.variable}`}>{children}</main>
         </SessionProvider>
       </body>
+      <link rel="dns-prefetch" href="https://checkout.razorpay.com/v1/checkout.js" />
       <Script id="razorpay-checkout-js" src="https://checkout.razorpay.com/v1/checkout.js" />
     </html>
   );
