@@ -1,6 +1,7 @@
 "use server"
 import prisma from "@/lib/prisma";
 import { ProductType } from "./collections";
+import { SendOrderConfirmedMessage } from "../telegram/orders";
 
 export interface PriceType {
     totalAmount: number;
@@ -29,12 +30,11 @@ export interface OrderType {
 
 export const CreateOrder = async (order: OrderType) => {
     try {
-        const r = await GetOrder(order.id)
-        console.log(r, "order1")
         await prisma.order.create({
             data: order,
+        }).then(() => {
+            SendOrderConfirmedMessage(order.id);
         });
-        return true;
     } catch (error) {
         console.log(error, "order");
         return false;

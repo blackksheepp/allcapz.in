@@ -60,6 +60,8 @@ jobs:
       SHIPROCKET_EMAIL: ${{ secrets.SHIPROCKET_EMAIL }}
       SHIPROCKET_PASSWORD: ${{ secrets.SHIPROCKET_PASSWORD }}
       ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
+      TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+      TELEGRAM_CHANNEL: ${{ secrets.TELEGRAM_CHANNEL }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3

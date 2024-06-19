@@ -14,6 +14,8 @@ declare global {
       SHIPROCKET_EMAIL: string;
       SHIPROCKET_PASSWORD: string;
       ADMIN_PASSWORD: string;
+      TELEGRAM_BOT_TOKEN: string;
+      TELEGRAM_CHANNEL: string;
       NODE_ENV: "development" | "production";
       PORT?: string;
       PWD: string;

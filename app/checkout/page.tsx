@@ -17,9 +17,7 @@ import { AddressType, GetAddresses, SaveAddress } from "../utils/database/addres
 import { CreateOrder, PriceType } from "../utils/database/orders";
 import { useLoginStore } from "../utils/store/loginStore";
 import Auth from "../components/Auth";
-import { useMiscStore } from "../utils/store/miscStore";
 import { Field, FormError } from "./components/Field";
-
 
 const CheckoutProduct = ({ product }: { product: ProductType }) => {
   return (
@@ -140,9 +138,9 @@ export default function Checkout({ params }: { params: { slug: string } }) {
       var options = {
         key: process.env.RAZORPAY_KEY,
         name: "ALLCAPZ",
-        currency: data?.currency,
-        amount: data?.amount,
-        order_id: data?.id,
+        currency: data.currency,
+        amount: data.amount,
+        order_id: data.id,
         description: "Your Order has been comfirmed.",
         image: "https://images2.imgbox.com/cc/5f/07cbMQOO_o.png",
         handler: async function (response: any) {
