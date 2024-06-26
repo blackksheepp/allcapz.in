@@ -1,0 +1,69 @@
+"use client";
+import React, { useEffect, useState } from "react";
+import { WithAuth } from "../components/WithAuth";
+import Cart from "../components/Cart";
+import Auth from "../components/Auth";
+import { useCartStore } from "../utils/store/cartStore";
+import { useLoginStore } from "../utils/store/loginStore";
+import Navbar from "../components/Navbar";
+import PreviewOrder from "../profile/components/PreviewOrder";
+import { GetOrders, OrderType } from "../utils/database/orders";
+import { GetUsers } from "../utils/database/users";
+
+function Orders() {
+    const { showCart } = useCartStore((state) => state);
+    const { showLogin } = useLoginStore((state) => state);
+
+    const [orders, setOrders] = useState<OrderType[]>([]);
+    useEffect(() => {
+        (async () => {
+            const users = await GetUsers();
+            console.log(users, "users")
+            const getOrders: OrderType[] = [];
+
+            users?.map(async (user) => {
+                const userOrders = await GetOrders(user.email);
+                console.log(userOrders, "userOrders")
+                if (userOrders) {
+                    getOrders.push(...userOrders);
+                }
+            })
+            setOrders(getOrders);
+        })()
+    }, []);
+
+    return (
+        <>
+            <div>
+                <div className="absolute z-50">
+                    <Cart />
+                    <Auth />
+                </div>
+                <div className={`absolute w-full h-full top-3 md:top-5  ${showCart || showLogin ? `transition-all delay-500 duration-200  ease-in blur-lg pointer-events-none` : `transition-all delay-200 duration-200 ease-in blur-none`}`}>
+                    <div>
+                        <Navbar />
+                    </div>
+
+                    <div className="w-full h-[85%] py-14 grid ">
+                        <div className="w-full h-full flex flex-col pl-vw-14 pr-vw-10 gap-3">
+                            <div className="w-full min-h-[600px] h-full overflow-scroll border-[3px] border-dashed border-[#c4c4c4]">
+                                {orders && orders.length > 0 && orders.flatMap((order: OrderType, i: number) => {
+                                    return (
+                                        <div key={i} className="w-full flex flex-col items-center">
+                                            <div className="w-[95%] cursor-pointer my-2">
+                                                <PreviewOrder order={order} />
+                                            </div>
+                                            <div className="w-[95%] h-[1px] bg-accent opacity-50"></div>
+                                        </div>
+                                    )
+                                })}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </>
+    );
+}
+
+export default Orders;

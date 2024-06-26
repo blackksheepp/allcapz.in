@@ -12,7 +12,7 @@ const ProductPreview = ({ product }: { product: ProductType }) => {
                     width={0}
                     height={0}
                     sizes="100vw"
-                    className="w-[90px] h-auto self-start ml-vw-1 shadow-lg"
+                    className="w-[60px] md:w-[80px] lg:w-[90px] h-auto self-start ml-vw-1 shadow-lg"
                 />
                 <div className="flex flex-col gap-vw-0.5">
                     <p className="text-accent font-retro text-smTolg px-vw-2">{product.title}</p>

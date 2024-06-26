@@ -116,8 +116,8 @@ const Addresses = () => {
                             return (
                                 <div key={index}>
                                     {index === 0 && <div className="w-full h-[1px] bg-[#a4a4a4]"></div>}
-                                    <div className="w-full flex flex-row justify-between items-center cursor-pointer text-accent text-smTolg font-ibm">
-                                        <div className="flex flex-col gap-1 p-4">
+                                    <div className="w-full flex flex-col md:flex-row  justify-between md:items-center cursor-pointer text-accent text-smTolg font-ibm">
+                                        <div className="flex flex-col gap-1 py-vw-4-min@lg px-vw-2-min@lg">
                                             <p className="font-bold">{address?.fname} {address?.lname}</p>
                                             <p className="">{address?.street}</p>
                                             <p className="">{address?.address}</p>
@@ -125,7 +125,7 @@ const Addresses = () => {
                                             <p className="">India</p>
                                             <p className="">+91 {address?.phone}</p>
                                         </div>
-                                        <div className="flex flex-col gap-vw-2">
+                                        <div className="w-full sm:w-auto flex flex-row md:flex-col gap-vw-10 md:gap-vw-2 pb-vw-10-min@md md:pb-0">
                                             <p onClick={() => editAddress(address)} className="px-5 py-0.5 text-background text-center font-[500] bg-accent dropshadow text-smToLg active:-mb-1 active:-mr-1">
                                                 Edit
                                             </p>

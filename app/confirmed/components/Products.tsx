@@ -17,15 +17,15 @@ export const Products: FC<ProductsProps> = ({ order }) => {
     const router = useRouter();
    
     return (
-        <div className="w-full h-full flex flex-col pl-vw-14 pr-vw-10 gap-3">
+        <div className="w-full h-full flex flex-col px-vw-20-max@md lg:pl-vw-14 lg:pr-vw-10 gap-3">
             <div className="flex flex-col gap-1">
-                <p className="text-3xl font-retro text-accent">Order Confirmed</p>
-                <p className="text-lg font-ibm text-accent">
+                <p className="text-xlTo3xl font-retro text-accent">Order Confirmed</p>
+                <p className="text-smTolg font-ibm text-accent">
                     #{order.id.replace("order_", "")} - {date}
                 </p>
             </div>
-            <div className="w-full h-full border-[3px] border-dashed border-[#c4c4c4] flex flex-col  py-10 px-14">
-                <p className="text-2xl font-ibm font-[500] text-white">Product Summary</p>
+            <div className="w-full h-full border-[3px] border-dashed border-[#c4c4c4] flex flex-col py-vw-10 px-vw-14">
+                <p className="text-lgTo2xl font-ibm font-[500] text-white">Product Summary</p>
                 <div className="w-full">
                     {order && order.products && order.products.length > 0 && (
                         <div>

@@ -8,7 +8,8 @@ const publicRoutes = [
     "/checkout",
     "/dashboard",
     "/profile",
-    "/confirmed"
+    "/confirmed",
+    "/orders"
 ];
 
 export const middleware = async (request: NextRequest) => {

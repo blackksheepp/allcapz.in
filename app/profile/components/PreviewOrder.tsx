@@ -43,8 +43,8 @@ const PreviewOrder = ({ order: { products, status, confirmedAt } }: { order: Ord
 
     const date = confirmedAt.toLocaleDateString("en-IN", { day: "numeric", month: "numeric", year: "numeric" });
     return (
-        <div className="w-full px-7 py-3">
-            <div className="w-full px-vw-1 md:px-vw-10 lg:px-vw-1 py-3 flex flex-row items-center justify-between">
+        <div className="w-full px-4 py-3">
+            <div className="w-full md:px-vw-1 py-3 flex flex-row items-center justify-between">
                 <div className="flex flex-row gap-vw-5-min@sm items-center">
                     <div className="relative">
                         <Image
@@ -67,12 +67,12 @@ const PreviewOrder = ({ order: { products, status, confirmedAt } }: { order: Ord
                         )}
                     </div>
                     <div className=" text-accent font-ibm">
-                        <p className="text-smToxl">{productNames}</p>
+                        <p className="text-smTolg">{productNames}</p>
                         <p className="text-[#a4a4a4] text-xxsTosm">{products.length} Posters • {size}</p>
                     </div>
                 </div>
                 <div className=" text-accent font-ibm flex flex-col items-end">
-                    <p className="text-smToxl" style={{ color: statusColor[status] }}>{status[0].toUpperCase() + status.slice(1)}</p>
+                    <p className="text-smTolg" style={{ color: statusColor[status] }}>{status[0].toUpperCase() + status.slice(1)}</p>
                     <p className="text-xxsTosm text-end">Ordered On {date}</p>
                 </div>
             </div>

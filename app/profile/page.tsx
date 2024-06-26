@@ -23,7 +23,10 @@ export default function Profile() {
         if (!session) {
             router.push("/");
         } else {
-            if (searchParams.get("manageAddress")) setManageAddress(true)
+            if (searchParams.get("manageAddress") == "true") {
+                console.log("called")
+                setManageAddress(true)
+            }
             else setManageAddress(false)
         }
     }, [session, router, searchParams])
@@ -31,9 +34,12 @@ export default function Profile() {
 
     useEffect(() => {
         if (!searchParams.get("manageAddress")) {
-            if (manageAddress) router.push("/profile?manageAddress=true")
+            if (manageAddress) {
+                console.log("called 2")
+                router.push("/profile?manageAddress=true")
+            }
         }
-    }, [manageAddress])
+    }, [manageAddress, router, searchParams])
 
     const [order, setOrder] = useState<OrderType | null>(null);
     useEffect(() => {
@@ -46,13 +52,13 @@ export default function Profile() {
         }
     }, [searchParams])
     return (
-        <div>
+        <div className="h-full overflow-y-hidden">
             <div className="absolute z-50">
                 <Cart />
             </div>
-            <div className={`absolute w-full h-full top-3 md:top-5  ${showCart ? `transition-all delay-500 duration-200  ease-in blur-lg pointer-events-none` : `transition-all delay-200 duration-200 ease-in blur-none`}`}>
-                <Navbar showProfile={false} />
-                {!order ? (<div className="w-full h-full mt-vw-20">
+            <div className={`absolute w-full h-full flex flex-col top-3 md:top-5  ${showCart ? `transition-all delay-500 duration-200  ease-in blur-lg pointer-events-none` : `transition-all delay-200 duration-200 ease-in blur-none`}`}>
+                    <Navbar showProfile={false} />
+                {!order ? (<div className="w-full py-vw-14-min@lg-max@xl">
                     {!manageAddress ? (
                         <div className="w-full grid grid-cols-1 lg:mt-0 lg:grid-cols-2">
                             <Orders />
@@ -62,7 +68,7 @@ export default function Profile() {
                         <div className="grid place-items-center">
                             <Addresses />
                         </div>
-                    ) }
+                    )}
                 </div>) : (
                     <ShowOrder order={order} />
                 )}
