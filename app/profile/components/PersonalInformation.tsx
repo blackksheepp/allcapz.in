@@ -1,4 +1,5 @@
 import { useSession } from '@/app/providers/Session'
+import { AddressType, GetAddresses } from '@/app/utils/database/addresses'
 import React, { useEffect, useState } from 'react'
 
 interface FieldProps {
@@ -18,7 +19,7 @@ const Field: React.FC<FieldProps> = ({ label, value, setValue, editable = true }
     return (
         <div className="w-[80%] py-2.5 flex flex-col gap-2">
             <p className="text-smTolg font-ibm text-accent">{label}</p>
-            {edit ?   (
+            {edit ? (
                 <div className="border-[2px] border-white rounded-sm flex flex-row items-center justify-between px-4">
                     <input
                         className="bg-transparent outline-none py-1.5 font-ibm placeholder:font-ibm placeholder:text-smTolg placeholder:text-[#a4a4a4] text-smTolg text-[#a4a4a4] flex-1"
@@ -29,9 +30,9 @@ const Field: React.FC<FieldProps> = ({ label, value, setValue, editable = true }
                 </div>
             ) : (
                 <>
-                        <p className={`text-smTolg px-4 py-1.5 font-ibm text-[#a4a4a4] border-[2px] border-white rounded-sm flex flex-row items-center ${inputValue ? "justify-between" : "justify-center"}`}>{inputValue}
-                            {editable && <p onClick={() => setEdit(!edit)} className="cursor-pointer text-ibm text-smTolg text-[#02CD2F] text-center">{inputValue ? "Edit" : "Enter"}</p>}
-                        </p>
+                    <p className={`text-smTolg px-4 py-1.5 font-ibm text-[#a4a4a4] border-[2px] border-white rounded-sm flex flex-row items-center ${inputValue ? "justify-between" : "justify-center"}`}>{inputValue}
+                        {editable && <p onClick={() => setEdit(!edit)} className="cursor-pointer text-ibm text-smTolg text-[#02CD2F] text-center">{inputValue ? "Edit" : "Enter"}</p>}
+                    </p>
                 </>
             )}
         </div>
@@ -44,6 +45,15 @@ export const PersonalInformation = ({ setManageAddress }: { setManageAddress: Re
     const [alterEmail, setAlterEmail] = useState(session?.alterEmail || "");
     const [phone, setPhone] = useState(session?.phone || "");
     const [alterPhone, setAlterPhone] = useState(session?.alterPhone || "");
+
+    const [addresses, setAddresses] = useState<AddressType[] | null>(null);
+    useEffect(() => {
+        if (session) {
+            GetAddresses(session?.email).then((addresses) => {
+                if (addresses) setAddresses(addresses)
+            })
+        } 
+    }, [session])
 
     return (
         <div className="w-full flex flex-col pr-vw-14 pl-vw-10 gap-3 mt-vw-32 lg:mt-0">
@@ -61,11 +71,13 @@ export const PersonalInformation = ({ setManageAddress }: { setManageAddress: Re
                         <Field label="Alternate Phone Number" value={alterPhone} setValue={setAlterPhone} />
                     </div>
                 )}
-                <button className="btn w-[80%] py-1.5">
-                    <p className="w-full font-retro text-center text-smTolg" onClick={() => setManageAddress(true)}>
-                        MANAGE ADDRESSES
-                    </p>
-                </button>
+                {
+                    addresses && addresses.length > 0 && <button className="btn w-[80%] py-1.5">
+                        <p className="w-full font-retro text-center text-smTolg" onClick={() => setManageAddress(true)}>
+                            MANAGE ADDRESSES
+                        </p>
+                    </button>
+                }
             </div>
         </div>
     )

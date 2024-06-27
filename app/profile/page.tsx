@@ -20,22 +20,36 @@ export default function Profile() {
     const [manageAddress, setManageAddress] = useState(false);
 
     useEffect(() => {
+        const handlePopState = () => {
+            const manageAddressParam = searchParams.get("manageAddress") === "true" && !searchParams.get("edit");
+            setManageAddress(manageAddressParam);
+        };
+
+        window.addEventListener('popstate', handlePopState);
+
+        return () => {
+            window.removeEventListener('popstate', handlePopState);
+        };
+    }, []);
+
+
+    useEffect(() => {
         if (!session) {
             router.push("/");
         } else {
-            if (searchParams.get("manageAddress") == "true") {
-                console.log("called")
+            if (searchParams.get("manageAddress") === "true") {
+                console.log("called", searchParams.entries())
                 setManageAddress(true)
+            } else {
+                setManageAddress(false)
             }
-            else setManageAddress(false)
         }
-    }, [session, router, searchParams])
+    }, [session, router])
 
 
     useEffect(() => {
         if (!searchParams.get("manageAddress")) {
             if (manageAddress) {
-                console.log("called 2")
                 router.push("/profile?manageAddress=true")
             }
         }
@@ -51,29 +65,31 @@ export default function Profile() {
             setOrder(null)
         }
     }, [searchParams])
+
     return (
         <div className="h-full overflow-y-hidden">
             <div className="absolute z-50">
                 <Cart />
             </div>
-            <div className={`absolute w-full h-full flex flex-col top-3 md:top-5  ${showCart ? `transition-all delay-500 duration-200  ease-in blur-lg pointer-events-none` : `transition-all delay-200 duration-200 ease-in blur-none`}`}>
-                    <Navbar showProfile={false} />
-                {!order ? (<div className="w-full py-vw-14-min@lg-max@xl">
-                    {!manageAddress ? (
-                        <div className="w-full grid grid-cols-1 lg:mt-0 lg:grid-cols-2">
-                            <Orders />
-                            <PersonalInformation setManageAddress={setManageAddress} />
-                        </div>
-                    ) : (
-                        <div className="grid place-items-center">
-                            <Addresses />
-                        </div>
-                    )}
-                </div>) : (
+            <div className={`absolute w-full h-full flex flex-col top-3 md:top-5 ${showCart ? `transition-all delay-500 duration-200 ease-in blur-lg pointer-events-none` : `transition-all delay-200 duration-200 ease-in blur-none`}`}>
+                <Navbar showProfile={false} />
+                {!order ? (
+                    <div className="w-full py-vw-14-min@lg-max@xl">
+                        {!manageAddress ? (
+                            <div className="w-full grid grid-cols-1 lg:mt-0 lg:grid-cols-2">
+                                <Orders />
+                                <PersonalInformation setManageAddress={setManageAddress} />
+                            </div>
+                        ) : (
+                            <div className="grid place-items-center">
+                                <Addresses />
+                            </div>
+                        )}
+                    </div>
+                ) : (
                     <ShowOrder order={order} />
                 )}
             </div>
         </div>
-    )
+    );
 }
-

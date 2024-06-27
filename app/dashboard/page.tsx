@@ -11,6 +11,7 @@ import {
 } from "@/app/utils/database/collections";
 import { Collection, NewCollection } from "./components/Collection";
 import { WithAuth } from "../components/WithAuth";
+import { GetImage } from "../components";
 
 
 export default function Dashboard() {
@@ -119,7 +120,7 @@ export default function Dashboard() {
                 {/* Logo */}
                 <Link href="/">
                     <Image
-                        src="/img/logo-high.svg"
+                        src={GetImage("img/logo-high.svg")}
                         alt="logo"
                         width={0}
                         height={0}

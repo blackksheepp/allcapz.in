@@ -3,6 +3,7 @@ import { bot } from "."
 import { GetAddress } from "../database/addresses"
 import { GetOrder } from "../database/orders"
 import { InputMediaPhoto } from "node-telegram-bot-api"
+import { GetImage } from "../../components"
 
 export const SendOrderConfirmedMessage = async (orderId: string) => {
     const order = await GetOrder(orderId);
@@ -34,14 +35,16 @@ ${order.products.map((product) => {
 <b>${date}</b>
 `;
 
-        const productImages: InputMediaPhoto[] = order.products.flatMap((product) => {
-            return {
-                type: "photo",
-                media: product.image,
-                caption,
-                parse_mode: "HTML"
-            }
-        });
+        const productImages: InputMediaPhoto[] = await Promise.all(
+            order.products.flatMap(async (product) => {
+                return {
+                    type: "photo",
+                    media: await GetImage(product.id),
+                    caption,
+                    parse_mode: "HTML"
+                }
+            })
+        )
 
         await bot.sendMediaGroup(
             process.env.TELEGRAM_CHANNEL || "",

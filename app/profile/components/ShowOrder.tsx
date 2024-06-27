@@ -27,6 +27,7 @@ export const ShowOrder = ({ order }: { order: OrderType }) => {
   const [address, setAddress] = useState<AddressType | null>(null);
   useEffect(() => {
     GetAddress(order.address).then((resp) => {
+      console.log("resp", resp, order.address)
       if (resp) setAddress(resp);
     })
   }, [order])

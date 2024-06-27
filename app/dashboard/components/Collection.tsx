@@ -2,6 +2,7 @@ import { CollectionType, CreateCollection, ReOrderProduct, RenameCollection } fr
 import Image from "next/image";
 import React, { useEffect, useRef, useState } from "react";
 import { NewProduct, Product } from "./Product";
+import { GetImage } from "@/app/components";
 
 interface CollectionProps {
     data: CollectionType,
@@ -77,7 +78,7 @@ export const Collection: React.FC<CollectionProps> = ({ data: { name, products }
                         <p className="px-2 text-accent font-ibm font-[500] text-lgTo2xl mr-3">{name}</p>
                     )}
                     <Image
-                        src="/img/edit.svg"
+                        src={GetImage("img/edit.svg")}
                         alt="logo"
                         width={20}
                         height={20}
@@ -90,7 +91,7 @@ export const Collection: React.FC<CollectionProps> = ({ data: { name, products }
                     <div className="w-[30px] flex flex-row gap-1 items-center justify-center">
                         <Image
                             onClick={upvote}
-                            src="/img/upvote.svg"
+                            src={GetImage("img/upvote.svg")}
                             alt="logo"
                             width={20}
                             height={20}
@@ -98,7 +99,7 @@ export const Collection: React.FC<CollectionProps> = ({ data: { name, products }
                         />
                         <Image
                             onClick={downvote}
-                            src="/img/downvote.svg"
+                            src={GetImage("img/downvote.svg")}
                             alt="logo"
                             width={20}
                             height={20}

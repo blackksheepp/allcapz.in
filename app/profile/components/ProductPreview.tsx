@@ -1,13 +1,14 @@
 import React from 'react'
 import Image from "next/image";
 import { ProductType } from "@/app/utils/database/collections";
+import { GetImage } from '@/app/components';
 
 const ProductPreview = ({ product }: { product: ProductType }) => {
     return (
         <div className="w-full flex flex-row items-start justify-between py-vw-2">
             <div className="flex flex-row lg:gap-0 gap-2 items-start">
                 <Image
-                    src={product.image}
+                    src={GetImage(product.id)}
                     alt=""
                     width={0}
                     height={0}

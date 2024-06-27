@@ -4,6 +4,7 @@ import { ProductType } from "@/app/utils/database/collections";
 import { Polaroid } from "./Polaroid";
 import Link from "next/link";
 import { useMiscStore } from "@/app/utils/store/miscStore";
+import { GetImage } from "@/app/components";
 interface ProductsProps {
   products: ProductType[];
   collection: string;
@@ -20,6 +21,7 @@ export const ShowProducts: React.FC<ProductsProps> = ({ products, collection }) 
     config: { duration: 250, tension: 100 },
   });
 
+
   return (
     <div>
       <div className="font-retro text-gray-400 text-lg flex flex-row gap-7 justify-center items-baseline">
@@ -30,7 +32,7 @@ export const ShowProducts: React.FC<ProductsProps> = ({ products, collection }) 
                 return (
                   <Link key={key} href={`/product/${btoa(item.title + "." + collection)}`}>
                     <animated.p style={styles}>
-                      <Polaroid title={item.title} url={item.image} collection={collection} />
+                      <Polaroid title={item.title} id={item.id}/>
                     </animated.p>
                   </Link>
                 );
@@ -44,7 +46,7 @@ export const ShowProducts: React.FC<ProductsProps> = ({ products, collection }) 
                   return (
                     <Link key={index + product.title} href={`/product/${btoa(product.title + "." + collection)}`}>
                       <p>
-                        <Polaroid title={product.title} url={product.image} collection={collection} />
+                        <Polaroid title={product.title} id={product.id} />
                       </p>
                     </Link>
                   )

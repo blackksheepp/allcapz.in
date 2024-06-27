@@ -16,6 +16,10 @@ declare global {
       ADMIN_PASSWORD: string;
       TELEGRAM_BOT_TOKEN: string;
       TELEGRAM_CHANNEL: string;
+      AWS_REGION: string;
+      AWS_S3_BUCKET: string;
+      AWS_ACCESS_KEY_ID: string;
+      AWS_SECRET_ACCESS_KEY: string;
       NODE_ENV: "development" | "production";
       PORT?: string;
       PWD: string;

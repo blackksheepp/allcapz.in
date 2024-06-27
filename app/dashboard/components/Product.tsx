@@ -1,4 +1,5 @@
 import { CreateProduct, DeleteProduct, EditProduct, ProductType, SaveImage } from "@/app/utils/database/collections";
+import { GetImage } from "@/app/components";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
 
@@ -10,7 +11,7 @@ interface ProductProps {
     upvote: () => void;
     downvote: () => void;
 }
-export const Product: React.FC<ProductProps> = ({ data: { image, title, price }, refresh, hide, collection, upvote, downvote }) => {
+export const Product: React.FC<ProductProps> = ({ data: { id, title, price }, refresh, hide, collection, upvote, downvote }) => {
     const [editMode, setEditMode] = useState(false);
     const [newTitle, setNewTitle] = useState(title);
     const [newPrice, setNewPrice] = useState(price);
@@ -29,7 +30,7 @@ export const Product: React.FC<ProductProps> = ({ data: { image, title, price },
                         <div className="w-[30px] flex flex-col gap-1 items-center justify-center">
                             <Image
                                 onClick={upvote}
-                                src="/img/upvote.svg"
+                                src={GetImage("img/upvote.svg")}
                                 alt="logo"
                                 width={0}
                                 height={0}
@@ -37,7 +38,7 @@ export const Product: React.FC<ProductProps> = ({ data: { image, title, price },
                             />
                             <Image
                                 onClick={downvote}
-                                src="/img/downvote.svg"
+                                src={GetImage("img/downvote.svg")}
                                 alt="logo"
                                 width={0}
                                 height={0}
@@ -45,7 +46,7 @@ export const Product: React.FC<ProductProps> = ({ data: { image, title, price },
                             />
                         </div>
                         <Image
-                            src={image}
+                            src={GetImage(id)}
                             alt="productimg"
                             width={0}
                             height={0}
@@ -110,34 +111,32 @@ export const Product: React.FC<ProductProps> = ({ data: { image, title, price },
 export const NewProduct = ({ refresh, hide, collection }: { refresh: () => void, hide: () => void, collection: string }) => {
     const [newProductTitle, setNewProductTitle] = useState("");
     const [newProductPrice, setNewProductPrice] = useState("");
-    const [newProductImageUrl, setNewProductImageUrl] = useState("");
     const [newProductImage, setNewProductImage] = useState<File | null>(null);
+    const [newProductId, setNewProductId] = useState("");
 
     const [takeInputTitle, setTakeInputTitle] = useState(false);
     const [takeInputPrice, setTakeInputPrice] = useState(false);
     const [takeInputImage, setTakeInputImage] = useState(false);
 
     useEffect(() => {
-        if (newProductImage) {
-            const form = new FormData();
-            form.append("photo", newProductImage);
-            SaveImage(form).then(url => {
-                if (url) {
-                    setNewProductImageUrl(url);
-                    setTakeInputImage(true);
-                }
-            })
-
-
-        }
+        (async () => {
+            if (newProductImage) {
+                const form = new FormData();
+                form.append("file", newProductImage);
+                const { url, id } = await SaveImage(form)
+                setNewProductId(id);
+                setTakeInputImage(true);
+            }
+        })()
     }, [newProductImage])
 
 
+
     const finalAddProduct = async () => {
-        if (newProductTitle !== "" && newProductPrice !== "" && newProductImageUrl !== "") {
+        if (newProductTitle !== "" && newProductPrice !== "" && newProductId !== "") {
             const response = await CreateProduct(
+                newProductId,
                 newProductTitle,
-                newProductImageUrl,
                 Number(newProductPrice),
                 "M",
                 collection
@@ -156,14 +155,14 @@ export const NewProduct = ({ refresh, hide, collection }: { refresh: () => void,
                     <div className="flex flex-row items-center gap-vw-10">
                         <div className="w-[30px] flex flex-col gap-1 items-center justify-center">
                             <Image
-                                src="/img/upvote.svg"
+                                src={GetImage("img/upvote.svg")}
                                 alt="logo"
                                 width={0}
                                 height={0}
                                 className="w-auto lg:h-7 md:h-5 h-4 cursor-pointer"
                             />
                             <Image
-                                src="/img/downvote.svg"
+                                src={GetImage("img/downvote.svg")}
                                 alt="logo"
                                 width={0}
                                 height={0}
@@ -183,8 +182,8 @@ export const NewProduct = ({ refresh, hide, collection }: { refresh: () => void,
                             />
                             <Image
                                 onClick={() => document.getElementById('file-input')?.click()}
-                                src={newProductImageUrl || "/img/placeholder.svg"}
-                                alt="productimg"
+                                src={newProductId ? GetImage(newProductId) : GetImage("img/placeholder.svg")}
+                                alt=""
                                 width={0}
                                 height={0}
                                 sizes="100vw"

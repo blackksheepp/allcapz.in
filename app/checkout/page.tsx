@@ -18,13 +18,15 @@ import { CreateOrder, PriceType } from "../utils/database/orders";
 import { useLoginStore } from "../utils/store/loginStore";
 import Auth from "../components/Auth";
 import { Field, FormError } from "./components/Field";
+import { GetImage } from "../components";
 
 const CheckoutProduct = ({ product }: { product: ProductType }) => {
+
   return (
     <div className="w-full flex flex-row items-start justify-between py-vw-2">
       <div className="flex flex-row lg:gap-0 gap-2 items-start">
         <Image
-          src={product.image}
+          src={GetImage(product.id)}
           alt=""
           width={0}
           height={0}
@@ -46,7 +48,7 @@ const CheckoutProduct = ({ product }: { product: ProductType }) => {
 
 const Next = ({ active }: { active: boolean }) => {
   return <Image
-    src={active ? "/img/arrow-active.svg" : "/img/arrow.svg"}
+    src={GetImage(active ? "img/arrow-active.svg" : "img/arrow.svg")}
     alt="show"
     width={0}
     height={0}
@@ -57,7 +59,7 @@ const Next = ({ active }: { active: boolean }) => {
 
 const Prev = () => {
   return <Image
-    src={"/img/arrow.svg"}
+    src={GetImage("img/arrow.svg")}
     alt="show"
     width={0}
     height={0}
@@ -68,7 +70,7 @@ const Prev = () => {
 
 const RazorPay = () => {
   return <Image
-    src={"/img/razorpay.svg"}
+    src={GetImage("img/razorpay.svg")}
     alt="show"
     width={0}
     height={0}
@@ -161,7 +163,7 @@ export default function Checkout({ params }: { params: { slug: string } }) {
           }
 
           // Save Address
-          if (!addressId) {
+          if (addressId === "") {
             const resp = await SaveAddress({
               email: session?.email ?? email,
               fname: fname,
@@ -172,7 +174,7 @@ export default function Checkout({ params }: { params: { slug: string } }) {
               city: city,
               phone: phone
             })
-            
+
             if (resp) setAddressId(resp)
           }
 
@@ -305,8 +307,8 @@ export default function Checkout({ params }: { params: { slug: string } }) {
   useEffect(() => {
     if (session) {
       GetAddresses(session.email).then((data) => {
-          setAddresses(data)
-          setSelectAddress(true)
+        setAddresses(data)
+        setSelectAddress(true)
       })
     }
   }, [])
@@ -344,7 +346,7 @@ export default function Checkout({ params }: { params: { slug: string } }) {
         <div className="w-full py-vw-7-min@lg lg:hidden flex items-center justify-center">
           <Link href="/">
             <Image
-              src="/img/logo-low.svg"
+              src={GetImage("img/logo-low.svg")}
               alt="logo"
               width={0}
               height={0}
@@ -359,9 +361,9 @@ export default function Checkout({ params }: { params: { slug: string } }) {
           <div onClick={() => setShowProducts(!showProducts)} className={`lg:hidden font-ibm cursor-pointer flex flex-row w-full items-center justify-between px-vw-20 ${showProducts && `pb-vw-10`}`}>
 
             <div className="flex flex-row gap-1 items-center">
-              <Image src="/img/cart-dark.svg" alt="cart" width={0} height={0} sizes="100vw" className="w-[25px] h-auto" />
+              <Image src={GetImage("img/cart-dark.svg")} alt="cart" width={0} height={0} sizes="100vw" className="w-[25px] h-auto" />
               <p className="text-smTolg font-[500]">{showProducts ? "Hide" : "Show"} Order Summary</p>
-              <Image src={showProducts ? "/img/up.svg" : "/img/down.svg"} alt="show" width={0} height={0} sizes="100vw" className={`w-[20px] h-auto mt-1 `} />
+              <Image src={GetImage(showProducts ? "img/up.svg" : "img/down.svg")} alt="show" width={0} height={0} sizes="100vw" className={`w-[20px] h-auto mt-1 `} />
             </div>
             <p className="text-lgTo2xl">₹{cart?.products.reduce((a, b) => a + (b.price * (b.quantity || 1)), 0)}</p>
           </div>
@@ -406,7 +408,7 @@ export default function Checkout({ params }: { params: { slug: string } }) {
 
             <Link href="/">
               <Image
-                src="/img/logo-high.svg"
+                src={GetImage("img/logo-high.svg")}
                 alt="logo"
                 width={0}
                 height={0}
@@ -460,13 +462,13 @@ export default function Checkout({ params }: { params: { slug: string } }) {
                     )}
 
                   </div>
-                  {selectAddress ? (<div className="w-full h-auto rounded-[2px] border-[1px] border-white text-[#a4a4a4] text-sm">
+                  {selectAddress && addresses && addresses.length > 0 ? (<div className="w-full h-auto rounded-[2px] border-[1px] border-white text-[#a4a4a4] text-sm">
                     {addresses?.flatMap((userAddress: AddressType, index) => {
                       return (
                         <div>
                           <div className="w-full flex flex-row justify-between items-center cursor-pointer" onClick={() => setUserAddress(userAddress)}>
                             <div className="flex flex-col p-4">
-                            <p className="font-bold text-accent">{userAddress?.fname} {userAddress?.lname}</p>
+                              <p className="font-bold text-accent">{userAddress?.fname} {userAddress?.lname}</p>
                               <p className="">{userAddress?.street}</p>
                               <p className="">{userAddress?.address}</p>
                               <p className="">{userAddress?.postalCode}, {userAddress?.city}</p>
@@ -481,7 +483,7 @@ export default function Checkout({ params }: { params: { slug: string } }) {
                         </div>
                       )
                     })}
-                    <p className="grid place-items-center p-2 md:p-3 font-[500] text-black bg-accent text-xsTosm" onClick={() => setNewAddress()}>
+                    <p className="cursor-pointer grid place-items-center p-2 md:p-3 font-[500] text-black bg-accent text-xsTosm" onClick={() => setNewAddress()}>
                       Enter New Address
                     </p>
                   </div>) : (
@@ -544,7 +546,7 @@ export default function Checkout({ params }: { params: { slug: string } }) {
                       <div className="flex flex-row gap-10 text-xsTosm">
                         <p className="text-[#c4c4c4] max-w-16 min-w-14">Payment</p>
                         <p className="flex flex-row gap-1"><Image
-                          src={"/img/razorpay-icon.svg"}
+                          src={GetImage("img/razorpay-icon.svg")}
                           alt="show"
                           width={0}
                           height={0}

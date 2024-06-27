@@ -1,5 +1,9 @@
 "use server"
 import prisma from "@/lib/prisma";
+import { CompressImage } from "../image-compression";
+import { GetImage } from "../../components";
+import { StoreImage } from "../s3";
+import { appendFile, readFile } from "fs";
 const bson = require("bson");
 export interface CollectionType {
     name: string;
@@ -8,7 +12,6 @@ export interface CollectionType {
 
 export interface ProductType {
     id: string;
-    image: string;
     title: string;
     price: number;
     size: string;
@@ -88,14 +91,13 @@ export const ReOrderCollections = async (collections: CollectionType[]) => {
 };
 
 export const CreateProduct = async (
+    id: string,
     title: string,
-    image: string,
     price: number,
     size: string,
     collection: string
 ) => {
     try {
-        const id = new bson.ObjectId().toString();
         await prisma.collections.update({
             where: {
                 name: collection,
@@ -105,7 +107,6 @@ export const CreateProduct = async (
                     push: [
                         {
                             id,
-                            image,
                             title,
                             price,
                             size,
@@ -236,27 +237,12 @@ export const GetProductByTitle = async (collection: string, title: string) => {
 };
 
 export const SaveImage = async (form: FormData) => {
-    const res = await fetch("https://graph.org/upload", {
-        method: "POST",
-        body: form,
-    });
-    const json = await res.json();
-    if (json.error) throw new Error(json.error);
+    const inputBuffer = await (form.get('file') as File).arrayBuffer()
+    const outputBuffer = await CompressImage(Buffer.from(inputBuffer));
+    const id: string = new bson.ObjectId().toString();
+    const stored = await StoreImage(outputBuffer, id+".avif");
+    const url =  GetImage(id);
+    return { url, id };
 
-    const url = `https://graph.org${json[0].src}`;
-    return url;
 };
 
-export const GetProductImages = async () => {
-    const comicsWithImages = await prisma.collections.findMany({
-        select: {
-            products: {
-                select: {
-                    image: true,
-                }
-            }
-        }
-    });
-
-    return comicsWithImages.flatMap(comics => comics.products.map(product => product.image));
-}

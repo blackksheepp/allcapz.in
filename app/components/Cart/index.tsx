@@ -10,6 +10,7 @@ import { useSession } from "@/app/providers/Session";
 import { motion } from 'framer-motion';
 import { useRouter, usePathname } from "next/navigation";
 import { useCartStore } from "@/app/utils/store/cartStore";
+import { GetImage } from "@/app/components";
 
 const CartProduct = ({ product, onClick, updateTotal }: { product: ProductType, onClick: () => void, updateTotal: () => void }) => {
 
@@ -72,12 +73,12 @@ const CartProduct = ({ product, onClick, updateTotal }: { product: ProductType, 
       {stateProduct && (<div className="w-full flex flex-row justify-center gap-5 px-5">
         <div className="bg-[#c7c7c7] border-black border-[1px] shadow-[5px_5px_0px_0px_rgba(70,70,70)] pt-3 pb-2 w-full flex flex-row justify-center gap-5">
           <Image
-            src={stateProduct.image}
+            src={GetImage(stateProduct.id)}
             alt=""
             width={0}
             height={0}
             sizes="10vw"
-            className="w-[90px] h-auto self-start ml-2 shadow-lg"
+            className="min-w-[90px] h-auto self-start ml-2 shadow-lg"
           />
           <div className="w-full py-1 flex flex-col justify-between text-black opacity-80 font-ibm font-[600] text-sm">
             <div className="flex flex-col gap-2">

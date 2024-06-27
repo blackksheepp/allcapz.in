@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { BackgroundTexture } from '../TextureOverlay';
 import { useMiscStore } from '@/app/utils/store/miscStore';
+import { GetImage } from '..';
 
 interface PreloaderProps {
     setLoading: (loading: boolean) => void;
@@ -13,7 +14,7 @@ const Preloader: React.FC<PreloaderProps> = ({ setLoading }) => {
     useEffect(() => {
         setTimeout(() => {
             setLoading(false)
-        }, 1000)
+        }, 2000)
     }, [])
 
     useEffect(() => {
@@ -21,12 +22,13 @@ const Preloader: React.FC<PreloaderProps> = ({ setLoading }) => {
             setProgress((oldProgress) => {
                 if (oldProgress >= 100) {
                     clearInterval(interval);
+                    setLoading(false);
                     return 100;
                 }
-                const diff = Math.random() * 3;
+                const diff = Math.random() * 10;
                 return Math.min(oldProgress + diff, 100);
             });
-        }, 15);
+        }, 50);
 
         return () => {clearInterval(interval); showPreloader(false);}
     }, []);
@@ -36,7 +38,7 @@ const Preloader: React.FC<PreloaderProps> = ({ setLoading }) => {
             <BackgroundTexture/>
             <div className="flex flex-col gap-vw-4 justify-center items-center">
                 <Image
-                    src="/img/logo.avif"
+                    src={GetImage("img/logo.avif")}
                     alt="logo"
                     width={0}
                     height={0}

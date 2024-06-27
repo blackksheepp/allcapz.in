@@ -5,6 +5,7 @@ import "slick-carousel/slick/slick-theme.css";
 import React from "react";
 import Slider from "react-slick";
 import Image from "next/image";
+import { GetImage } from "../..";
 
 export default function ImageSlider() {
   var settings = {
@@ -21,7 +22,7 @@ export default function ImageSlider() {
     <div>
       <Slider {...settings}>
         <Image
-          src="/img/banner.avif"
+          src={GetImage("img/banner.avif")}
           alt="logo"
           width={0}
           height={0}
@@ -29,7 +30,7 @@ export default function ImageSlider() {
           priority
         />
         <Image
-          src="/img/banner.avif"
+          src={GetImage("img/banner.avif")}
           alt="logo"
           width={0}
           height={0}
@@ -37,7 +38,7 @@ export default function ImageSlider() {
           priority
         />
         <Image
-          src="/img/banner.avif"
+          src={GetImage("img/banner.avif")}
           alt="logo"
           width={0}
           height={0}

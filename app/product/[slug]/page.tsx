@@ -15,6 +15,7 @@ import { BackgroundTexture } from "@/app/components/TextureOverlay";
 import { useSearchParams } from "next/navigation";
 import { useCartStore } from "@/app/utils/store/cartStore";
 import { useLoginStore } from "@/app/utils/store/loginStore";
+import { GetImage } from "@/app/components";
 
 
 export default function Product({ params }: { params: { slug: string } }) {
@@ -85,7 +86,7 @@ export default function Product({ params }: { params: { slug: string } }) {
         <BackgroundTexture />
         <div className={`w-full h-full max-h-max flex items-center blur-[100px] justify-center transition-all ease-linear duration-1000 ${isTransitioning ? 'opacity-100' : 'opacity-0 '} ${(!showLogin && !showCart) && "animate-spin-slow"}`}>
             <Image
-              src={product?.image!}
+              src={GetImage(product?.id!)}
               alt={product?.title!}
               width={0}
               height={0}
@@ -109,7 +110,7 @@ export default function Product({ params }: { params: { slug: string } }) {
             <div className="relative place-self-center lg:w-[400px] md:w-[400px] lg:min-w-[400px] md:min-w-[400px] w-full lg:h-[500px] md:h-[500px] h-[300px] grid place-items-center">
                 <>
                   <Image
-                    src={product?.image!}
+                  src={GetImage(product?.id!)}
                     alt={""}
                     width={0}
                     height={0}
@@ -119,7 +120,7 @@ export default function Product({ params }: { params: { slug: string } }) {
                     priority
                   />
                   <Image
-                    src={product?.image!}
+                  src={GetImage(product?.id!)}
                     alt={""}
                     width={0}
                     height={0}
@@ -129,7 +130,7 @@ export default function Product({ params }: { params: { slug: string } }) {
                     priority
                   />
                   <Image
-                    src={product?.image!}
+                  src={GetImage(product?.id!)}
                     alt={""}
                     width={0}
                     height={0}
@@ -173,7 +174,7 @@ export default function Product({ params }: { params: { slug: string } }) {
                   }
                   <Image
                     onClick={() => setSize(!size)}
-                    src="/img/drop.svg"
+                    src={GetImage("img/drop.svg")}
                     alt="trash"
                     width={0}
                     height={0}
@@ -212,7 +213,7 @@ export default function Product({ params }: { params: { slug: string } }) {
         >
           <div className="h-full max-h-max flex items-center justify-center">
             <Image
-              src={product?.image!}
+              src={GetImage(product?.id!)}
               alt={""}
               width={0}
               height={0}

@@ -17,7 +17,6 @@ model Collections {
 
 type Product {
   id         String
-  image      String
   title      String
   price      Int
   size       String

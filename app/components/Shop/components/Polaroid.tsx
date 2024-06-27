@@ -1,11 +1,21 @@
-import React from 'react'
+"use client";
+import React, { useEffect, useState } from 'react'
 import Image from 'next/image';
+import { GetImage } from '@/app/components';
 
-export const Polaroid = ({ title, url, collection }: { title: string; url: string, collection: string }) => {
+export const Polaroid = ({ title, id }: { title: string; id: string }) => {
+  const image = GetImage(id);
+  const [mobile, setMobile] = useState(false);
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      setMobile(window.innerWidth < 768);
+    }
+  }, []);
+
   return (
     <div className="relative w-vw-52-min@xl sm:w-vw-52-min@lg md:w-vw-52-min@xl mb-vw-14-min@md rotate-1 cursor-pointer" >
       <Image
-        src="/img/polaroid.svg"
+        src={GetImage("img/polaroid.svg")}
         alt=""
         width={0}
         height={0}
@@ -16,11 +26,11 @@ export const Polaroid = ({ title, url, collection }: { title: string; url: strin
       <div className="pt-vw-3-min@xl sm:pt-vw-3-min@lg md:pt-vw-3-min@xl">
         <div className="box-content w-vw-46-min@xl sm:w-vw-46-min@lg md:w-vw-46-min@xl h-vw-46-min@xl sm:h-vw-46-min@lg md:h-vw-46-min@xl ml-vw-1-min@md sm:ml-vw-1-min@lg md:ml-vw-1-min@xl grid place-items-center">
           <Image
-            src={url}
+            src={image}
             alt=""
             width={0}
             height={0}
-            sizes="15vw"
+            sizes={mobile ? "50vw" : "15vw"}
             className="w-full h-auto"
             priority
           />

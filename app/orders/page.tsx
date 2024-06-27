@@ -18,12 +18,10 @@ function Orders() {
     useEffect(() => {
         (async () => {
             const users = await GetUsers();
-            console.log(users, "users")
             const getOrders: OrderType[] = [];
 
             users?.map(async (user) => {
                 const userOrders = await GetOrders(user.email);
-                console.log(userOrders, "userOrders")
                 if (userOrders) {
                     getOrders.push(...userOrders);
                 }

@@ -1,11 +1,12 @@
 import { OrderType } from '@/app/utils/database/orders'
+import { GetImage } from '@/app/components';
 import Image from 'next/image';
 import React, { useEffect, useState } from 'react'
 
 
 const PreviewOrder = ({ order: { products, status, confirmedAt } }: { order: OrderType }) => {
     
-    const images = products.map((product) => product.image).slice(0, 2);
+    const images = products.map((product) => GetImage(product.id)).slice(0, 2);
 
     const PRODUCT_NAMES_LENGTH = 20;
     var productNames = "";

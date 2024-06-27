@@ -8,6 +8,7 @@ import { CartCookieType, GetCartFromCookies } from "@/app/utils/cookies/cart";
 import { useCartStore } from "@/app/utils/store/cartStore";
 import { useLoginStore } from "@/app/utils/store/loginStore";
 import { useRouter } from "next/navigation";
+import { GetImage } from "..";
 
 interface NavbarProps {
   showProfile?: boolean
@@ -54,7 +55,7 @@ const Navbar: React.FC<NavbarProps> = ({ showProfile = true }) => {
         <div className="w-full flex flex-row items-center justify-between px-vw-14 py-vw-8-max@sm">
           <Link href="/">
             <Image
-              src="/img/logo-low.svg"
+              src={GetImage("img/logo-low.svg")}
               alt="logo"
               width={0}
               height={0}
@@ -68,7 +69,7 @@ const Navbar: React.FC<NavbarProps> = ({ showProfile = true }) => {
               <p className="lg:text-[10px] text-[8px]">{session ? "Your Profile" : "Or Sign Up"}</p>
             </div>}
             <Image
-              src={isFull ? "/img/full-cart.svg" : "/img/cart.svg"}
+              src={GetImage(isFull ? "img/full-cart.svg" : "img/cart.svg")}
               alt="cart"
               width={0}
               height={0}
