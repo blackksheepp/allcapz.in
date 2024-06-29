@@ -78,8 +78,6 @@ export async function CheckServiceAvailability(postalCode: number) {
                 suppress_text: service.suppress_text,
             }))
         };
-        
-       
     } catch (error) {
         console.log(error)
     }

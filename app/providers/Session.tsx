@@ -2,7 +2,7 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { UserType } from '../utils/database/users';
-import { SendAuthLink, VerifyToken, GetSessionToken, SendWelcome } from '../utils/auth';
+import { SendAuthLink, VerifyToken, GetSessionToken } from '../utils/auth';
 import { FitTexture } from '../components/TextureOverlay';
 import { CreateUser, GetUser } from '../utils/database/users';
 import { ClearSessionCookie, GetSessionCookie, SetSessionCookie } from '../utils/cookies/auth';
@@ -102,11 +102,9 @@ export const SessionProvider: React.FC<SessionProviderProps> = ({ children }) =>
             email
         };
 
-        const success = await CreateUser(user);
+        await CreateUser(user);
         const sessionToken = await GetSessionToken(email);
         if (await SetSessionCookie(sessionToken)) router.replace("/");
-
-        await SendWelcome(name, email);
     }
 
     return (
@@ -123,7 +121,7 @@ export const SessionProvider: React.FC<SessionProviderProps> = ({ children }) =>
                             onChange={(e) => setName(e.target.value)}
                         />
                         <input
-                            className="hover:border-[1px] border-green-400 bg-green-500 hover:bg-black hover text-black hover:text-green-500 hover:font-bold w-[150px] py-1.5 text-[13px] transition-all duration-200 ease-in-out"
+                            className="hover:border-[1px] border-green-400 bg-green-500 hover:bg-black hover text-black hover:text-green-500 hover:font-bold w-[150px] py-1.5 text-[13px] transition-all duration-200 ease-in-out font-bold font-ibm"
                             type="submit"
                             value={"Shop Now"}
                         />

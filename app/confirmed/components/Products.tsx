@@ -15,7 +15,7 @@ export const Products: FC<ProductsProps> = ({ order }) => {
     const date = new Date(order.confirmedAt).toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" });
 
     const router = useRouter();
-   
+
     return (
         <div className="w-full h-full flex flex-col px-vw-20-max@md lg:pl-vw-14 lg:pr-vw-10 gap-3">
             <div className="flex flex-col gap-1">

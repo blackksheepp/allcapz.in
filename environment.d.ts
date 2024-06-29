@@ -4,8 +4,6 @@ declare global {
       REDIS_URI: string;
       DATABASE_URL: string;
       JWT_SECRET: string;
-      NODEMAILER_EMAIL: string;
-      NODEMAILER_PW: string;
       AUTH_URL: string;
       GOOGLE_CLIENT_ID: string;
       GOOGLE_CLIENT_SECRET: string;
@@ -20,6 +18,10 @@ declare global {
       AWS_S3_BUCKET: string;
       AWS_ACCESS_KEY_ID: string;
       AWS_SECRET_ACCESS_KEY: string;
+      SMTP_HOST: string
+      SMTP_PORT: string
+      SMTP_USERNAME: string
+      SMTP_PASSWORD: string
       NODE_ENV: "development" | "production";
       PORT?: string;
       PWD: string;

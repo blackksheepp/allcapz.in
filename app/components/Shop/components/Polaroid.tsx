@@ -23,7 +23,7 @@ export const Polaroid = ({ title, id }: { title: string; id: string }) => {
   return (
     <div className="relative w-vw-52-min@xl sm:w-vw-52-min@lg md:w-vw-52-min@xl mb-vw-14-min@md rotate-1 cursor-pointer" >
       <Image
-        src={GetImage("img/polaroid.svg")}
+        src={GetImage("img/polaroid.avif")}
         alt=""
         width={0}
         height={0}

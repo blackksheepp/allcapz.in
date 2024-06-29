@@ -195,6 +195,7 @@ export default function Checkout({ params }: { params: { slug: string } }) {
 
           await CreateOrder({
             id: response.razorpay_order_id,
+            payment_id: response.razorpay_payment_id,
             confirmedAt: new Date(),
             status: "processing",
             user: session!.email,

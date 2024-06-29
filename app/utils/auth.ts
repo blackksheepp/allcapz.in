@@ -3,14 +3,13 @@
 import { createTransport } from "nodemailer"
 import jwt from 'jsonwebtoken';
 import { google } from 'googleapis';
-import { SignupRequest, LoginRequest } from "@/emails/auth";
+import { AuthEmail } from "@/emails/auth";
 import { render } from "@react-email/render";
 import { GetUser, UserType } from "./database/users";
-import { WelcomeEmail } from "@/emails/welcome";
 
 const getAuthToken = (email: string, authType: string) => {
   const payload = { "email": email, "authType": authType };
-  const authToken = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: "30m" });
+  const authToken = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: "10m" });
   return authToken
 }
 
@@ -41,51 +40,24 @@ export const SendAuthLink = async (email: string, authType: string) => {
     username = user?.name!;
   }
 
-  const GetEmail = login ? LoginRequest : SignupRequest;
-
   var mailOptions = {
-    from: `ALLCAPZ <${process.env.NODEMAILER_EMAIL}>`,
+    from: `ALLCAPZ <${process.env.SMTP_USERNAME}>`,
     to: email,
     subject: `${login ? "Log into" : "Sign upto"} ALLCAPZ.in`,
-    html: render(GetEmail(login ? username : email, `${process.env.AUTH_URL}?authToken=${getAuthToken(email, authType)}`))
+    html: render(AuthEmail(authType, `${process.env.AUTH_URL}?authToken=${getAuthToken(email, authType)}`))
+
+
+    // GetEmail(login ? username : email, `${process.env.AUTH_URL}?authToken=${getAuthToken(email, authType)}`))
   };
 
   try {
     transporter.sendMail(mailOptions);
     return true;
   } catch (error) {
-    console.log(error);
+    console.log(error, "FAILED EMAIL");
     return false;
   }
 }
-
-
-export const SendWelcome = async (name: string, email: string) => {
-  var transporter = createTransport({
-    service: "gmail",
-    auth: {
-      user: process.env.NODEMAILER_EMAIL,
-      pass: process.env.NODEMAILER_PW,
-    },
-  });
-
-
-  var mailOptions = {
-    from: `ALLCAPZ <${process.env.NODEMAILER_EMAIL}>`,
-    to: email,
-    subject: `Welcome to ALLCAPZ.in`,
-    html: render(WelcomeEmail(name))
-  };
-
-  try {
-    transporter.sendMail(mailOptions);
-    return true;
-  } catch (error) {
-    console.log(error);
-    return false;
-  }
-}
-
 
 
 const getOathClient = () => {
@@ -110,12 +82,12 @@ export const GetGoogleAuthLink = async () => {
 
 export const GetGoogleUser = async (code: string) => {
   const oauth2Client = getOathClient();
-  
+
   const { tokens } = await oauth2Client.getToken(code);
   oauth2Client.setCredentials(tokens);
-  
+
   const oauth2 = google.oauth2({ version: 'v2', auth: oauth2Client });
   const { data } = await oauth2.userinfo.get();
-  
-  return {name: data.given_name, email: data.email} as UserType;
+
+  return { name: data.given_name, email: data.email } as UserType;
 };

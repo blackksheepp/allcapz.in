@@ -4,16 +4,23 @@ import { GetAddress } from "../database/addresses"
 import { GetOrder } from "../database/orders"
 import { InputMediaPhoto } from "node-telegram-bot-api"
 import { GetImage } from "../../components"
+import axios from "axios"
+import path from "path"
+import { unlinkSync, writeFileSync } from "fs"
+import { DecompressImage } from "../image-compression"
 
 export const SendOrderConfirmedMessage = async (orderId: string) => {
     const order = await GetOrder(orderId);
-    
+
     if (order) {
-        const date = order.confirmedAt.toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" });    
+        const date = order.confirmedAt.toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" });
         const address = await GetAddress(order.address);
         if (!address) return
 
-        const caption = `<b>Products</b>
+        const caption = `<b>Order Confirmed</b>
+<code>${'#' + order.id.replace("order_", "")}</code>        
+        
+<b>Products</b>
 ${order.products.map((product) => {
             return `<code>${product.title} (${product.size[0] || "M"}) x ${product.quantity}</code>`;
         }).join("\n")}
@@ -35,21 +42,54 @@ ${order.products.map((product) => {
 <b>${date}</b>
 `;
 
-        const productImages: InputMediaPhoto[] = await Promise.all(
-            order.products.flatMap(async (product) => {
-                return {
-                    type: "photo",
-                    media: await GetImage(product.id),
-                    caption,
-                    parse_mode: "HTML"
-                }
-            })
-        )
+        const imagePaths = await downloadImages(order.products.flatMap((product) => GetImage(product.id)));
+        const productImages: InputMediaPhoto[] = imagePaths.flatMap(path => {
+            return {
+                type: "photo",
+                media: path,
+                caption,
+                parse_mode: "HTML"
+            }
+        })
 
-        await bot.sendMediaGroup(
+        bot.sendMediaGroup(
             process.env.TELEGRAM_CHANNEL || "",
             productImages,
-        );
+        ).then(() => {
+            deleteImages(imagePaths);
+        })
     }
 }
 
+
+async function downloadImages(urls: string[]): Promise<string[]> {
+    const downloadPromises = urls.map(async (url, index) => {
+        try {
+            const response = await axios.get(url, { responseType: 'arraybuffer' });
+            const filename = `image_${index + 1}.jpg`;
+            const filePath = path.join(__dirname, filename);
+            const image = await DecompressImage(
+                Buffer.from(response.data, 'binary')
+            );
+
+            writeFileSync(filePath, image);
+            return filePath;
+        } catch (error) {
+            console.error(`Error downloading ${url}: ${error}`);
+            return null;
+        }
+    });
+
+    const results = await Promise.all(downloadPromises);
+    return results.filter(filePath => filePath !== null) as string[];
+}
+
+function deleteImages(filePaths: string[]): void {
+    filePaths.forEach(filePath => {
+        try {
+            unlinkSync(filePath);
+        } catch (error) {
+            console.error(`Error deleting ${filePath}: ${error}`);
+        }
+    });
+}

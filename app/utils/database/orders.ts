@@ -19,6 +19,7 @@ export interface ShippingType {
 
 export interface OrderType {
     id: string;
+    payment_id: string;
     confirmedAt: Date;
     status: string;
     user: string;

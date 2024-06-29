@@ -67,6 +67,7 @@ type Shipping {
 
 model Order {
   id          String    @id @map("_id")
+  payment_id  String
   confirmedAt DateTime
   status      String
   user        String

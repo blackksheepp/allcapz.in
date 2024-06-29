@@ -7,31 +7,42 @@ import { useCartStore } from "../utils/store/cartStore";
 import { useLoginStore } from "../utils/store/loginStore";
 import Navbar from "../components/Navbar";
 import PreviewOrder from "../profile/components/PreviewOrder";
-import { GetOrders, OrderType } from "../utils/database/orders";
+import { GetOrder, GetOrders, OrderType } from "../utils/database/orders";
 import { GetUsers } from "../utils/database/users";
+import { useRouter } from "next/navigation";
 
 function Orders() {
     const { showCart } = useCartStore((state) => state);
     const { showLogin } = useLoginStore((state) => state);
 
     const [orders, setOrders] = useState<OrderType[]>([]);
+
     useEffect(() => {
         (async () => {
             const users = await GetUsers();
             const getOrders: OrderType[] = [];
 
-            users?.map(async (user) => {
-                const userOrders = await GetOrders(user.email);
-                if (userOrders) {
-                    getOrders.push(...userOrders);
+            if (users) {
+                for (const user of users) {
+                    const userOrders = await GetOrders(user.email);
+                    if (userOrders) {
+                        getOrders.push(...userOrders);
+                    }
                 }
-            })
-            setOrders(getOrders);
-        })()
+            }
+            setOrders(getOrders.sort((a, b) => {
+                return b.confirmedAt.getTime() - a.confirmedAt.getTime();
+            }));
+        })();
     }, []);
 
+    const router = useRouter();
+    const handleClick = (order: OrderType) => {
+        router.push("/orders/"+order.id.replace("order_", ""));
+    }
+
     return (
-        <>
+        <WithAuth>
             <div>
                 <div className="absolute z-50">
                     <Cart />
@@ -39,7 +50,7 @@ function Orders() {
                 </div>
                 <div className={`absolute w-full h-full top-3 md:top-5  ${showCart || showLogin ? `transition-all delay-500 duration-200  ease-in blur-lg pointer-events-none` : `transition-all delay-200 duration-200 ease-in blur-none`}`}>
                     <div>
-                        <Navbar />
+                        <Navbar showProfile={false} />
                     </div>
 
                     <div className="w-full h-[85%] py-14 grid ">
@@ -47,7 +58,7 @@ function Orders() {
                             <div className="w-full min-h-[600px] h-full overflow-scroll border-[3px] border-dashed border-[#c4c4c4]">
                                 {orders && orders.length > 0 && orders.flatMap((order: OrderType, i: number) => {
                                     return (
-                                        <div key={i} className="w-full flex flex-col items-center">
+                                        <div key={i} className="w-full flex flex-col items-center" onClick={() => handleClick(order)}>
                                             <div className="w-[95%] cursor-pointer my-2">
                                                 <PreviewOrder order={order} />
                                             </div>
@@ -60,7 +71,7 @@ function Orders() {
                     </div>
                 </div>
             </div>
-        </>
+        </WithAuth>
     );
 }
 
