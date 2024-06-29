@@ -2,8 +2,16 @@
 import React, { useEffect, useState } from 'react'
 import Image from 'next/image';
 import { GetImage } from '@/app/components';
+import { useMiscStore } from '@/app/utils/store/miscStore';
 
 export const Polaroid = ({ title, id }: { title: string; id: string }) => {
+  const { preloader, showPreloader } = useMiscStore((state) => state);
+
+  const handleOnLoad = () => {
+    if (preloader) {
+      setTimeout(() => showPreloader(false), 1000);
+    }
+  }
   const image = GetImage(id);
   const [mobile, setMobile] = useState(false);
   useEffect(() => {
@@ -33,6 +41,7 @@ export const Polaroid = ({ title, id }: { title: string; id: string }) => {
             sizes={mobile ? "50vw" : "15vw"}
             className="w-full h-auto"
             priority
+            onLoad={handleOnLoad}
           />
         </div>
       </div>

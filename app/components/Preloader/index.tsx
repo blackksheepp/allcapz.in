@@ -9,41 +9,40 @@ interface PreloaderProps {
 }
 
 const Preloader: React.FC<PreloaderProps> = ({ setLoading }) => {
-    const { showPreloader } = useMiscStore((state) => state);
+    const [imageLoaded, setImageLoaded] = useState(false);
     const [progress, setProgress] = useState(0);
-    useEffect(() => {
-        setTimeout(() => {
-            setLoading(false)
-        }, 2000)
-    }, [])
+    
 
     useEffect(() => {
         const interval = setInterval(() => {
-            setProgress((oldProgress) => {
+            if (imageLoaded) setProgress((oldProgress) => {
                 if (oldProgress >= 100) {
                     clearInterval(interval);
                     setLoading(false);
                     return 100;
                 }
-                const diff = Math.random() * 10;
+                const diff = Math.random() * 5;
                 return Math.min(oldProgress + diff, 100);
             });
-        }, 50);
+        }, 20);
 
-        return () => {clearInterval(interval); showPreloader(false);}
-    }, []);
+        return () => {
+            clearInterval(interval);
+        }
+    }, [imageLoaded, setLoading]);
 
     return (
         <div className="fixed inset-0 flex items-center justify-center z-50 bg-black">
-            <BackgroundTexture/>
+            <BackgroundTexture />
             <div className="flex flex-col gap-vw-4 justify-center items-center">
                 <Image
                     src={GetImage("img/logo.avif")}
                     alt="logo"
                     width={0}
                     height={0}
-                    sizes="100vw"
+                    sizes="45vw"
                     className="w-auto h-vw-24-min@lg md:h-vw-32-min@xl"
+                    onLoad={() => setImageLoaded(true)}
                 />
                 <div className="w-[65%] lg:h-[15px] md:h-[12px] sm:h-[10px] h-[8px]">
                     <div className="w-full h-full flex flex-row">

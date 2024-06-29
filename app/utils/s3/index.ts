@@ -21,7 +21,8 @@ export const StoreImage = async (Body: Buffer, Key: string) => {
         await s3.send(new PutObjectCommand({
             Bucket,
             Key,
-            Body
+            Body,
+            CacheControl: 'max-age=1209600'
         }))
         return true
     } catch (error) {

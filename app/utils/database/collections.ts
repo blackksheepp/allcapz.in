@@ -2,7 +2,7 @@
 import prisma from "@/lib/prisma";
 import { CompressImage } from "../image-compression";
 import { GetImage } from "../../components";
-import { StoreImage } from "../s3";
+import { DeleteImage, StoreImage } from "../s3";
 import { appendFile, readFile } from "fs";
 const bson = require("bson");
 export interface CollectionType {
@@ -147,6 +147,10 @@ export const DeleteProduct = async (collection: string, title: string) => {
             })
         )?.products;
 
+        const id = products?.filter((p) => p.title == title)[0].id;
+        if (id) {
+            DeleteImage(id);
+        }
 
         await prisma.collections.update({
             where: {
@@ -158,6 +162,7 @@ export const DeleteProduct = async (collection: string, title: string) => {
                 },
             },
         });
+
     } catch (error) {
         console.log(error);
     }
@@ -240,8 +245,8 @@ export const SaveImage = async (form: FormData) => {
     const inputBuffer = await (form.get('file') as File).arrayBuffer()
     const outputBuffer = await CompressImage(Buffer.from(inputBuffer));
     const id: string = new bson.ObjectId().toString();
-    const stored = await StoreImage(outputBuffer, id+".avif");
-    const url =  GetImage(id);
+    const stored = await StoreImage(outputBuffer, id + ".avif");
+    const url = GetImage(id);
     return { url, id };
 
 };

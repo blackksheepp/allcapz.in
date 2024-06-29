@@ -11,7 +11,7 @@ interface ProductsProps {
 }
 
 export const ShowProducts: React.FC<ProductsProps> = ({ products, collection }) => {
-  const {  showTransition } = useMiscStore((state) => state);
+  const { showTransition } = useMiscStore((state) => state);
 
   const transitions = useTransition(products, {
     key: (product: ProductType) => product,

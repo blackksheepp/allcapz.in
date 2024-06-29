@@ -4,7 +4,7 @@ import Image from 'next/image';
 import React, { useEffect, useState } from 'react'
 
 
-const PreviewOrder = ({ order: { products, status, confirmedAt } }: { order: OrderType }) => {
+const PreviewOrder = ({ order: { id, products, status, confirmedAt } }: { order: OrderType }) => {
     
     const images = products.map((product) => GetImage(product.id)).slice(0, 2);
 
@@ -68,7 +68,8 @@ const PreviewOrder = ({ order: { products, status, confirmedAt } }: { order: Ord
                         )}
                     </div>
                     <div className=" text-accent font-ibm">
-                        <p className="text-smTolg">{productNames}</p>
+                        <p className="text-smTolg">{'#' + id.replace('order_', '')}</p>
+                        <p className="text-lgToxl">{productNames}</p>
                         <p className="text-[#a4a4a4] text-xxsTosm">{products.length} Posters • {size}</p>
                     </div>
                 </div>
