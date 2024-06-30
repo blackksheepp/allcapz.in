@@ -25,20 +25,17 @@ export const VerifyToken = async (token: string) => {
 
 export const SendAuthLink = async (email: string, authType: string) => {
   const login = authType === "login";
+
   var transporter = createTransport({
-    service: "gmail",
+    host: process.env.SMTP_HOST,
+    port: parseInt(process.env.SMTP_PORT || "465"),
     auth: {
-      user: process.env.NODEMAILER_EMAIL,
-      pass: process.env.NODEMAILER_PW,
+      user: process.env.SMTP_USERNAME,
+      pass: process.env.SMTP_PASSWORD,
     },
+    secure: true,
   });
 
-
-  var username = "";
-  if (login) {
-    const user = await GetUser(email);
-    username = user?.name!;
-  }
 
   var mailOptions = {
     from: `ALLCAPZ <${process.env.SMTP_USERNAME}>`,

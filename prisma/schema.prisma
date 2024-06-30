@@ -48,6 +48,7 @@ model Address {
   address    String
   postalCode String
   city       String
+  state      String
   phone      String
 }
 

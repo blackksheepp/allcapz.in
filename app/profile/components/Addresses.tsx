@@ -35,6 +35,7 @@ const Addresses = () => {
     const [street, setStreet] = useState<string>("")
     const [postalCode, setPostalCode] = useState<string>("")
     const [city, setCity] = useState<string>("")
+    const [state, setState] = useState<string>("")
     const [phone, setPhone] = useState<string>("")
 
     const [formErrors, setFormErrors] = useState<FormError[]>();
@@ -47,6 +48,7 @@ const Addresses = () => {
         setAddress(address.address);
         setPostalCode(address.postalCode);
         setCity(address.city);
+        setState(address.state);
         setPhone(address.phone);
         router.push("/profile?manageAddress=true&edit=true")
     }
@@ -82,6 +84,7 @@ const Addresses = () => {
             street,
             address,
             city,
+            state,
             postalCode,
             phone
         }).then(() => refresh());

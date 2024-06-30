@@ -10,6 +10,7 @@ export interface AddressType {
     address: string;
     postalCode: string;
     city: string;
+    state: string;
     phone: string;
 }
 

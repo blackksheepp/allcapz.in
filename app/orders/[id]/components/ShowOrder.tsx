@@ -1,9 +1,11 @@
-import { OrderType } from '@/app/utils/database/orders'
+import { OrderType, UpdateOrderStatus } from '@/app/utils/database/orders'
 import React, { useEffect, useState } from 'react'
 import ProductPreview from '@/app/profile/components/ProductPreview'
 import { AddressType, GetAddress } from '@/app/utils/database/addresses'
 import { useSession } from '@/app/providers/Session'
 import Link from 'next/link'
+import { CreateCustomOrder } from '@/app/utils/shipping/shiprocket'
+import { useRouter } from 'next/navigation'
 export const ShowOrder = ({ order }: { order: OrderType }) => {
     const { session } = useSession();
 
@@ -36,14 +38,25 @@ export const ShowOrder = ({ order }: { order: OrderType }) => {
     const supportEmail = "support@allcapz.com";
     const supportPhone = "+91 " + "1234567890";
 
+    const router = useRouter();
+    const handleShipping = () => {
+        if (order.status === "processing") {
+            CreateCustomOrder(order).then((url) => {
+                if (url) {
+                    UpdateOrderStatus(order.id, "shipping")
+                    window.open(url, "_blank");
+                }
+            })
+        }
+    }
     return (
-        <div className="w-full h-full flex flex-col mt-vw-10 gap-vw-2.5">
+        <div className="w-full h-full flex flex-col mt-vw-20 md:mt-vw-10 xl:mt-vw-20 gap-vw-2.5">
             <div className="w-full md:h-[600px] flex flex-col lg:flex-row items-end px-vw-14 gap-vw-14-min@lg">
-                <div className="w-full h-full py-vw-6-min@lg px-vw-6-min@md border-[3px] border-dashed border-[#c4c4c4] ">
+                <div className="w-full h-full flex flex-col justify-between py-vw-6-min@lg px-vw-6-min@md border-[3px] border-dashed border-[#c4c4c4] ">
 
                     <div className="w-full flex flex-row items-center justify-between">
-                        <p className="text-lgToxl font-ibm font-[500] text-accent">Order ID: #{order.id.replace("order_", "")}</p>
-                        <p className="text-lgToxl font-ibm font-[500] text-[#a4a4a4]">{orderedOn}</p>
+                        <p className="text-lgToxl font-ibm font-[500] text-accent select-text">#{order.id.replace("order_", "")}</p>
+                        <p className="text-smTolg text-end font-ibm font-[500] text-[#a4a4a4]">{orderedOn}</p>
                     </div>
                     <div className="w-full h-[1px] bg-white my-vw-6-min@lg-max@xl opacity-[40%]"></div>
 
@@ -71,13 +84,13 @@ export const ShowOrder = ({ order }: { order: OrderType }) => {
 
                     <div className="w-full h-[1px] bg-white my-vw-6-min@lg-max@xl opacity-[40%]"></div>
 
-                    <div>
+                    <div className="w-full flex flex-col items-center justify-center">
                         <div className="w-full flex flex-row items-center justify-between">
                             <p className="text-lgToxl font-ibm font-[500] text-white">Order Status</p>
                             <p className="text-smTolg font-ibm font-[400] text-[#a4a4a4]">EDD: {deliveryBy}</p>
                         </div>
 
-                        <div className="mt-4 mx-vw-4-max@md text-smTolg lg:text-lgToxl flex flex-col md:flex-row items-center justify-between text-[#a4a4a4] font-ibm">
+                        <div className="mt-4 mx-vw-4-max@md text-smTolg lg:text-lgToxl flex flex-col md:flex-row items-center justify-center gap-vw-4 text-[#a4a4a4] font-ibm">
                             <p className="text-accent">Confirmed</p>
                             <p className='text-accent rotate-[90deg] md:rotate-0'>&gt;</p>
                             <p className="text-[#FFD600]">Processing</p>
@@ -87,20 +100,17 @@ export const ShowOrder = ({ order }: { order: OrderType }) => {
                             <p>Delivered</p>
                         </div>
 
-                        <p className="text-xsTosm font-ibm mx-vw-4-max@md mt-3 py-1.5 text-background text-center font-[600] bg-accent dropshadow text-smToLg active:-mb-1 active:-mr-1">
-                            Set to Shipping
-                        </p>
                     </div>
 
                     <div className="w-full h-[1px] bg-white my-vw-6-min@lg-max@xl opacity-[40%]"></div>
                     
                     <Link target='_blank' href={`https://dashboard.razorpay.com/app/payments/${order.payment_id}`}>
-                        <p className="text-xsTosm font-ibm mx-vw-4-max@md mt-3 py-1.5 text-accent text-center font-[600] bg-[#2563EB] dropshadow text-smToLg active:-mb-1 active:-mr-1">
+                        <p className="text-xsTosm font-ibm mx-vw-20-max@md mt-3 py-1.5 text-accent text-center font-[600] bg-[#2563EB] dropshadow text-smToLg active:-mb-1 active:-mr-1">
                             View Payment on Razorpay
                         </p>
                     </Link>
                     
-                    <p className="text-xsTosm font-ibm mx-vw-4-max@md mt-3 py-1.5 text-accent text-center font-[600] bg-[#735AE5] dropshadow text-smToLg active:-mb-1 active:-mr-1">
+                    <p onClick={handleShipping} className="cursor-pointer text-xsTosm font-ibm mx-vw-20-max@md mt-3 py-1.5 text-accent text-center font-[600] bg-[#735AE5] dropshadow text-smToLg active:-mb-1 active:-mr-1">
                         Confirm Shipping via Shiprocket
                     </p>
 
@@ -128,7 +138,7 @@ export const ShowOrder = ({ order }: { order: OrderType }) => {
                                 <div className="w-full font-ibm font-[500] text-accent">
                                     <div className="w-full pt-vw-4 flex flex-row justify-between items-baseline">
                                         <p className="text-smTolg">Subtotal</p>
-                                        <p className="text-smTolg">₹{order?.products.reduce((a, b) => a + (b.price * (b.quantity || 1)), 0)}</p>
+                                        <p className="text-smTolg text-end">₹{order?.products.reduce((a, b) => a + (b.price * (b.quantity || 1)), 0)}</p>
                                     </div>
                                     <div className="pt-vw-1 w-full flex flex-row justify-between items-baseline text-accent">
                                         <p className="text-smTolg">Shipping</p>

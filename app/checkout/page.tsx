@@ -90,6 +90,7 @@ export default function Checkout({ params }: { params: { slug: string } }) {
   const [street, setStreet] = useState<string>("")
   const [postalCode, setPostalCode] = useState<string>("")
   const [city, setCity] = useState<string>("")
+  const [state, setState] = useState<string>("")
   const [phone, setPhone] = useState<string>("")
 
   const [cart, setCart] = useState<CartType | CartCookieType | null>(null);
@@ -172,6 +173,7 @@ export default function Checkout({ params }: { params: { slug: string } }) {
               address: address,
               postalCode: postalCode,
               city: city,
+              state: state,
               phone: phone
             })
 
@@ -282,8 +284,10 @@ export default function Checkout({ params }: { params: { slug: string } }) {
           const shippingData = await CheckServiceAvailability(+postalCode);
           if (shippingData) {
             setCity(CapitalText(shippingData.city))
+            setState(CapitalText(shippingData.state))
           } else {
             setCity("")
+            setState("")
             if (formErrors) {
               setFormErrors([...formErrors, { for: "postalCode", message: "Invalid postal code" }])
             } else {
@@ -322,6 +326,7 @@ export default function Checkout({ params }: { params: { slug: string } }) {
     setAddress(userAddress.address);
     setPostalCode(userAddress.postalCode);
     setCity(userAddress.city);
+    setState(userAddress.state);
     setPhone(userAddress.phone);
 
     setSelectAddress(false);
@@ -334,6 +339,7 @@ export default function Checkout({ params }: { params: { slug: string } }) {
     setAddress("");
     setPostalCode("");
     setCity("");
+    setState("");
     setPhone("");
 
     setSelectAddress(false);

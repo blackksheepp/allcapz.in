@@ -68,13 +68,15 @@ export const GetOrders = async (user: string) => {
 };
 
 
-export const UpdateOrder = async (order: OrderType) => {
+export const UpdateOrderStatus = async (id: string, status: string) => {
     try {
         await prisma.order.update({
             where: {
-                id: order.id,
+                id,
             },
-            data: order,
+            data: {
+                status
+            },
         });
         return true;
     } catch (error) {

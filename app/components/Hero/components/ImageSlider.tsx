@@ -12,7 +12,7 @@ export default function ImageSlider() {
     autoplay: true,
     autoplaySpeed: 3000,
     infinite: true,
-    speed: 500,
+    speed: 1000,
     slidesToShow: 1,
     slidesToScroll: 1,
     arrows: false,
@@ -22,27 +22,30 @@ export default function ImageSlider() {
     <div>
       <Slider {...settings}>
         <Image
-          src={GetImage("img/banner.avif")}
+          src={GetImage("img/nbanner.avif")}
           alt="logo"
           width={0}
           height={0}
           sizes="100vh"
+          className=""
           priority
         />
         <Image
-          src={GetImage("img/banner.avif")}
+          src={GetImage("img/nbanner.avif")}
           alt="logo"
           width={0}
           height={0}
           sizes="100vh"
+          className=""
           priority
         />
         <Image
-          src={GetImage("img/banner.avif")}
+          src={GetImage("img/nbanner.avif")}
           alt="logo"
           width={0}
           height={0}
           sizes="100vh"
+          className=""
           priority
         />
       </Slider>
