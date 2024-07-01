@@ -100,7 +100,7 @@ function formatDate(date: Date) {
 
 export async function CreateCustomOrder(order: OrderType) {
     const token = SHIPROCKET_API_TOKEN ?? await GetToken();
-    const address = await GetAddress(order.address);
+    const address = order.address;
     if (!address) return
     
     const products = order.products.flatMap((product) => {

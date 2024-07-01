@@ -52,6 +52,18 @@ model Address {
   phone      String
 }
 
+type AddressType {
+  email      String
+  fname      String
+  lname      String
+  street     String
+  address    String
+  postalCode String
+  city       String
+  state      String
+  phone      String
+}
+
 type Price {
   totalAmount  Int
   shippingCost Int
@@ -75,5 +87,5 @@ model Order {
   products    Product[]
   pricing     Price
   shipping    Shipping?
-  address     String
+  address     AddressType
 }

@@ -15,16 +15,8 @@ export const Details: FC<DetailsProps> = ({ order }) => {
     const edd = date.toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" });
 
     const searchParams = useSearchParams();
-    const [address, setAddress] = useState<AddressType | null>(null);
-    useEffect(() => {
-        const addressId = searchParams.get("addressId");
-        if (addressId) {
-            GetAddress(addressId).then((address) => {
-                if (address) setAddress(address);
-            })
-        }
-    }, [searchParams])
-
+    const address = order.address;
+    
     const [razorpayPayment, setRazorpayPayment] = useState<any | null>(null);
     useEffect(() => {
         const paymentId = searchParams.get("paymentId");
@@ -55,7 +47,7 @@ export const Details: FC<DetailsProps> = ({ order }) => {
                 <div className="w-full flex flex-col gap-2">
                     <p className="text-smTolgToxl font-ibm font-[500] text-white">Contact Details</p>
                     <div className="flex flex-col">
-                        <p className="text-smTolg font-ibm font-[500] text-accent">{address?.fname + " " + address?.lname}</p>
+                        <p className="text-smTolg font-ibm font-[500] text-accent">{(address?.fname || "") + " " + (address?.lname || "")}</p>
                         <p className="text-smTolg font-ibm text-[#a4a4a4]">{session?.email}</p>
                         <p className="text-smTolg font-ibm text-[#a4a4a4]">{address?.phone}</p>
                     </div>

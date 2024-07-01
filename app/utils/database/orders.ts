@@ -2,6 +2,7 @@
 import prisma from "@/lib/prisma";
 import { ProductType } from "./collections";
 import { SendOrderConfirmedMessage } from "../telegram/orders";
+import { AddressType } from "./addresses";
 
 export interface PriceType {
     totalAmount: number;
@@ -26,7 +27,7 @@ export interface OrderType {
     products: ProductType[];
     pricing: PriceType;
     shipping?: ShippingType;
-    address: string;
+    address: AddressType;
 }
 
 export const CreateOrder = async (order: OrderType) => {

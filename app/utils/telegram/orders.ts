@@ -14,7 +14,7 @@ export const SendOrderConfirmedMessage = async (orderId: string) => {
 
     if (order) {
         const date = order.confirmedAt.toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" });
-        const address = await GetAddress(order.address);
+        const address = order.address;
         if (!address) return
 
         const caption = `<b>Order Confirmed</b>

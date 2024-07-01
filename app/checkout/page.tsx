@@ -19,6 +19,7 @@ import { useLoginStore } from "../utils/store/loginStore";
 import Auth from "../components/Auth";
 import { Field, FormError } from "./components/Field";
 import { GetImage } from "../components";
+import { useCartStore } from "../utils/store/cartStore";
 
 const CheckoutProduct = ({ product }: { product: ProductType }) => {
 
@@ -115,6 +116,7 @@ export default function Checkout({ params }: { params: { slug: string } }) {
     })()
   }, [session]);
 
+  const { setCart: setShowCart } = useCartStore((state) => state);
 
   const router = useRouter();
   const search = useSearchParams();
@@ -163,23 +165,6 @@ export default function Checkout({ params }: { params: { slug: string } }) {
             })
           }
 
-          // Save Address
-          if (addressId === "") {
-            const resp = await SaveAddress({
-              email: session?.email ?? email,
-              fname: fname,
-              lname: lname,
-              street: street,
-              address: address,
-              postalCode: postalCode,
-              city: city,
-              state: state,
-              phone: phone
-            })
-
-            if (resp) setAddressId(resp)
-          }
-
           // Create Order
           const totalAmount = data?.amount / 100;
           const shippingCost = 0;
@@ -194,7 +179,23 @@ export default function Checkout({ params }: { params: { slug: string } }) {
             subtotal,
           } as PriceType
 
+          const orderAddress = {
+            email: session?.email ?? email,
+            fname: fname,
+            lname: lname,
+            street: street,
+            address: address,
+            postalCode: postalCode,
+            city: city,
+            state: state,
+            phone: phone
+          }
 
+          console.log(isNewAddress, "isNewAddress")
+          if (isNewAddress) {
+            SaveAddress(orderAddress)
+          }
+          // Create Order
           await CreateOrder({
             id: response.razorpay_order_id,
             payment_id: response.razorpay_payment_id,
@@ -203,14 +204,18 @@ export default function Checkout({ params }: { params: { slug: string } }) {
             user: session!.email,
             products: cart.products,
             pricing,
-            address: addressId
+            address: orderAddress
           })
 
           // Clear Cart 
           ClearCart(session!.email)
+          setShowCart(false)
 
           // Redirect to Order Confirmation Page
-          router.push("/confirmed?id=" + response.razorpay_order_id + "&addressId=" + addressId + "&paymentId=" + response.razorpay_payment_id);
+          router.push("/confirmed?id=" + response.razorpay_order_id + "&paymentId=" + response.razorpay_payment_id);
+
+
+
 
         },
         email: session?.email ?? email,
@@ -305,7 +310,7 @@ export default function Checkout({ params }: { params: { slug: string } }) {
     }
     , [postalCode])
 
-  const [addressId, setAddressId] = useState<string>("");
+  const [isNewAddress, setIsNewAddress] = useState<boolean>(true);
   const [addresses, setAddresses] = useState<AddressType[] | null>(null);
   const [selectAddress, setSelectAddress] = useState<boolean>(false);
 
@@ -319,7 +324,7 @@ export default function Checkout({ params }: { params: { slug: string } }) {
   }, [])
 
   const setUserAddress = (userAddress: AddressType) => {
-    setAddressId(userAddress.id!);
+    setIsNewAddress(false)
     setFname(userAddress.fname);
     setLname(userAddress.lname);
     setStreet(userAddress.street);
@@ -332,7 +337,6 @@ export default function Checkout({ params }: { params: { slug: string } }) {
     setSelectAddress(false);
   }
   const setNewAddress = () => {
-    setAddressId("")
     setFname("");
     setLname("");
     setStreet("");

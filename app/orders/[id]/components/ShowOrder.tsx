@@ -27,13 +27,7 @@ export const ShowOrder = ({ order }: { order: OrderType }) => {
     const edd = new Date(confirmedAt.getTime() + (5 * 24 * 60 * 60 * 1000));
     const deliveryBy = edd.toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" });
 
-    const [address, setAddress] = useState<AddressType | null>(null);
-    useEffect(() => {
-        GetAddress(order.address).then((resp) => {
-            console.log("resp", resp, order.address)
-            if (resp) setAddress(resp);
-        })
-    }, [order])
+    const address = order.address;
 
     const supportEmail = "support@allcapz.com";
     const supportPhone = "+91 " + "1234567890";
@@ -72,7 +66,7 @@ export const ShowOrder = ({ order }: { order: OrderType }) => {
 
                         <div className="flex flex-col gap-2">
                             <div>
-                                <p className="text-lgToxl font-ibm font-[500] text-white">Shipping Address</p>
+                                <p className="text-lgToxl font-ibm font-[500] text-white text-end">Shipping Address</p>
                             </div>
                             <div className="flex flex-col md:text-end">
                                 <p className="text-smTolg font-ibm text-[#a4a4a4]">{address?.street}</p>

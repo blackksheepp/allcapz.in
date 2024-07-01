@@ -24,13 +24,7 @@ export const ShowOrder = ({ order }: { order: OrderType }) => {
   const edd = new Date(confirmedAt.getTime() + (5 * 24 * 60 * 60 * 1000));
   const deliveryBy = edd.toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" });
 
-  const [address, setAddress] = useState<AddressType | null>(null);
-  useEffect(() => {
-    GetAddress(order.address).then((resp) => {
-      console.log("resp", resp, order.address)
-      if (resp) setAddress(resp);
-    })
-  }, [order])
+  const address = order.address;
 
   const supportEmail = "support@allcapz.com";
   const supportPhone = "+91 " + "1234567890";
