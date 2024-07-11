@@ -53,7 +53,7 @@ const capitalize = (str: string) => {
     return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
-const Auth = ({path = "/"}: {path?: string}) => {
+const Auth = ({ path = "/" }: { path?: string }) => {
     const [mobile, setMobile] = useState(false);
     const [width, setWidth] = useState(0);
     const [authType, setAuthType] = useState<"login" | "sign up">("sign up");
@@ -118,25 +118,19 @@ const Auth = ({path = "/"}: {path?: string}) => {
             }
         })()
 
-        setMobile(window.innerWidth < 640);
-
-        setWidth(window.innerWidth)
-        window.addEventListener('resize', () => setWidth(window.innerWidth));
-        return () => {
-            window.removeEventListener('resize', () => setWidth(window.innerWidth));
-        }
-
         if (showLogin) {
             document.body.classList.add("overflow-hidden");
         } else {
             document.body.classList.remove("overflow-hidden");
         }
 
+        setMobile(window.innerWidth < 640);
+        setWidth(window.innerWidth)
+        window.addEventListener('resize', () => setWidth(window.innerWidth));
         return () => {
+            window.removeEventListener('resize', () => setWidth(window.innerWidth));
             document.body.classList.remove("overflow-hidden")
-        };
-
-
+        }
     }, [showLogin, mobile, emailSent, authType, email, authenticate, sendEmail, width]);
 
     return (

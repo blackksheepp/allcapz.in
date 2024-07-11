@@ -6,6 +6,9 @@ import { SendAuthLink, VerifyToken, GetSessionToken } from '../utils/auth';
 import { FitTexture } from '../components/TextureOverlay';
 import { CreateUser, GetUser } from '../utils/database/users';
 import { ClearSessionCookie, GetSessionCookie, SetSessionCookie } from '../utils/cookies/auth';
+import { ClearCartCookies, GetCartFromCookies } from '../utils/cookies/cart';
+import { AddToCart, CartType } from '../utils/database/carts';
+import { useMiscStore } from '../utils/store/miscStore';
 
 interface auth {
     email: string,
@@ -40,6 +43,8 @@ export const SessionProvider: React.FC<SessionProviderProps> = ({ children }) =>
     useEffect(() => {
         (async () => {
             const authToken = searchParams.get('authToken');
+            const path = searchParams.get('path');
+
             if (authToken) {
                 try {
                     const payload = await VerifyToken(authToken) as auth;
@@ -47,9 +52,9 @@ export const SessionProvider: React.FC<SessionProviderProps> = ({ children }) =>
                         setEmail(payload.email)
                         setAskName(true);
                     } else {
-                        const user = await GetUser(payload.email);
+                        await GetUser(payload.email);
                         const sessionToken = await GetSessionToken(payload.email);
-                        if (await SetSessionCookie(sessionToken)) router.replace("/");
+                        if (await SetSessionCookie(sessionToken)) router.replace(path ? "/checkout?path=" + path : "/");
                     }
                 } catch (error) {
                     console.error('Invalid token:', error);
@@ -70,20 +75,22 @@ export const SessionProvider: React.FC<SessionProviderProps> = ({ children }) =>
         })()
     }, [searchParams, router]);
 
+
+    const { isCheckout } = useMiscStore((state) => state);
     const authenticate = async ({ email, authType }: auth) => {
-        const sendEmail = await SendAuthLink(email, authType);
+        const sendEmail = await SendAuthLink(email, authType, isCheckout);
         return sendEmail;
     }
 
     const authGoogle = async (user: UserType, path: string) => {
         const checkUser = await GetUser(user.email);
         if (!checkUser) {
-            const success = await CreateUser(user);
-            const sessionToken = await GetSessionToken(user.email);
-            if (await SetSessionCookie(sessionToken)) router.replace(path);
-        } else {
-            const sessionToken = await GetSessionToken(user.email);
-            if (await SetSessionCookie(sessionToken)) router.replace(path);
+            await CreateUser(user);
+        }
+
+        const sessionToken = await GetSessionToken(user.email);
+        if (await SetSessionCookie(sessionToken)) {
+            router.replace(path)
         }
     }
 
@@ -104,7 +111,9 @@ export const SessionProvider: React.FC<SessionProviderProps> = ({ children }) =>
 
         await CreateUser(user);
         const sessionToken = await GetSessionToken(email);
-        if (await SetSessionCookie(sessionToken)) router.replace("/");
+        const path = searchParams.get('path'); 
+
+        if (await SetSessionCookie(sessionToken)) router.replace(path ? "/checkout?path=" + path : "/");
     }
 
     return (

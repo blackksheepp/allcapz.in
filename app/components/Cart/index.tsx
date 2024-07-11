@@ -68,7 +68,7 @@ const CartProduct = ({ product, onClick, updateTotal }: { product: ProductType, 
       initial={{ opacity: 1, x: x, width: "100%" }}
       animate={{ opacity: 1, x: x, width: "100%" }}
       exit={{ opacity: 0, x: x, width: "100%" }}
-      transition={{ duration: 0.8, type: "linear" }}
+      transition={{ duration: 0.5, type: "tween" }}
     >
       {stateProduct && (<div className="w-full flex flex-row justify-center gap-5 px-5">
         <div className="bg-[#c7c7c7] border-black border-[1px] shadow-[5px_5px_0px_0px_rgba(70,70,70)] pt-3 pb-2 w-full flex flex-row justify-center gap-5">
@@ -134,6 +134,7 @@ const Cart = () => {
         cart = JSON.parse(cartCookie)
       }
     }
+    cart?.products.reverse();
     setCart(cart)
   }
 
@@ -161,7 +162,12 @@ const Cart = () => {
 
   useEffect(() => {
     if (productToRemove) {
-      removeFromCart().then((cart) => cart && setCart(cart))
+      removeFromCart().then((cart) => {
+        if (cart) {
+          cart.products.reverse();
+          setCart(cart)
+        }
+      })
     }
   }, [productToRemove])
 

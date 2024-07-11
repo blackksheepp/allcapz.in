@@ -124,3 +124,7 @@ export const DecreaseQntyCookies = async (product: ProductType) => {
         }
     }
 }
+
+export const ClearCartCookies = async () => {
+    cookies().delete("cart");
+}

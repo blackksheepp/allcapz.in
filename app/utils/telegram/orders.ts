@@ -43,11 +43,11 @@ ${order.products.map((product) => {
 `;
 
         const imagePaths = await downloadImages(order.products.flatMap((product) => GetImage(product.id)));
-        const productImages: InputMediaPhoto[] = imagePaths.flatMap(path => {
+        const productImages: InputMediaPhoto[] = imagePaths.slice(0, 8).flatMap((path, index) => {
             return {
                 type: "photo",
                 media: path,
-                caption,
+                caption: index === 0 ? caption : undefined,
                 parse_mode: "HTML"
             }
         })

@@ -23,7 +23,7 @@ export const VerifyToken = async (token: string) => {
   return jwt.verify(token, process.env.JWT_SECRET)
 }
 
-export const SendAuthLink = async (email: string, authType: string) => {
+export const SendAuthLink = async (email: string, authType: string, checkout: boolean) => {
   const login = authType === "login";
 
   var transporter = createTransport({
@@ -36,15 +36,16 @@ export const SendAuthLink = async (email: string, authType: string) => {
     secure: true,
   });
 
+  var authLink: string = `${process.env.AUTH_URL}?authToken=${getAuthToken(email, authType)}`;
+  if (checkout) {
+    authLink = `${process.env.AUTH_URL}checkout?authToken=${getAuthToken(email, authType)}&path=/`;
+  }
 
   var mailOptions = {
     from: `ALLCAPZ <${process.env.SMTP_USERNAME}>`,
     to: email,
     subject: `${login ? "Log into" : "Sign upto"} ALLCAPZ.in`,
-    html: render(AuthEmail(authType, `${process.env.AUTH_URL}?authToken=${getAuthToken(email, authType)}`))
-
-
-    // GetEmail(login ? username : email, `${process.env.AUTH_URL}?authToken=${getAuthToken(email, authType)}`))
+    html: render(AuthEmail(authType, authLink))
   };
 
   try {

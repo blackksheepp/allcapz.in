@@ -6,6 +6,7 @@ import Script from "next/script";
 
 import { IBM_Plex_Mono, Indie_Flower } from "next/font/google";
 import localFont from "next/font/local";
+import { useSearchParams } from "next/navigation";
 
 const ibmPlexMono = IBM_Plex_Mono({
   weight: ["100", "200", "300", "400", "500", "600", "700"],
@@ -39,12 +40,13 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+
   return (
     <html lang="en">
       <body className="bg-black">
         <SessionProvider>
-          <BackgroundTexture />
-          <main className={`${retro.variable} ${ibmPlexMono.variable} ${indieFlower.variable}`}>{children}</main>
+            <BackgroundTexture />
+            <main className={`${retro.variable} ${ibmPlexMono.variable} ${indieFlower.variable}`}>{children}</main>
         </SessionProvider>
       </body>
       <link rel="dns-prefetch" href="https://checkout.razorpay.com/v1/checkout.js" />

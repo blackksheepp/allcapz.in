@@ -17,6 +17,7 @@ export default function Google() {
                 await authGoogle(user, path!);
             }
         })()
-    }, [code, authGoogle])
+    }, [code, authGoogle, path])
+    
     return <></>
 }

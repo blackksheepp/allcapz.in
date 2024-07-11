@@ -5,7 +5,8 @@ interface MiscStore {
     setShowTransition: (x: boolean) => void
     preloader: boolean
     showPreloader: (x: boolean) => void
-    
+    isCheckout: boolean
+    setIsCheckout: (x: boolean) => void 
 }
 
 export const useMiscStore = create<MiscStore>((set) => ({
@@ -13,4 +14,6 @@ export const useMiscStore = create<MiscStore>((set) => ({
     setShowTransition: (x: boolean) => set((state) => ({ showTransition: x })),
     preloader: true,
     showPreloader: (x: boolean) => set((state) => ({ preloader: x })),
+    isCheckout: false,
+    setIsCheckout: (x: boolean) => set((state) => ({ isCheckout: x })),
 }))

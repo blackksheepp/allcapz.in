@@ -20,7 +20,7 @@ const HomePage = () => {
   const { showCart } = useCartStore((state) => state);
   const { preloader } = useMiscStore((state) => state);
   const [loading, setLoading] = useState(true);
-
+  
   return (
     <>
       {preloader && loading && <Preloader setLoading={setLoading}/>}

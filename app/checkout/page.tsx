@@ -5,8 +5,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { useSession } from "../providers/Session";
 import { ProductType } from "../utils/database/collections";
-import { CartType, ClearCart, GetCart } from "../utils/database/carts";
-import { CartCookieType, GetCartFromCookies } from "../utils/cookies/cart";
+import { AddToCart, CartType, ClearCart, GetCart } from "../utils/database/carts";
+import { CartCookieType, ClearCartCookies, GetCartFromCookies } from "../utils/cookies/cart";
 import { useRouter, useSearchParams } from "next/navigation";
 import { CreateRazorpayPayment } from "../utils/payment";
 import { Product } from "@prisma/client";
@@ -20,6 +20,7 @@ import Auth from "../components/Auth";
 import { Field, FormError } from "./components/Field";
 import { GetImage } from "../components";
 import { useCartStore } from "../utils/store/cartStore";
+import { useMiscStore } from "../utils/store/miscStore";
 
 const CheckoutProduct = ({ product }: { product: ProductType }) => {
 
@@ -100,29 +101,54 @@ export default function Checkout({ params }: { params: { slug: string } }) {
 
 
   const { session } = useSession();
+  const router = useRouter();
+
   useEffect(() => {
     (async () => {
-      var getCart: CartType | CartCookieType | null = null;
-      if (session) {
-        getCart = await GetCart(session.email)
-      } else {
-        const cartCookie = await GetCartFromCookies();
-        if (cartCookie) {
-          getCart = JSON.parse(cartCookie)
+
+
+      const setCartValue = async (cart: CartType | CartCookieType | null) => {
+        if (cart && cart.products.length > 0) {
+          cart.products.reverse();
+          setCart(cart)
+        } else {
+          router.push("/");
         }
       }
-      if (getCart && getCart?.products?.length > 0) setCart(getCart)
-      else router.push("/")
+
+      if (session) {
+        const cartCookie = await GetCartFromCookies();
+        if (cartCookie) {
+          const cart = JSON.parse(cartCookie) as CartType;
+          if (cart.products.length > 0) {
+            await Promise.all(cart.products.flatMap(async (product) => {
+              await AddToCart(session.email, product)
+            }))
+            await ClearCartCookies();
+          }
+        }
+
+        await GetCart(session.email).then(async (getCart) => {
+          await setCartValue(getCart);
+        });
+      } else {
+        await GetCartFromCookies().then(async (cartCookie) => {
+          if (cartCookie) {
+            const getCart = JSON.parse(cartCookie);
+            await setCartValue(getCart);
+          }
+        });
+      }
     })()
-  }, [session]);
+  }, [router, session]);
 
   const { setCart: setShowCart } = useCartStore((state) => state);
 
-  const router = useRouter();
   const search = useSearchParams();
   const previousSection = () => {
     if (active[active.length - 2] == "Cart") {
-      router.push((search.get("path") || "/") + "?cart=true")
+      setShowCart(true);
+      router.push((search.get("path") || "/"))
     } else {
       setActive(sections.slice(0, active.length - 1));
     }
@@ -308,20 +334,23 @@ export default function Checkout({ params }: { params: { slug: string } }) {
         }
       })()
     }
-    , [postalCode])
+    , [formErrors, postalCode])
 
   const [isNewAddress, setIsNewAddress] = useState<boolean>(true);
   const [addresses, setAddresses] = useState<AddressType[] | null>(null);
   const [selectAddress, setSelectAddress] = useState<boolean>(false);
 
   useEffect(() => {
-    if (session) {
-      GetAddresses(session.email).then((data) => {
-        setAddresses(data)
-        setSelectAddress(true)
-      })
-    }
-  }, [])
+    (async () => {
+      if (session) {
+        const getAddresses: AddressType[] | null = await GetAddresses(session.email)
+        if (!getAddresses) return
+
+        setAddresses(getAddresses);
+        setSelectAddress(true);
+      }
+    })()
+  }, [session])
 
   const setUserAddress = (userAddress: AddressType) => {
     setIsNewAddress(false)
@@ -350,6 +379,7 @@ export default function Checkout({ params }: { params: { slug: string } }) {
   }
 
   const { setLogin, showLogin } = useLoginStore((state) => state);
+  const { setIsCheckout } = useMiscStore((state) => state);
   return (
     <div>
       <Auth path="/checkout?path=/" />
@@ -449,6 +479,7 @@ export default function Checkout({ params }: { params: { slug: string } }) {
                   </div>
                   <div className={`w-full text-[#a4a4a4] cursor-pointer`} onClick={!session?.email ? () => {
                     setLogin(true)
+                    setIsCheckout(true)
                   } : undefined}>
                     <div className="pointer-events-none">
                       <Field value={session?.email || email} name="email" placeholder="Email" onChange={setEmail} formErrors={formErrors} setFormErrors={setFormErrors} />
@@ -459,7 +490,7 @@ export default function Checkout({ params }: { params: { slug: string } }) {
                 <form className="w-full pt-vw-5-min@xl font-ibm text-accent flex flex-col items-end gap-4">
                   <div className="w-full flex flex-col gap-2">
                     <div className={`flex flex-row w-full justify-between items-baseline`}>
-                      {selectAddress ? <label className="text-lgTo2xl max-[388px]:text-smTolg">Select Address</label> : session && (
+                      {selectAddress ? <label className="text-lgTo2xl max-[388px]:text-smTolg">{selectAddress && addresses?.length ? "Select Address" : ""}</label> : session && (
                         <label className="text-xsTosm text-green-600 cursor-pointer" onClick={() => setSelectAddress(true)}>Change Address?</label>
                       )}
                       <label className="text-lgTo2xl max-[388px]:text-smTolg">Shipping Address</label>
