@@ -1,4 +1,4 @@
-import { CollectionType, CreateCollection, ReOrderProduct, RenameCollection } from "@/app/utils/database/collections";
+import { CollectionType, CreateCollection, ReOrderProduct, RenameCollection, SaveImage } from "@/app/utils/database/collections";
 import Image from "next/image";
 import React, { useEffect, useRef, useState } from "react";
 import { NewProduct, Product } from "./Product";
@@ -13,7 +13,7 @@ interface CollectionProps {
 }
 
 
-export const Collection: React.FC<CollectionProps> = ({ data: { name, products }, deleteCollection, refresh, upvote, downvote }) => {
+export const Collection: React.FC<CollectionProps> = ({ data: { name, icon, products }, deleteCollection, refresh, upvote, downvote }) => {
     const newProductRef = useRef<HTMLDivElement>(null);
     const [addNewProduct, setAddNewProduct] = useState(false);
 
@@ -47,7 +47,7 @@ export const Collection: React.FC<CollectionProps> = ({ data: { name, products }
                 [newProducts[index], newProducts[index - 1]] = [newProducts[index - 1], newProducts[index]];
                 ReOrderProduct(name, newProducts).then(() => refresh())
             }
-        } 
+        }
     };
 
     const handleDownvoteProduct = (index: number) => {
@@ -65,26 +65,39 @@ export const Collection: React.FC<CollectionProps> = ({ data: { name, products }
         <div className="w-full lg:px-6 md:px-6 px-2 pt-4">
             {/* Collection Heading */}
             <div className="w-full flex flex-col sm:flex-row gap-vw-5 sm:items-center mb-vw-4">
-                <div className="flex flex-row items-center sm:justify-center">
-                    {rename ? (
-                        <input
-                            type="text"
-                            value={newName}
-                            onChange={(e) => setNewName(e.target.value)}
-                            className=" bg-transparent px-2 placeholder:text-accent text-accent font-ibm font-[500] text-lgTo2xl outline-none border-b border-accent mr-3 text-start"
-                            size={newName.length ?? 5}
-                        />
-                    ) : (
-                        <p className="px-2 text-accent font-ibm font-[500] text-lgTo2xl mr-3">{name}</p>
-                    )}
+
+                <div className="flex flex-col sm:flex-row items-start justify-start sm:items-center">
                     <Image
-                        src={GetImage("img/edit.svg")}
-                        alt="logo"
-                        width={20}
-                        height={20}
-                        className="w-auto lg:h-5 md:h-4 h-3 cursor-pointer"
-                        onClick={() => setRename(!rename)}
+                        src={icon}
+                        alt="collectionimg"
+                        width={0}
+                        height={0}
+                        sizes="100vh"
+                        className="w-auto h-[20px] md:h-[25px] pl-[4px]"
                     />
+                    <div className="flex flex-row items-center sm:justify-center">
+
+                        {rename ? (
+                            <input
+                                type="text"
+                                value={newName}
+                                onChange={(e) => setNewName(e.target.value)}
+                                className=" bg-transparent px-2 placeholder:text-accent text-accent font-ibm font-[500] text-lgTo2xl outline-none border-b border-accent mr-3 text-start"
+                                size={newName.length ?? 5}
+                            />
+                        ) : (
+                            <p className="px-2 text-accent font-ibm font-[500] text-lgTo2xl mr-3">{name}</p>
+                        )}
+
+                        <Image
+                            src={GetImage("img/edit.svg")}
+                            alt="logo"
+                            width={20}
+                            height={20}
+                            className="w-auto lg:h-5 md:h-4 h-3 cursor-pointer"
+                            onClick={() => setRename(!rename)}
+                        />
+                    </div>
                 </div>
 
                 <div className="flex flex-row gap-vw-5 px-2">
@@ -148,12 +161,15 @@ export const Collection: React.FC<CollectionProps> = ({ data: { name, products }
 
 
 export const NewCollection = ({ refresh, hide }: { refresh: () => void, hide: () => void }) => {
-    const [newCollection, setNewCollection] = useState("");
+    const [newCollectionName, setNewCollectionName] = useState("");
+    const [newCollectionIcon, setNewCollectionIcon] = useState<File | undefined>();
     const [takeInput, setTakeInput] = useState(false);
+    const [takeInputImage, setTakeInputImage] = useState(false);
+    const [newCollectionIconUrl, setNewCollectionIconUrl] = useState("");
 
     const finalAddCollection = async () => {
-        if (newCollection !== "") {
-            const response = await CreateCollection(newCollection);
+        if (newCollectionName !== "") {
+            const response = await CreateCollection(newCollectionName, newCollectionIconUrl);
             if (response) {
                 hide();
                 refresh();
@@ -161,17 +177,50 @@ export const NewCollection = ({ refresh, hide }: { refresh: () => void, hide: ()
         }
     };
 
+    useEffect(() => {
+        (async () => {
+            if (newCollectionIcon) {
+                const form = new FormData();
+                form.append("file", newCollectionIcon);
+                const { url } = await SaveImage(form)
+                setNewCollectionIconUrl(url);
+                setTakeInputImage(true);
+            }
+        })()
+    }, [newCollectionIcon])
+
     return (
         <div className="w-full lg:px-6 md:px-6 px-2 py-4 pt-5">
             <div className="w-full flex flex-row gap-vw-5 items-center mb-vw-4">
+                <div className="relative lg:w-[75px] md:w-[65px] w-[45px] grid place-items-center">
+                    {!takeInputImage && <label className="absolute text-center font-ibm font-[500] pointer-events-none text-xsTosm">Upload Icon</label>}
+                    <input
+                        type="file"
+                        id="file-input"
+                        accept="image/*"
+                        onChange={(event) => {
+                            if (event.target.files) setNewCollectionIcon(event.target.files[0]);
+                        }}
+                        className="w-full h-full absolute hidden"
+                    />
+                    <Image
+                        onClick={() => document.getElementById('file-input')?.click()}
+                        src={newCollectionIconUrl ? newCollectionIconUrl : GetImage("img/placeholder.svg")}
+                        alt=""
+                        width={0}
+                        height={0}
+                        sizes="100vw"
+                        className="w-full h-auto cursor-pointer"
+                    />
+                </div>
                 {takeInput ? (
                     <input
                         type="text"
-                        value={newCollection}
-                        onChange={(e) => setNewCollection(e.target.value)}
+                        value={newCollectionName}
+                        onChange={(e) => setNewCollectionName(e.target.value)}
                         className="bg-transparent placeholder:text-accent  outline-none px-2 text-accent font-ibm font-[500] text-xsTo2xl"
                         placeholder={"Name"}
-                        size={newCollection.length}
+                        size={newCollectionName.length}
                     />
                 ) : (
                     <div

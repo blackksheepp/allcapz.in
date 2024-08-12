@@ -5,7 +5,7 @@ import {
   CollectionType,
   ProductType,
 } from "@/app/utils/database/collections";
-import { TextSlider } from "./components/TextSlider";
+import { IconSlider } from "./components/IconSlider";
 import { ShowProducts } from "./components/ShowProducts";
 
 const Products = () => {
@@ -39,8 +39,9 @@ const Products = () => {
         <div className="font-retro text-xl  text-center text-gray-400 py-vw-1.5 flex flex-col gap-1 mx-auto">
           <div className="flex flex-row justify-center items-baseline gap-7">
             {collections ? (
-              <TextSlider
+              <IconSlider
                 titles={collections.map((c) => c.name)}
+                icons={collections.map((c) => c.icon)}
                 active={active}
                 setActive={setActive}
               />

@@ -123,7 +123,7 @@ export const NewProduct = ({ refresh, hide, collection }: { refresh: () => void,
             if (newProductImage) {
                 const form = new FormData();
                 form.append("file", newProductImage);
-                const { url, id } = await SaveImage(form)
+                const { id } = await SaveImage(form)
                 setNewProductId(id);
                 setTakeInputImage(true);
             }

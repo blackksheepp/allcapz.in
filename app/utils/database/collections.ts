@@ -6,6 +6,7 @@ import { DeleteImage, StoreImage } from "../s3";
 import { appendFile, readFile } from "fs";
 const bson = require("bson");
 export interface CollectionType {
+    icon: string;
     name: string;
     products: ProductType[];
 }
@@ -19,11 +20,12 @@ export interface ProductType {
     collection: string
 }
 
-export const CreateCollection = async (name: string) => {
+export const CreateCollection = async (name: string, icon: string) => {
     try {
         await prisma.collections.create({
             data: {
-                name: name,
+                icon,
+                name,
                 products: [],
             },
         });

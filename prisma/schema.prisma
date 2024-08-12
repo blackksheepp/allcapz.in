@@ -11,6 +11,7 @@ datasource db {
 
 model Collections {
   id       String    @id @default(auto()) @map("_id") @db.ObjectId
+  icon     String
   name     String    @unique
   products Product[]
 }
@@ -25,11 +26,11 @@ type Product {
 }
 
 model Users {
-  id    String @id @default(auto()) @map("_id") @db.ObjectId
-  name  String
-  email String @unique
+  id         String  @id @default(auto()) @map("_id") @db.ObjectId
+  name       String
+  email      String  @unique
   alterEmail String?
-  phone String?
+  phone      String?
   alterPhone String?
 }
 
@@ -79,7 +80,7 @@ type Shipping {
 }
 
 model Order {
-  id          String    @id @map("_id")
+  id          String      @id @map("_id")
   payment_id  String
   confirmedAt DateTime
   status      String
