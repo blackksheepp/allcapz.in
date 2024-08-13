@@ -14,6 +14,8 @@ interface CollectionProps {
 
 
 export const Collection: React.FC<CollectionProps> = ({ data: { name, icon, products }, deleteCollection, refresh, upvote, downvote }) => {
+    console.log(name, icon, products);
+    
     const newProductRef = useRef<HTMLDivElement>(null);
     const [addNewProduct, setAddNewProduct] = useState(false);
 

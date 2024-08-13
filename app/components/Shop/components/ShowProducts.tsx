@@ -18,7 +18,7 @@ export const ShowProducts: React.FC<ProductsProps> = ({ products, collection }) 
     from: { opacity: 0 },
     enter: { opacity: 1 },
     leave: { opacity: 0 },
-    config: { duration: 250, tension: 100 },
+    config: { duration: 150, tension: 100 },
   });
 
 
