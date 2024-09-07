@@ -4,7 +4,7 @@ import { CompressImage } from "../image-compression";
 import { GetImage } from "../../components";
 import { DeleteImage, StoreImage } from "../s3";
 import { appendFile, readFile } from "fs";
-const bson = require("bson");
+const bson = require('bson');
 export interface CollectionType {
     icon: string;
     name: string;

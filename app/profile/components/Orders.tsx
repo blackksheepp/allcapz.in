@@ -16,7 +16,12 @@ export const Orders = () => {
     useEffect(() => {
         if (session) {
             GetOrders(session.email).then((orders) => {
-                if (orders) setOrders(orders)
+                if (orders) {
+                    const sortedOrders = orders.sort((a, b) => {
+                        return b.confirmedAt.getTime() - a.confirmedAt.getTime();
+                    })
+                    setOrders(sortedOrders)
+                }
             })
         }
     }, [session])

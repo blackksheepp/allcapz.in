@@ -8,6 +8,7 @@ import axios from "axios"
 import path from "path"
 import { unlinkSync, writeFileSync } from "fs"
 import { DecompressImage } from "../image-compression"
+import { RedirectUri } from "../auth"
 
 export const SendOrderConfirmedMessage = async (orderId: string) => {
     const order = await GetOrder(orderId);
@@ -37,7 +38,7 @@ ${order.products.map((product) => {
 <code>${order.user}</code>
 <code>+91 ${address.phone}</code>
 
-<a href="https://allcapz.in/?orderId=${order.id}"><b>View Order</b></a>
+<a href="https://allcapz.in/orders/${order.id.replace("order_", "")}"><b>View Order</b></a>
 <b>${order.status[0].toUpperCase() + order.status.substring(1)}</b>
 <b>${date}</b>
 `;

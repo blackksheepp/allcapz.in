@@ -3,9 +3,10 @@
 import { createTransport } from "nodemailer"
 import jwt from 'jsonwebtoken';
 import { google } from 'googleapis';
-import { AuthEmail } from "@/emails/auth";
+import { AuthEmail, OrderConfirmEmail } from "@/emails/auth";
 import { render } from "@react-email/render";
 import { GetUser, UserType } from "./database/users";
+import Mail from "nodemailer/lib/mailer";
 
 const getAuthToken = (email: string, authType: string) => {
   const payload = { "email": email, "authType": authType };
@@ -41,11 +42,45 @@ export const SendAuthLink = async (email: string, authType: string, checkout: bo
     authLink = `${process.env.AUTH_URL}checkout?authToken=${getAuthToken(email, authType)}&path=/`;
   }
 
-  var mailOptions = {
+  var mailOptions: Mail.Options = {
     from: `ALLCAPZ <${process.env.SMTP_USERNAME}>`,
     to: email,
-    subject: `${login ? "Log into" : "Sign upto"} ALLCAPZ.in`,
-    html: render(AuthEmail(authType, authLink))
+    subject: `${login ? "Log into" : "Sign upto"} ALLCAPZ.IN`,
+    html: render(AuthEmail(authType, authLink)),
+    list: {
+      unsubscribe: {
+        url: `https://allcapz.in/unsubscribe/${email}`,
+        comment: 'Unsubscribe',
+      },
+      subscribe: {
+        url: `https://allcapz.in/subscribe/${email}`,
+        comment: 'Subscribe',
+      },
+    },
+    attachments: [
+      {
+        filename: "bg.png",  
+        path: "./emails/bg.png",
+        contentDisposition: "inline",
+        cid: "bg.png",
+        contentType: "image/png",
+      },
+      {
+        filename: "logo.png",
+        path: "./emails/logo.png",
+        contentDisposition: "inline",
+        cid: "logo.png",
+        contentType: "image/png",
+      },
+      {
+        filename: `${login ? "login.png" : "signup.png"}`,
+        path: `./emails/${login ? "login.png" : "signup.png"}`,
+        contentDisposition: "inline",
+        cid: `${login ? "login.png" : "signup.png"}`,
+        contentType: "image/png",
+      },
+    ]
+    
   };
 
   try {
@@ -89,3 +124,48 @@ export const GetGoogleUser = async (code: string) => {
 
   return { name: data.given_name, email: data.email } as UserType;
 };
+
+export interface RedirectUri {
+  type: string;
+  uri: string;
+  auth: boolean;
+  user?: string;
+}
+
+export const SendOrderConfirmation = async (name: string, email: string, order_id: string) => {
+  var transporter = createTransport({
+    host: process.env.SMTP_HOST,
+    port: parseInt(process.env.SMTP_PORT || "465"),
+    auth: {
+      user: process.env.SMTP_USERNAME,
+      pass: process.env.SMTP_PASSWORD,
+    },
+    secure: true,
+  });
+
+  const data: RedirectUri = {
+    type: "order",
+    uri: `profile?order=${order_id}`,
+    auth: true,
+    user: email
+  } 
+
+
+  const orderUrl = process.env.AUTH_URL + "?redirect=" + btoa(JSON.stringify(data));
+  
+  var mailOptions = {
+    from: `ALLCAPZ <${process.env.SMTP_USERNAME}>`,
+    to: email,
+    subject: `Thanks for shopping with ALLCAPZ.IN!`,
+    html: render(OrderConfirmEmail(name, orderUrl))
+  };
+
+  try {
+    transporter.sendMail(mailOptions);
+    return true;
+  } catch (error) {
+    console.log(error, "FAILED EMAIL");
+    return false;
+  }
+}
+

@@ -31,9 +31,9 @@ export const ShowProducts: React.FC<ProductsProps> = ({ products, collection }) 
               {transitions((styles, item, { key }) => {
                 return (
                   <Link key={key} href={`/product/${btoa(item.title + "." + collection)}`}>
-                    <animated.p style={styles}>
+                    <animated.div style={styles}>
                       <Polaroid title={item.title} id={item.id}/>
-                    </animated.p>
+                    </animated.div>
                   </Link>
                 );
               })}
@@ -45,9 +45,9 @@ export const ShowProducts: React.FC<ProductsProps> = ({ products, collection }) 
                 products.length > 0 && products.map((product, index) => {
                   return (
                     <Link key={index + product.title} href={`/product/${btoa(product.title + "." + collection)}`}>
-                      <p>
+                      <div>
                         <Polaroid title={product.title} id={product.id} />
-                      </p>
+                      </div>
                     </Link>
                   )
                 })

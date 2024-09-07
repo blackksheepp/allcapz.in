@@ -18,7 +18,7 @@ const Preloader: React.FC<PreloaderProps> = ({ setLoading }) => {
             if (imageLoaded) setProgress((oldProgress) => {
                 if (oldProgress >= 100) {
                     clearInterval(interval);
-                    setLoading(false);
+                    setTimeout(() => setLoading(false), 200)
                     return 100;
                 }
                 const diff = Math.random() * 5;

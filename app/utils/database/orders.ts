@@ -85,3 +85,33 @@ export const UpdateOrderStatus = async (id: string, status: string) => {
         return false;
     }
 }
+
+export const UpdateEDD = async (id: string, estimatedDeliveryDate: Date) => {
+    try {
+        const existingProduct = await prisma.order.findUnique({
+            where: {
+                id
+            }
+        })
+
+        if (existingProduct && existingProduct.status !== "delivered") {
+            const resp = await prisma.order.update({
+                where: {
+                    id,
+                },
+                data: {
+                    shipping: {
+                        method:existingProduct.shipping?.method || "Shiprocket",
+                        trackingId: existingProduct.shipping?.trackingId || "",
+                        estimatedDeliveryDate: estimatedDeliveryDate
+                    }
+                },
+            });
+            console.log(resp);
+        }
+        return true;
+    } catch (error) {
+        console.log(error);
+        return false;
+    }
+}

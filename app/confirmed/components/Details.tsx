@@ -11,7 +11,7 @@ interface DetailsProps {
 
 export const Details: FC<DetailsProps> = ({ order }) => {
     const { session } = useSession();
-    var date = new Date(new Date().getTime() + (5 * 24 * 60 * 60 * 1000));
+    var date = new Date(order.confirmedAt.getTime() + (7 * 24 * 60 * 60 * 1000));
     const edd = date.toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" });
 
     const searchParams = useSearchParams();

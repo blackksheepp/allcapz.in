@@ -121,7 +121,7 @@ jobs:
 
       - name: Run new container
         run: |
-          ssh -o StrictHostKeyChecking=no -i key.pem ${{ env.AWS_HOST }} 'docker run -d -p 8000:8000 --env-file .env --name ${{ env.REPO }} ${{ env.DOCKERHUB_USERNAME }}/${{ env.REPO }}:latest'
+          ssh -o StrictHostKeyChecking=no -i key.pem ${{ env.AWS_HOST }} 'docker run -d --memory='512mb' --memory-swap=-1 --cpus='1' --restart unless-stopped -p 8000:8000 --env-file .env --name ${{ env.REPO }} ${{ env.DOCKERHUB_USERNAME }}/${{ env.REPO }}:latest'
       - name: Copy nginx.conf to EC2
         run: |
           scp -o StrictHostKeyChecking=no -i key.pem .nginx/nginx.conf ${{ env.AWS_HOST }}:~/.nginx/

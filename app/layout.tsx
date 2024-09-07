@@ -6,18 +6,21 @@ import Script from "next/script";
 
 import { IBM_Plex_Mono, Indie_Flower } from "next/font/google";
 import localFont from "next/font/local";
-import { useSearchParams } from "next/navigation";
 
 const ibmPlexMono = IBM_Plex_Mono({
   weight: ["100", "200", "300", "400", "500", "600", "700"],
   subsets: ["latin"],
   variable: "--font-ibm-plex-mono",
+  preload: false,
+  display: "swap"
 })
 
 const indieFlower = Indie_Flower({
   weight: ["400"],
   subsets: ["latin"],
   variable: "--font-indie-flower",
+  preload: false,
+  display: "swap"
 })
 
 const retro = localFont({
@@ -28,6 +31,20 @@ const retro = localFont({
     }
   ],
   variable: "--font-retro",
+  preload: false,
+  display: "swap"
+})
+
+const gloria = localFont({
+  src: [
+    {
+      path: "../public/assets/gloria-hallelujah.ttf",
+      style: "normal",
+    }
+  ],
+  variable: "--font-gloria",
+  preload: false,
+  display: "swap"
 })
 
 export const metadata: Metadata = {
@@ -40,13 +57,15 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  
+  
 
   return (
     <html lang="en">
       <body className="bg-black">
         <SessionProvider>
             <BackgroundTexture />
-            <main className={`${retro.variable} ${ibmPlexMono.variable} ${indieFlower.variable}`}>{children}</main>
+            <main className={`${retro.variable} ${ibmPlexMono.variable} ${indieFlower.variable} ${gloria.variable}`}>{children}</main>
         </SessionProvider>
       </body>
       <link rel="dns-prefetch" href="https://checkout.razorpay.com/v1/checkout.js" />

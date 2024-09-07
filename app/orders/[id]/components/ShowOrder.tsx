@@ -1,4 +1,4 @@
-import { OrderType, UpdateOrderStatus } from '@/app/utils/database/orders'
+import { OrderType, UpdateEDD, UpdateOrderStatus } from '@/app/utils/database/orders'
 import React, { useEffect, useState } from 'react'
 import ProductPreview from '@/app/profile/components/ProductPreview'
 import { AddressType, GetAddress } from '@/app/utils/database/addresses'
@@ -6,6 +6,7 @@ import { useSession } from '@/app/providers/Session'
 import Link from 'next/link'
 import { CreateCustomOrder } from '@/app/utils/shipping/shiprocket'
 import { useRouter } from 'next/navigation'
+import CustomDatePicker from './DatePicker'
 export const ShowOrder = ({ order }: { order: OrderType }) => {
     const { session } = useSession();
 
@@ -24,7 +25,7 @@ export const ShowOrder = ({ order }: { order: OrderType }) => {
     const confirmedAt = new Date(order.confirmedAt)
     const orderedOn = confirmedAt.toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" });
 
-    const edd = new Date(confirmedAt.getTime() + (5 * 24 * 60 * 60 * 1000));
+    const edd = order.shipping?.estimatedDeliveryDate || new Date(confirmedAt.getTime() + (7 * 24 * 60 * 60 * 1000));
     const deliveryBy = edd.toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" });
 
     const address = order.address;
@@ -33,19 +34,42 @@ export const ShowOrder = ({ order }: { order: OrderType }) => {
     const supportPhone = "+91 " + "1234567890";
 
     const router = useRouter();
-    const handleShipping = () => {
+    const handleShipping = async () => {
         if (order.status === "processing") {
-            CreateCustomOrder(order).then((url) => {
-                if (url) {
-                    UpdateOrderStatus(order.id, "shipping")
-                    window.open(url, "_blank");
-                }
+            const url = await CreateCustomOrder(order);
+            if (url) {
+                window.open(url, "_blank");
+            }
+        }
+    }
+
+    const handleUpdateStatus = async () => {
+        if (order.status === "delivered") return
+
+        if (order.status === "processing") {
+            await UpdateOrderStatus(order.id, "shipping")
+        } else if (order.status === "shipping") {
+            await UpdateOrderStatus(order.id, "delivered")
+        }
+
+        window.location.reload();
+    }
+
+    const setDeliveryBy = (date: Date | null) => {
+        if (date) {
+            UpdateEDD(order.id, date).then(() => {
+                window.location.reload();
             })
         }
     }
+
+    const updateShippingDetails = async () => {
+
+    }
+    
     return (
         <div className="w-full h-full flex flex-col mt-vw-20 md:mt-vw-10 xl:mt-vw-20 gap-vw-2.5">
-            <div className="w-full md:h-[600px] flex flex-col lg:flex-row items-end px-vw-14 gap-vw-14-min@lg">
+            <div className="w-full md:h-[720px] flex flex-col lg:flex-row items-end px-vw-14 gap-vw-14-min@lg">
                 <div className="w-full h-full flex flex-col justify-between py-vw-6-min@lg px-vw-6-min@md border-[3px] border-dashed border-[#c4c4c4] ">
 
                     <div className="w-full flex flex-row items-center justify-between">
@@ -81,32 +105,41 @@ export const ShowOrder = ({ order }: { order: OrderType }) => {
                     <div className="w-full flex flex-col items-center justify-center">
                         <div className="w-full flex flex-row items-center justify-between">
                             <p className="text-lgToxl font-ibm font-[500] text-white">Order Status</p>
-                            <p className="text-smTolg font-ibm font-[400] text-[#a4a4a4]">EDD: {deliveryBy}</p>
+                            <CustomDatePicker deliveryDate={edd} deliveryBy={deliveryBy} setDeliveryBy={setDeliveryBy} />
                         </div>
 
-                        <div className="mt-4 mx-vw-4-max@md text-smTolg lg:text-lgToxl flex flex-col md:flex-row items-center justify-center gap-vw-4 text-[#a4a4a4] font-ibm">
-                            <p className="text-accent">Confirmed</p>
+                        <div className="mt-6 mx-vw-4-max@md text-smTolg lg:text-lgToxl flex flex-col md:flex-row items-center justify-center gap-vw-4 text-[#a4a4a4] font-ibm">
+                            <p className="text-[#e95555]">Confirmed</p>
                             <p className='text-accent rotate-[90deg] md:rotate-0'>&gt;</p>
                             <p className="text-[#FFD600]">Processing</p>
                             <p className="rotate-[90deg] md:rotate-0">&gt;</p>
-                            <p>Shipping</p>
+                            <p className={["shipping", "delivered"].includes(order.status) ? "text-[#30ae39]" : ""}>Shipping</p>
                             <p className="rotate-[90deg] md:rotate-0">&gt;</p>
-                            <p>Delivered</p>
+                            <p className={order.status === "delivered" ? "text-[#5b92ff]" : ""}>Delivered</p>
                         </div>
 
+                        <div className="mt-6 w-full px-vw-20-max@md">
+                            <p onClick={handleUpdateStatus} className="btn w-full h-auto text-center py-1.5 text-smTolg font-retro">{
+                                order.status === "processing" ? "Change to Shipping" : order.status === "shipping" ? "Change to Delivered" : "Order Delivered"
+                            }</p>
+                        </div>
                     </div>
 
-                    <div className="w-full h-[1px] bg-white my-vw-6-min@lg-max@xl opacity-[40%]"></div>
-                    
+                    <div className="w-full h-[2px] bg-white my-vw-6-min@lg-max@xl opacity-[40%]"></div>
+
                     <Link target='_blank' href={`https://dashboard.razorpay.com/app/payments/${order.payment_id}`}>
                         <p className="text-xsTosm font-ibm mx-vw-20-max@md mt-3 py-1.5 text-accent text-center font-[600] bg-[#2563EB] dropshadow text-smToLg active:-mb-1 active:-mr-1">
                             View Payment on Razorpay
                         </p>
                     </Link>
-                    
+
                     <p onClick={handleShipping} className="cursor-pointer text-xsTosm font-ibm mx-vw-20-max@md mt-3 py-1.5 text-accent text-center font-[600] bg-[#735AE5] dropshadow text-smToLg active:-mb-1 active:-mr-1">
                         Confirm Shipping via Shiprocket
                     </p>
+
+                    <div className="mt-6 w-full px-vw-20-max@md">
+                        <p onClick={updateShippingDetails} className="btn w-full h-auto text-center py-1.5 text-smTolg font-retro">Update Shipping Details</p>
+                    </div>
 
                     <div className="w-full h-[1px] bg-white my-vw-6-min@lg-max@xl opacity-[40%]"></div>
 

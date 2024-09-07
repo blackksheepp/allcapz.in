@@ -1,6 +1,7 @@
 "use server"
 import prisma from "@/lib/prisma";
 import { ProductType } from "./collections";
+import { cursorTo } from "readline";
 
 export interface CartType {
     user: string;
@@ -12,9 +13,11 @@ export const AddToCart = async (user: string, product: ProductType): Promise<boo
         const cart = await GetCart(user);
         let success;
         if (cart) {
-            const productExists = cart.products.filter(p => p.title === product.title);
-            if (productExists.length > 0) {
-                const existingProduct = productExists[0];
+            const productExists = cart.products.filter(p => p.id === product.id);
+            const diffSizeProduct = !productExists.map(p => p.size).includes(product.size);
+
+            if (!diffSizeProduct) {
+                const existingProduct = productExists.filter(p => p.size === product.size)[0];
                 let quantity: number;
                 if (existingProduct.quantity) {
                     quantity = existingProduct.quantity + 1
@@ -30,7 +33,8 @@ export const AddToCart = async (user: string, product: ProductType): Promise<boo
                         products: {
                             updateMany: {
                                 where: {
-                                    title: product.title
+                                    id: product.id,
+                                    size: product.size
                                 },
                                 data: {
                                     quantity: quantity
@@ -84,8 +88,17 @@ export const RemoveFromCart = async (user: string, product: ProductType) => {
     try {
         const cart = await GetCart(user);
         if (cart) {
-            cart.products = cart.products.filter((p) => p.title != product.title);
-            await prisma.carts.update({
+
+            cart.products = cart.products.filter((p) => {
+                if (p.id === product.id) {
+                    if (p.size === product.size) {
+                        return false;
+                    }
+                } 
+                return true;
+            });
+
+            return await prisma.carts.update({
                 where: {
                     user: user
                 },
@@ -95,7 +108,6 @@ export const RemoveFromCart = async (user: string, product: ProductType) => {
                     }
                 }
             })
-            return cart;
         }
     } catch (error) {
         console.log(error);
@@ -107,7 +119,7 @@ export const IncreaseQnty = async (user: string, product: ProductType) => {
         const cart = await GetCart(user);
         if (cart) {
             cart.products = cart.products.map((p) => {
-                if (p.title == product.title) {
+                if (p.id === product.id && p.size === product.size) {
                     if (p.quantity) {
                         p.quantity = p.quantity + 1;
                     }
@@ -124,7 +136,7 @@ export const IncreaseQnty = async (user: string, product: ProductType) => {
                     }
                 }
             })
-            return cart.products.filter(x => x.title == product.title)[0];
+            return cart.products.filter(x => x.id == product.id && x.size == product.size)[0];
         }
     } catch (error) {
         console.log(error);
@@ -136,7 +148,7 @@ export const DecreaseQnty = async (user: string, product: ProductType) => {
         const cart = await GetCart(user);
         if (cart) {
             cart.products = cart.products.map((p) => {
-                if (p.title == product.title) {
+                if (p.id == product.id && p.size == product.size) {
                     if (p.quantity) {
                         if (p.quantity - 1 >= 1) {
                             p.quantity = p.quantity - 1
@@ -145,6 +157,7 @@ export const DecreaseQnty = async (user: string, product: ProductType) => {
                 }
                 return p;
             });
+            
             await prisma.carts.update({
                 where: {
                     user: user
@@ -155,12 +168,40 @@ export const DecreaseQnty = async (user: string, product: ProductType) => {
                     }
                 }
             })
-            return cart.products.filter(x => x.title == product.title)[0];
+            return cart.products.filter(x => x.id == product.id && x.size == product.size)[0];
         }
     } catch (error) {
         console.log(error);
     }
 }
+
+
+// export const UpdateProductSize = async (user: string, product: ProductType, size: string) => {
+//     try {
+//         const cart = await GetCart(user);
+//         if (cart) {
+//             cart.products = cart.products.map((p) => {
+//                 if (p.id === product.id && p.size === product.size) {
+//                     p.size = size
+//                 }
+//                 return p;
+//             });
+//             await prisma.carts.update({
+//                 where: {
+//                     user: user
+//                 },
+//                 data: {
+//                     products: {
+//                         set: cart.products
+//                     }
+//                 }
+//             })
+//             return cart.products.filter(x => x.id == product.id && x.size == size)[0];
+//         }
+//     } catch (error) {
+//         console.log(error);
+//     }
+// }
 
 
 export const ClearCart = async (user: string) => {
