@@ -12,17 +12,14 @@ import { useRouter, usePathname } from "next/navigation";
 import { useCartStore } from "@/app/utils/store/cartStore";
 import { GetImage } from "@/app/components";
 
-const CartProduct = ({ product, onClick, updateTotal }: { product: ProductType, onClick: () => void, updateTotal: () => void }) => {
+const CartProduct = ({ user, product, onClick, updateTotal }: { user: string | undefined, product: ProductType, onClick: () => void, updateTotal: () => void }) => {
 
   const [stateProduct, setStateProduct] = useState<ProductType | null>();
-
-  const [size, setSize] = useState<boolean>(false);
-  const sizes = ["Small", "Medium", "Large"];
-
+  
   const [x, setX] = useState("0");
   const removeProduct = () => {
     setX("100%");
-    setTimeout(() => onClick(), 1000)
+    setTimeout(() => onClick(), 500)
   };
 
   const { session } = useSession();
@@ -62,7 +59,6 @@ const CartProduct = ({ product, onClick, updateTotal }: { product: ProductType, 
     }
   }
 
-
   return (
     <motion.div
       initial={{ opacity: 1, x: x, width: "100%" }}
@@ -83,12 +79,7 @@ const CartProduct = ({ product, onClick, updateTotal }: { product: ProductType, 
           <div className="w-full py-1 flex flex-col justify-between text-black opacity-80 font-ibm font-[600] text-sm">
             <div className="flex flex-col gap-2">
               <p>{stateProduct.title}</p>
-              <p onClick={() => setSize(!size)} className="cursor-pointer">Size: {size ? (<div className="flex flex-col py-2">
-                {sizes.map((size, index) => (
-                  <p onClick={() => { stateProduct.size = size; setStateProduct(stateProduct) }} className="cursor-pointer" key={index}>{size}</p>
-                ))}
-              </div>) : (stateProduct.size)}
-              </p>
+              <p className="cursor-pointer">Size: {stateProduct.size}</p>
             </div>
             <div className="active:mb-0.5 active:ml-0.5 duration-[300ms] ease-in-out flex flex-row items-center justify-center gap-2 bg-[#c7c7c7] text-black w-20 dropshadow border-black border-[1px] mb-1">
               <p onClick={decreaseQnty} className="font-retro  font-[400] cursor-pointer text-[28px] border-black border-r-[2px] px-[4px] py-[1px]">-</p>
@@ -215,7 +206,7 @@ const Cart = () => {
           <div className="w-full max-h-[100%] mb-10 flex flex-col mt-vw-16-max@sm overflow-y-scroll">
             {cart && cart.products.length > 0 ? (<div className="w-full flex flex-col gap-5 items-start justify-center">
               {cart.products.map((product) => {
-                return <CartProduct key={product.title} product={product} onClick={() => { setProductToRemove(product) }} updateTotal={updateTotal} />
+                return <CartProduct key={`${product.title}${product.size}${product.quantity}`} user={session?.email} product={product} onClick={() => { setProductToRemove(product) }} updateTotal={updateTotal} />
               })}
             </div>) : <p className="text-accent font-retro text-sm box-border w-full h-[400px] grid place-items-center">Nothing to see here.</p>}
           </div>

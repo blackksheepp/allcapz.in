@@ -23,7 +23,7 @@ export default function Product({ params }: { params: { slug: string } }) {
   const [zoom, setZoom] = useState(false);
   const [mobile, setMobile] = useState(false);
   const [size, setSize] = useState<boolean>(true);
-  const sizes = ["Small", "Medium", "Large"];
+  const sizes = ["Small", "Medium"];
   const [selectSize, setSelectSize] = useState<string>(sizes[1]);
 
   const [isTransitioning, setIsTransitioning] = useState(false);
@@ -74,7 +74,12 @@ export default function Product({ params }: { params: { slug: string } }) {
     }
   }, [params.slug, setCart]);
 
-
+  useEffect(() => {
+    document.addEventListener('contextmenu', (event) => {
+      event.preventDefault();
+    });
+  }, [])
+  
   return (
     <>
       <div
@@ -115,7 +120,7 @@ export default function Product({ params }: { params: { slug: string } }) {
                     width={0}
                     height={0}
                     sizes="10vh"
-                    onClick={() => setZoom(true)}
+                    // onClick={() => setZoom(true)}
                     className="absolute mt-6 mr-6 lg:h-[500px] md:h-[500px] h-[300px] w-auto blur-[0px]"
                     priority
                   />
@@ -125,7 +130,7 @@ export default function Product({ params }: { params: { slug: string } }) {
                     width={0}
                     height={0}
                     sizes="10vh"
-                    onClick={() => setZoom(true)}
+                    // onClick={() => setZoom(true)}
                     className="absolute mt-3 mr-3 lg:h-[500px] md:h-[500px] h-[300px] w-auto blur-[0px]"
                     priority
                   />
@@ -135,7 +140,7 @@ export default function Product({ params }: { params: { slug: string } }) {
                     width={0}
                     height={0}
                     sizes="50vh"
-                    onClick={() => setZoom(true)}
+                    // onClick={() => setZoom(true)}
                     className="absolute lg:h-[500px] md:h-[500px] h-[300px] w-auto"
                     priority
                   />
@@ -188,8 +193,7 @@ export default function Product({ params }: { params: { slug: string } }) {
                 <br />
                 27.8×39.4 inches (Medium)
                 <br />
-                32.4×48 inches (Large)
-                <br /><br />
+               <br /><br />
                 ENG // 120 g/m² Paper Digital Color Printing.
                 <br />
                 Limited Edition Serialized and Signed by the Author.

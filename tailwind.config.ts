@@ -69,6 +69,7 @@ const config: Config = {
     },
     fontFamily: {
       retro: "var(--font-retro)",
+      gloria: "var(--font-gloria)",
       indie: "var(--font-indie-flower)",
       ibm: "var(--font-ibm-plex-mono)",
     },
@@ -76,7 +77,7 @@ const config: Config = {
   plugins: [
     require("tailwindcss-fluid-spacing")({
       extend: {
-        sizes: [35, 46, 47, 51, 54, 70, 100, 120, 130, 140, 150, 170, 180, 200, 220, 300, 320],
+        sizes: [25, 35, 46, 47, 51, 54, 70, 100, 120, 130, 140, 150, 170, 180, 200, 220, 300, 320],
       },
     }),
   ],

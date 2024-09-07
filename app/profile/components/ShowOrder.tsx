@@ -18,10 +18,9 @@ export const ShowOrder = ({ order }: { order: OrderType }) => {
     if (Object.keys(statusColors)[i] === order.status) break;
   }
 
-  const confirmedAt = new Date(order.confirmedAt)
-  const orderedOn = confirmedAt.toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" });
+  const orderedOn = order.confirmedAt.toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" });
 
-  const edd = new Date(confirmedAt.getTime() + (5 * 24 * 60 * 60 * 1000));
+  const edd = order.shipping?.estimatedDeliveryDate || new Date(order.confirmedAt.getTime() + (7 * 24 * 60 * 60 * 1000));
   const deliveryBy = edd.toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" });
 
   const address = order.address;
@@ -53,13 +52,13 @@ export const ShowOrder = ({ order }: { order: OrderType }) => {
             </div>
 
             <div className="text-smTolg lg:text-lgToxl flex flex-col md:flex-row md:gap-3 items-center justify-center text-[#a4a4a4] font-ibm">
-              <p className="text-accent">Confirmed</p>
+              <p className="text-[#e95555]">Confirmed</p>
               <p className='text-accent rotate-[90deg] md:rotate-0'>&gt;</p>
               <p className="text-[#FFD600]">Processing</p>
               <p className="rotate-[90deg] md:rotate-0">&gt;</p>
-              <p>Shipping</p>
+              <p className={["shipping", "delivered"].includes(order.status) ? "text-[#30ae39]" : ""}>Shipping</p>
               <p className="rotate-[90deg] md:rotate-0">&gt;</p>
-              <p>Delivered</p>
+              <p className={order.status === "delivered" ? "text-[#5b92ff]" : ""}>Delivered</p>
             </div>
 
             <p className="self-start text-xsTosm font-ibm text-accent">&gt; Tracing ID will be provided once the order has Processed</p>

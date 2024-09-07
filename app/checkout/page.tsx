@@ -21,6 +21,7 @@ import { Field, FormError } from "./components/Field";
 import { GetImage } from "../components";
 import { useCartStore } from "../utils/store/cartStore";
 import { useMiscStore } from "../utils/store/miscStore";
+import { SendOrderConfirmation } from "../utils/auth";
 
 const CheckoutProduct = ({ product }: { product: ProductType }) => {
 
@@ -217,7 +218,6 @@ export default function Checkout({ params }: { params: { slug: string } }) {
             phone: phone
           }
 
-          console.log(isNewAddress, "isNewAddress")
           if (isNewAddress) {
             SaveAddress(orderAddress)
           }
@@ -236,6 +236,11 @@ export default function Checkout({ params }: { params: { slug: string } }) {
           // Clear Cart 
           ClearCart(session!.email)
           setShowCart(false)
+
+          // Send Order Confirmation Email
+          if (session?.name) {
+            await SendOrderConfirmation(session.name, session.email, response.razorpay_order_id);
+          }
 
           // Redirect to Order Confirmation Page
           router.push("/confirmed?id=" + response.razorpay_order_id + "&paymentId=" + response.razorpay_payment_id);

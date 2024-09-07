@@ -51,7 +51,7 @@ const Navbar: React.FC<NavbarProps> = ({ showProfile = true }) => {
 
   return (
     <>
-      <nav style={{ top: scroll ? 0 : 20 }} className={`sticky z-40 ${scroll && `transition-all ease-in-out duration-[500ms] lg:bg-transparent bg-[#1b1b1bc7] lg:border-none border-accent border-b-[1px]`}`}>
+      <nav style={{ top: scroll ? 0 : 20 }} className={`sticky z-40 ${scroll && `transition-all ease-in-out duration-[500ms]  bg-[#1b1b1bc7]  border-accent border-b-[1px]`}`}>
         <div className="w-full flex flex-row items-center justify-between px-vw-14 py-vw-8-max@sm">
           <Link href="/">
             <Image

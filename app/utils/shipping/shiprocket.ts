@@ -1,10 +1,9 @@
 "use server"
-import { Order } from '@prisma/client';
 import axios, { AxiosRequestConfig } from 'axios';
 import { OrderType } from '../database/orders';
-import { GetAddress } from '../database/addresses';
+import { randomBytes } from 'crypto';
 
-let SHIPROCKET_API_TOKEN: string | undefined;
+
 
 export async function GetToken() {
     const data = JSON.stringify({
@@ -24,8 +23,7 @@ export async function GetToken() {
 
     try {
         const response = await axios(config);
-        SHIPROCKET_API_TOKEN = response.data.token;
-        return SHIPROCKET_API_TOKEN;
+        return response.data.token;
     } catch (error) {
         console.log(error);
     }
@@ -33,7 +31,7 @@ export async function GetToken() {
 
 
 export async function CheckServiceAvailability(postalCode: number) {
-    const token = SHIPROCKET_API_TOKEN ?? await GetToken();
+    const token = await GetToken();
     const config: AxiosRequestConfig = {
         method: 'get',
         maxBodyLength: Infinity,
@@ -43,7 +41,7 @@ export async function CheckServiceAvailability(postalCode: number) {
             'Authorization': `Bearer ${token}`
         },
         params: {
-            pickup_postcode: 110001,
+            pickup_postcode: 121001,
             delivery_postcode: postalCode,
             weight: "0.5",
             length: 45,
@@ -97,24 +95,57 @@ function formatDate(date: Date) {
     return `${year}-${month}-${day} ${hours}:${minutes}`;
 }
 
+const GetOrder = async (order_id: string, token: string): Promise<string | null> => {
+    const config: AxiosRequestConfig = {
+        method: 'get',
+        maxBodyLength: Infinity,
+        url: 'https://apiv2.shiprocket.in/v1/external/orders',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        }
+    };
+
+    try {
+        const response = await axios(config);
+        const data = response.data.data.map((d:any) => {
+            return {
+                id: d.id,
+                order_id: d.channel_order_id
+            }
+        });
+        const result = data.filter((d:any) => d.order_id.toLowerCase() === order_id.toLowerCase())
+        if (result.length > 0) return result[0].id as string;
+    } catch (error) {
+        console.error(error);
+    }
+    return null;
+};
 
 export async function CreateCustomOrder(order: OrderType) {
-    const token = SHIPROCKET_API_TOKEN ?? await GetToken();
+    const token = await GetToken();
     const address = order.address;
-    if (!address) return
-    
+    if (!address || !token) return
+
+    const order_id = await GetOrder(order.id.replace('order_', ''), token);
+    if (order_id) {
+        return `https://app.shiprocket.in/seller/orders/details/${order_id}` 
+    }
+
     const products = order.products.flatMap((product) => {
+        function generateSKU(): string {
+            return `PO${product.id.toUpperCase().slice(0, 6)}${randomBytes(4).toString('hex').slice(0, 4).toUpperCase()}`
+        }
         return {
-            name: product.title,
-            sku: product.id,
+            name: `${product.size === "Small" ? "A4 Size" : product.size === "Medium" ? "A5 Size" : ""} Poster of ${product.title}`,
+            sku: generateSKU(),
             units: product.quantity || 1,
             selling_price: product.price,
         }
     });
 
-    var axios = require('axios');
     var body = JSON.stringify({
-        order_id: order.id.replace("order_", ""),
+        order_id: order.id.replace("order_", "").toUpperCase(),
         order_date: formatDate(order.confirmedAt),
         pickup_location: "Primary",
         billing_customer_name: address.fname,
@@ -131,9 +162,9 @@ export async function CreateCustomOrder(order: OrderType) {
         order_items: products,
         payment_method: "Prepaid",
         sub_total: order.pricing.subtotal,
-        length: 10,
-        breadth: 15,
-        height: 20,
+        length: 44,
+        breadth: 36,
+        height: 5,
         weight: 0.5
     });
 
@@ -151,6 +182,7 @@ export async function CreateCustomOrder(order: OrderType) {
     try {
         const response = await axios(config);
         const data = response.data;
+        console.log(data, "DATAAAAA")
         if (data) {
             return `https://app.shiprocket.in/seller/orders/details/${data.order_id}` 
         }

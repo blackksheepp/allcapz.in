@@ -19,11 +19,15 @@ export const Polaroid = ({ title, id }: { title: string; id: string }) => {
       setMobile(window.innerWidth < 768);
     }
   }, []);
+  
+  function getRandomNumber(min: number, max: number): number {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  }
 
   return (
-    <div className="relative w-vw-52-min@xl sm:w-vw-52-min@lg md:w-vw-52-min@xl mb-vw-14-min@md rotate-1 cursor-pointer" >
+    <div style={{rotate: `${getRandomNumber(-4, 4)}deg` }} className="relative w-vw-52-min@xl sm:w-vw-52-min@lg md:w-vw-52-min@xl mb-vw-14-min@md cursor-pointer" >
       <Image
-        src={GetImage("img/polaroid.avif")}
+        src={GetImage("img/polaroid-white.avif")}
         alt=""
         width={0}
         height={0}
@@ -32,7 +36,7 @@ export const Polaroid = ({ title, id }: { title: string; id: string }) => {
         priority
       />
       <div className="pt-vw-3-min@xl sm:pt-vw-3-min@lg md:pt-vw-3-min@xl">
-        <div className="box-content w-vw-46-min@xl sm:w-vw-46-min@lg md:w-vw-46-min@xl h-vw-46-min@xl sm:h-vw-46-min@lg md:h-vw-46-min@xl ml-vw-1-min@md sm:ml-vw-1-min@lg md:ml-vw-1-min@xl grid place-items-center">
+        <div className="box-content w-vw-46-min@xl sm:w-vw-46-min@lg md:w-vw-46-min@xl h-vw-46-min@xl sm:h-vw-46-min@lg md:h-vw-46-min@xl ml-vw-4-min@md  grid place-items-center">
           <Image
             src={image}
             alt=""
@@ -46,7 +50,7 @@ export const Polaroid = ({ title, id }: { title: string; id: string }) => {
         </div>
       </div>
       <div className="relative">
-        <div className="box-content w-vw-47-min@xl sm:w-vw-47-min@lg md:w-vw-47-min@xl h-vw-12-min@xl sm:h-vw-12-min@lg md:h-vw-12-min@xl  font-indie text-black md:text-2xl sm:text-xl text-2xl grid place-items-center">
+        <div className="box-content w-vw-52-min@xl sm:w-vw-52-min@lg md:w-vw-52-min@xl h-vw-25-min@xl sm:h-vw-25-min@lg md:h-vw-25-min@xl font-gloria text-black xl:text-2xl lg:text-xl md:text-xl sm:text-lg  grid place-items-center">
           {title}
         </div>
       </div>

@@ -38,7 +38,6 @@ export default function Profile() {
             router.push("/");
         } else {
             if (searchParams.get("manageAddress") === "true") {
-                console.log("called", searchParams.entries())
                 setManageAddress(true)
             } else {
                 setManageAddress(false)

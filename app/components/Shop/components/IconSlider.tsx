@@ -41,7 +41,7 @@ export const IconSlider: React.FC<IconSliderProps> = ({
       <Slider {...settings}>
         {showIcons.flatMap((icon, index) => {
           return (
-            <div className="px-4 flex justify-center items-center">
+            <div key={`${icon}-${index}`} className="px-4 flex justify-center items-center">
               <Image
                 src={icon}
                 alt="icon"

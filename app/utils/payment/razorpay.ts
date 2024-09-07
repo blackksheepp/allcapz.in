@@ -21,7 +21,7 @@ export const CreateRazorpayPayment = async (products: Product[], user: string, p
         notes: {
             paymentFor: products.flatMap((p) => p.title),
             user: user,
-            productId: products.flatMap((p) => p.id),
+            productId: products.flatMap((p) => p.id+"_"+p.size),
         }
     };
 
