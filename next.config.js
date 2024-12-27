@@ -11,6 +11,7 @@ const nextConfig = {
   },
   optimizeFonts: true,
   experimental: {
+    missingSuspenseWithCSRBailout: false,
     serverActions: {
       bodySizeLimit: "10mb",
       allowedOrigins: ["allcapz.in"],

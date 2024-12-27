@@ -4,8 +4,13 @@ import Image from 'next/image';
 import { GetImage } from '@/app/components';
 import { useMiscStore } from '@/app/utils/store/miscStore';
 
+function getRandomNumber(min: number, max: number): number {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
 export const Polaroid = ({ title, id }: { title: string; id: string }) => {
   const { preloader, showPreloader } = useMiscStore((state) => state);
+  const [randRotate, setRandRotate] = useState(getRandomNumber(-4, 4));
 
   const handleOnLoad = () => {
     if (preloader) {
@@ -19,13 +24,9 @@ export const Polaroid = ({ title, id }: { title: string; id: string }) => {
       setMobile(window.innerWidth < 768);
     }
   }, []);
-  
-  function getRandomNumber(min: number, max: number): number {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-  }
 
   return (
-    <div style={{rotate: `${getRandomNumber(-4, 4)}deg` }} className="relative w-vw-52-min@xl sm:w-vw-52-min@lg md:w-vw-52-min@xl mb-vw-14-min@md cursor-pointer" >
+    <div style={{ rotate: `${randRotate}deg` }} className="relative w-vw-52-min@xl sm:w-vw-52-min@lg md:w-vw-52-min@xl mb-vw-14-min@md cursor-pointer" >
       <Image
         src={GetImage("img/polaroid-white.avif")}
         alt=""

@@ -49,7 +49,6 @@ const gloria = localFont({
 
 export const metadata: Metadata = {
   title: "ALLCAPZ",
-  description: "EXTRA ORDINARY ART",
 };
 
 export default function RootLayout({
