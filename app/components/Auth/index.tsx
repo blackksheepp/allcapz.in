@@ -91,11 +91,7 @@ const Auth = ({ path = "/" }: { path?: string }) => {
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
         if (await validateEmail(email)) {
-            setEmailSent(`Check your email App
-                        \n
-                        We've sent you a ${authType} url at
-                        \n
-                        ${email}`);
+            setEmailSent(`We've sent you an email at ${email}`);
             setSendEmail(true);
         }
     }
@@ -133,6 +129,8 @@ const Auth = ({ path = "/" }: { path?: string }) => {
         }
     }, [showLogin, mobile, emailSent, authType, email, authenticate, sendEmail, width]);
 
+    const [toggleEmail, setToggleEmail] = useState<boolean>(false);
+
     return (
         <LoginTransition animate={showLogin} mobile={mobile}>
             <div className="w-full h-screen grid place-items-center font-ibm">
@@ -162,30 +160,39 @@ const Auth = ({ path = "/" }: { path?: string }) => {
                                 <form onSubmit={handleSubmit} className="self-center flex flex-col items-center justify-center gap-2 mt-10">
                                     <button
                                         onClick={() => GoogleAuth()}
-                                        className="border-[1px] border-green-400 hover:bg-green-500 hover:text-black hover:font-bold transition-all duration-200 ease-in-out w-[230px] py-1.5 text-[13px]"
+                                        className="border-[1px] bg-green-500 text-black text-semibold font-bold border-t-[4px] border-l-[4px] border-b-[4px] border-r-[5px] border-gray-200 transition-all duration-200 ease-in-out w-[230px] py-1.5 text-[13px]"
                                     >
-                                        {capitalize(authType)} with Google
+                                        Continue with Google
                                     </button>
-                                    <input
-                                        type="email"
-                                        name="email"
-                                        onChange={(e) => setEmail(e.target.value)}
-                                        className="outline-none bg-transparent text-accent w-[230px] py-2 text-center text-[13px]"
-                                        placeholder="enter your email here"
-                                        required={true}
-                                    />
-                                    <input
-                                        className="border-[1px] border-green-400 bg-green-500 hover:bg-black hover text-black hover:text-green-500 hover:font-bold w-[230px] py-1.5 text-[13px] transition-all duration-200 ease-in-out"
-                                        type="submit"
-                                        value={capitalize(authType)}
-                                    />
-                                    <p>{emailError.toUpperCase()}</p>
+                                    {toggleEmail ? (
+                                        <>
+                                            <input
+                                                type="email"
+                                                name="email"
+                                                onChange={(e) => setEmail(e.target.value)}
+                                                className="outline-none bg-transparent text-accent w-[230px] py-2 text-center text-[13px]"
+                                                placeholder="enter your email here"
+                                                required={true}
+                                            />
+                                            <input
+                                                className="border-[1px] bg-gray-200 text-black hover:text-green-500 hover:font-bold w-[230px] py-1.5 text-[13px] transition-all duration-200 ease-in-out font-bold border-t-[4px] border-l-[4px] border-b-[4px] border-r-[5px] border-gray-200"
+                                                type="submit"
+                                                value={capitalize(authType)}
+                                            />
+                                            <p>{emailError.toUpperCase()}</p>
+                                        </>) : (<p onClick={() => setToggleEmail(true)} className="text-xs hover:underline cursor-pointer">use email address</p>)}
 
                                 </form>
                             ) : (
                                 <div className="w-full flex items-center justify-center mt-10 text-[18px]">
-                                    <p className="text-center">
+                                    <p className="text-center text-sm">
                                         {emailSent}
+                                        <br /><br />
+                                        <span className="text-start text-xs">
+                                            {!emailSent.includes("google") && "(Please check Promotions/Spam/Junk if email not recieved)"}
+                                            <br />
+                                            {!emailSent.includes("google") && "This sucks ik, To avoid this just use Continue with Google button"}
+                                        </span>
                                     </p>
                                 </div>
                             )}

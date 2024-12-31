@@ -16,7 +16,7 @@ export function AuthEmail(authType: string, url: string) {
                             >
                                 <Row className="m-0">
                                     <Column align="center">
-                                        <Img className="pointer-events-none mx-auto" alt="logo" src="cid:logo.png" width={150} />
+                                        <Img className="pointer-events-none mx-auto" alt="" src="cid:logo.png" width={150} />
                                     </Column>
                                 </Row>
                                 <Row className="m-0 py-20">
@@ -25,7 +25,7 @@ export function AuthEmail(authType: string, url: string) {
                                             <Img src={authType === "login" ? 
                                                 "cid:login.png" 
                                                 : "cid:signup.png"
-                                                } width={100} className="mx-auto pointer-events-none" />
+                                                } width={100} className="mx-auto pointer-events-none" alt={`click to ${authType}`} />
                                         </Button>
                                         <Text className="m-0 text-[#FDFDFD] leading-[20px] text-[14px] font-[400] color-fffffe text-center uppercase" style={{ fontFamily: 'Helvetica, Arial, sans-serif' }}>
                                             This link will expire in 10 minutes, <br />ignore if you didn&apos;t make the request.

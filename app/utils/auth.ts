@@ -80,7 +80,6 @@ export const SendAuthLink = async (email: string, authType: string, checkout: bo
         contentType: "image/png",
       },
     ]
-    
   };
 
   try {
