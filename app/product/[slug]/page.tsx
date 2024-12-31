@@ -145,19 +145,39 @@ export default function Product({ params }: { params: { slug: string } }) {
           <div className="relative place-self-center lg:w-[400px] md:w-[400px] lg:min-w-[400px] md:min-w-[400px] w-full lg:h-[500px] md:h-[500px] h-[300px] grid place-items-center">
             {productImage && (
               <>
-                {[6, 3, 0].map((offset) => (
-                  <Image
-                    key={offset}
-                    src={productImage}
-                    alt={product?.title || ''}
-                    width={0}
-                    height={0}
-                    sizes="50vh"
-                    className={`absolute lg:h-[500px] md:h-[500px] h-[300px] w-auto ${offset > 0 ? `mt-${offset} mr-${offset} blur-[0px]` : ''
-                      }`}
-                    priority={offset === 0}
-                  />
-                ))}
+                <Image
+                  key={1}
+                  src={productImage}
+                  alt={product?.title || ''}
+                  width={0}
+                  height={0}
+                  sizes="50vh"
+                  className={`absolute lg:h-[500px] md:h-[500px] h-[300px] w-auto mt-6 mr-6 blur-[0px]`}
+                  priority
+                />
+
+                <Image
+                  key={2}
+                  src={productImage}
+                  alt={product?.title || ''}
+                  width={0}
+                  height={0}
+                  sizes="50vh"
+                  className={`absolute lg:h-[500px] md:h-[500px] h-[300px] w-auto mt-3 mr-3 blur-[0px]`}
+                  priority
+                />
+
+                <Image
+                  key={3}
+                  src={productImage}
+                  alt={product?.title || ''}
+                  width={0}
+                  height={0}
+                  sizes="50vh"
+                  className={`absolute lg:h-[500px] md:h-[500px] h-[300px] w-auto mt-0 mr-0 blur-[0px]`}
+                  priority
+                />
+                
               </>
             )}
           </div>

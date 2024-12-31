@@ -7,6 +7,8 @@ import Script from "next/script";
 import { IBM_Plex_Mono, Indie_Flower } from "next/font/google";
 import localFont from "next/font/local";
 
+import { GoogleAnalytics } from '@next/third-parties/google'
+
 const ibmPlexMono = IBM_Plex_Mono({
   weight: ["100", "200", "300", "400", "500", "600", "700"],
   subsets: ["latin"],
@@ -67,6 +69,7 @@ export default function RootLayout({
             <main className={`${retro.variable} ${ibmPlexMono.variable} ${indieFlower.variable} ${gloria.variable}`}>{children}</main>
         </SessionProvider>
       </body>
+      <GoogleAnalytics gaId="G-MCD98LP6LK" />
       <link rel="dns-prefetch" href="https://checkout.razorpay.com/v1/checkout.js" />
       <Script id="razorpay-checkout-js" src="https://checkout.razorpay.com/v1/checkout.js" />
     </html>
