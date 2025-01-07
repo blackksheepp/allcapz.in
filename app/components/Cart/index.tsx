@@ -12,6 +12,36 @@ import { useRouter, usePathname } from "next/navigation";
 import { useCartStore } from "@/app/utils/store/cartStore";
 import { GetImage } from "@/app/components";
 
+export const getDiscount = (nPosters: number, total: number) => {
+  console.log(nPosters, total)
+  let description = "";
+  let discount = 0;
+
+  if (nPosters === 2) {
+    description = "₹150 off on purchase of 2 posters";
+    discount = 150;
+  } else if (nPosters === 3) {
+    description = "₹250 off on purchase of 3 posters";
+    discount = 250;
+  } else if (nPosters > 3) {
+    description = "₹100 off on each posters, on purchase of 4 or more posters";
+    discount = total*(20/100);
+  } else {
+    description = "";
+    discount = 0;
+  }
+
+  discount = Math.round(discount);
+  return { description, discount };
+} 
+
+export const availDiscount = (total: number) => {
+  const nPosters = Math.ceil(total / 499);
+  const {description, discount} = getDiscount(nPosters, total);
+
+  return Math.round((total - discount));
+}
+
 const CartProduct = ({ user, product, onClick, updateTotal }: { user: string | undefined, product: ProductType, onClick: () => void, updateTotal: () => void }) => {
 
   const [stateProduct, setStateProduct] = useState<ProductType | null>();
@@ -196,14 +226,14 @@ const Cart = () => {
               {cart?.products && cart?.products.length > 0 ? `${cart.products.length} Product${cart.products.length > 1 ? "s" : ""}` : "CART"}
             </p>
             <div
-              className="w-[85px] h-[30px] border-black border-[1px] dropshadow font-ibm font-[800] text-black bg-[#c7c7c7] cursor-pointer flex items-center justify-center active:mt-1 mr-2 active:mr-1 duration-50"
+              className="w-[85px] h-[30px] border-black border-[1px] dropshadow font-ibm font-[800] text-black bg-[#c7c7c7] hover:bg-red-500 active:bg-red-500 cursor-pointer flex items-center justify-center active:mt-1 mr-2 active:mr-1 duration-50"
               style={{ fontSize: "14px" }}
               onClick={() => { setTimeout(() => switchCart(), 50) }}
             >
               CLOSE
             </div>
           </div>
-          <div className="w-full max-h-[100%] mb-10 flex flex-col mt-vw-16-max@sm overflow-y-scroll">
+          <div className="w-full max-h-[87%] mb-10 flex flex-col mt-vw-16-max@sm overflow-y-scroll">
             {cart && cart.products.length > 0 ? (<div className="w-full flex flex-col gap-5 items-start justify-center">
               {cart.products.map((product) => {
                 return <CartProduct key={`${product.title}${product.size}${product.quantity}`} user={session?.email} product={product} onClick={() => { setProductToRemove(product) }} updateTotal={updateTotal} />
@@ -214,11 +244,19 @@ const Cart = () => {
         <div className="w-full flex flex-col gap-vw-2-min@xl items-center justify-center py-9">
           {cart && cart.products.length > 0 &&
             <>
+              {cart.products.reduce((a, b) => a + (b.quantity || 0), 0) > 1 && (
+                <div className="cursor-pointer dropshadow w-[85%] py-vw-2-min@xl flex flex-row items-center justify-between px-vw-4-min@xl bg-[#c7c7c7] text-smTolg text-black font-ibm font-[600]">
+                  <p>DISCOUNT</p>
+                  <span className="text-red-500 " title="this price is rounded to a whole number">
+                    -₹{Math.ceil(getDiscount(cart.products.reduce((a, b) => a + (b.quantity || 0), 0), total).discount)}
+                  </span>
+                </div>
+              )}
               <div onClick={goToCheckout} className="cursor-pointer dropshadow w-[85%] py-vw-2-min@xl flex flex-row items-center justify-between px-vw-4-min@xl bg-[#c7c7c7] text-smTolg text-black font-ibm font-[600]">
                 <p>CHECKOUT</p>
-                <p>
-                  ₹{total} INR
-                </p>
+                <span title="this price is rounded to a whole number">
+                ₹{Math.ceil(availDiscount(total))}
+                </span>
               </div>
               <p className="text-accent font-ibm text-xs text-center w-full">Tax incl. Shipping calculated at checkout. </p>
             </>
