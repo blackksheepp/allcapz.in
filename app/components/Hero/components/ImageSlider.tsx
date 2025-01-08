@@ -22,7 +22,7 @@ export default function ImageSlider() {
     <div>
       <Slider {...settings}>
         <Image
-          src={GetImage("img/nbanner.avif")}
+          src={GetImage("img/new-banner.avif")}
           alt="logo"
           width={0}
           height={0}
@@ -31,7 +31,7 @@ export default function ImageSlider() {
           priority
         />
         <Image
-          src={GetImage("img/nbanner.avif")}
+          src={GetImage("img/new-banner.avif")}
           alt="logo"
           width={0}
           height={0}
@@ -40,7 +40,7 @@ export default function ImageSlider() {
           priority
         />
         <Image
-          src={GetImage("img/nbanner.avif")}
+          src={GetImage("img/new-banner.avif")}
           alt="logo"
           width={0}
           height={0}

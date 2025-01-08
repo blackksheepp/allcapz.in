@@ -182,7 +182,6 @@ export async function CreateCustomOrder(order: OrderType) {
     try {
         const response = await axios(config);
         const data = response.data;
-        console.log(data, "DATAAAAA")
         if (data) {
             return `https://app.shiprocket.in/seller/orders/details/${data.order_id}` 
         }

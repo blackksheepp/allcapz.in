@@ -12,6 +12,7 @@ import Cart from "@/app/components/Cart";
 import Auth from "@/app/components/Auth";
 import Navbar from "@/app/components/Navbar";
 import { BackgroundTexture } from "@/app/components/TextureOverlay";
+import Discount from "@/app/components/Discount";
 
 const SIZES = ["Small", "Medium"] as const;
 type Size = typeof SIZES[number];
@@ -101,7 +102,7 @@ export default function Product({ params }: { params: { slug: string } }) {
 
   return (
     <>
-      <div className="absolute z-80 w-full h-[110%] min-h-[700px] overflow-y-hidden">
+      <div className="absolute z-80 w-full h-[110%] min-h-[700px] overflow-y-scroll">
         <BackgroundTexture />
         <div
           className={`
@@ -133,6 +134,7 @@ export default function Product({ params }: { params: { slug: string } }) {
 
       <Cart />
       <Auth />
+      {productImage && !showCart && !showLogin && <Discount />}
 
       <div className={`absolute w-full ${showLogin || showCart || zoom ? 'blur-lg pointer-events-none' : ''
         }`}>
@@ -142,7 +144,7 @@ export default function Product({ params }: { params: { slug: string } }) {
 
         <div className="absolute w-full h-screen mt-vw-20-min@md xl:mt-vw-5 2xl:mt-0 flex lg:flex-row md:flex-row flex-col justify-center gap-vw-16-min@sm mb-vw-10">
           {/* Product Image */}
-          <div className="relative place-self-center lg:w-[400px] md:w-[400px] lg:min-w-[400px] md:min-w-[400px] w-full lg:h-[500px] md:h-[500px] h-[300px] grid place-items-center">
+          <div className="mt-28 md:mt-0 relative place-self-center lg:w-[400px] md:w-[400px] lg:min-w-[400px] md:min-w-[400px] w-full lg:h-[500px] md:h-[500px] h-[300px] grid place-items-center">
             {productImage && (
               <>
                 <Image

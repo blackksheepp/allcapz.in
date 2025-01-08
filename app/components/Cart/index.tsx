@@ -13,7 +13,6 @@ import { useCartStore } from "@/app/utils/store/cartStore";
 import { GetImage } from "@/app/components";
 
 export const getDiscount = (nPosters: number, total: number) => {
-  console.log(nPosters, total)
   let description = "";
   let discount = 0;
 

@@ -245,11 +245,10 @@ export const GetProductByTitle = async (collection: string, title: string) => {
 
 export const SaveImage = async (form: FormData) => {
     const inputBuffer = await (form.get('file') as File).arrayBuffer()
-    const outputBuffer = await CompressImage(Buffer.from(inputBuffer));
+    const outputBuffer = await CompressImage(inputBuffer);
     const id: string = new bson.ObjectId().toString();
     const stored = await StoreImage(outputBuffer, id + ".avif");
     const url = GetImage(id);
     return { url, id };
-
 };
 

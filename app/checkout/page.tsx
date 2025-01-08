@@ -397,7 +397,6 @@ export default function Checkout({ params }: { params: { slug: string } }) {
       const nPosters = cart.products.reduce((a, b) => a + (b.quantity || 0), 0)
       const disc = getDiscount(nPosters, subTotal);
 
-      console.log(nPosters, subTotal, disc)
       setDiscount(disc.discount);
       setDiscountDesc(disc.description);
     }
