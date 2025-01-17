@@ -29,8 +29,8 @@ export const Details: FC<DetailsProps> = ({ order }) => {
         }, 500)
     }, [searchParams])
 
-    const supportEmail = "support@allcapz.com";
-    const supportPhone = "+91 " + "1234567890";
+    const supportEmail = "support@allcapz.in";
+    const supportPhone = "+91 " + "9910128535";
 
     return (
         <div className="w-full h-full flex flex-col px-vw-20-max@md lg:pl-vw-14 lg:pr-vw-10 gap-3">

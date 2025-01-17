@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react'
 import ProductPreview from './ProductPreview'
 import { AddressType, GetAddress } from '@/app/utils/database/addresses'
 import { useSession } from '@/app/providers/Session'
+import { availDiscount, getDiscount } from '@/app/components/Cart'
 export const ShowOrder = ({ order }: { order: OrderType }) => {
   const { session } = useSession();
 
@@ -18,15 +19,29 @@ export const ShowOrder = ({ order }: { order: OrderType }) => {
     if (Object.keys(statusColors)[i] === order.status) break;
   }
 
-  const orderedOn = order.confirmedAt.toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" });
 
   const edd = order.shipping?.estimatedDeliveryDate || new Date(order.confirmedAt.getTime() + (7 * 24 * 60 * 60 * 1000));
   const deliveryBy = edd.toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" });
 
   const address = order.address;
 
-  const supportEmail = "support@allcapz.com";
-  const supportPhone = "+91 " + "1234567890";
+  const supportEmail = "support@allcapz.in";
+  const supportPhone = "+91 " + "9910128535";
+
+  const [subTotal, setSubTotal] = useState<number>(0);
+  const [discount, setDiscount] = useState<number>(0);
+  const [discountDesc, setDiscountDesc] = useState("");
+
+  useEffect(() => {
+    if (order.products) {
+      setSubTotal(order.products.reduce((a, b) => a + (b.price * (b.quantity || 1)), 0) || 0);
+      const nPosters = order.products.reduce((a, b) => a + (b.quantity || 0), 0)
+      const disc = getDiscount(nPosters, subTotal);
+
+      setDiscount(disc.discount);
+      setDiscountDesc(disc.description);
+    }
+  }, [order, subTotal])
 
   return (
     <div className="w-full h-full flex flex-col mt-vw-10 gap-vw-2.5">
@@ -36,7 +51,7 @@ export const ShowOrder = ({ order }: { order: OrderType }) => {
         <p className="text-xsTosm font-ibm text-accent">This page will update as your order progresses</p>
       </div>
 
-      <div className="w-full md:h-[600px] flex flex-col lg:flex-row items-end px-vw-14 gap-vw-14-min@lg">
+      <div className="w-full md:min-h-[600px] flex flex-col lg:flex-row items-end px-vw-14 gap-vw-14-min@lg">
         <div className="w-full h-full py-vw-6-min@lg px-vw-6-min@md border-[3px] border-dashed border-[#c4c4c4] ">
 
           <p className="text-lgToxl font-ibm font-[500] text-accent">Order ID: #{order.id.replace("order_", "")}</p>
@@ -123,15 +138,27 @@ export const ShowOrder = ({ order }: { order: OrderType }) => {
                 <div className="w-full font-ibm font-[500] text-accent">
                   <div className="w-full pt-vw-4 flex flex-row justify-between items-baseline">
                     <p className="text-smTolg">Subtotal</p>
-                    <p className="text-smTolg">₹{order?.products.reduce((a, b) => a + (b.price * (b.quantity || 1)), 0)}</p>
+                    <p className="text-smTolg">₹{subTotal}</p>
                   </div>
-                  <div className="pt-vw-1 w-full flex flex-row justify-between items-baseline text-accent">
+
+                  {discountDesc && (
+                    <div>
+                      <div className="w-full pt-vw-1 flex flex-row justify-between items-baseline">
+                        <p className="text-smTolg">Discount</p>
+                        <p className="text-smTolg text-red-500">-₹{discount}</p>
+                      </div>
+
+                      <p className="my-0.5 py-1 opacity-90 font-secondary text-xs border-[1px] border-accent w-full px-4 text-center ">{discountDesc}.</p>
+                    </div>
+                  )}
+
+                  <div className="pt-vw-1 w-full flex flex-row justify-between items-baseline">
                     <p className="text-smTolg">Shipping</p>
-                    <p className="text-xsTosm">₹0</p>
+                    <p className="text-xsTos text-xs">{"₹0"}</p>
                   </div>
-                  <div className="py-vw-4 text-lgToxl w-full flex flex-row justify-between items-baseline text-accent">
-                    <p className="text-lgToxl">Total</p>
-                    <p className="text-smTolg">INR ₹{order?.products.reduce((a, b) => a + (b.price * (b.quantity || 1)), 0)}</p>
+                  <div className="py-vw-4 text-xl w-full flex flex-row justify-between items-baseline">
+                    <p className="text-lgTo2xl">Total</p>
+                    <p className="text-lgTo2xl text-green-500">INR ₹{availDiscount(order.products.reduce((a, b) => a + (b.price * (b.quantity || 1)), 0))}</p>
                   </div>
                 </div>
                 <div className="w-full h-[1px] mb-vw-10 bg-white"></div>

@@ -37,9 +37,9 @@ const PreviewOrder = ({ order: { id, products, status, confirmedAt } }: { order:
     )
 
     const statusColor: Record<string, string> = {
-        processing: "#02CD2F",
-        shipping: "#FFD600",
-        delivered: "#929292",
+        processing: "#FFD600",
+        shipping: "#30ae39",
+        delivered: "#5b92ff",
     }
 
     const date = confirmedAt.toLocaleDateString("en-IN", { day: "numeric", month: "numeric", year: "numeric" });

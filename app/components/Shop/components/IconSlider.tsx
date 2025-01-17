@@ -36,6 +36,9 @@ export const IconSlider: React.FC<IconSliderProps> = ({
 
   const { setShowTransition } = useMiscStore((state) => state);
 
+
+
+
   return (
     <div className="xl:w-[800px] lg:w-[650px] md:w-[500px] sm:w-[470px] w-[350px]">
       <Slider {...settings}>
@@ -48,7 +51,7 @@ export const IconSlider: React.FC<IconSliderProps> = ({
                 width={150}
                 height={150}
                 sizes="100vw"
-                className={`lg:min-w-[165px] min-w-[40px] cursor-pointer ${active === showTitles[index] ? "opacity-100" : "grayscale"
+                className={`lg:min-w-[165px] min-w-[40px] cursor-pointer ${active === showTitles[index] ? "opacity-100" : "solid-gray"
                   }`}
                 onClick={() => {
                   setActive(showTitles[index]);

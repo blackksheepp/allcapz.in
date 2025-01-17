@@ -8,6 +8,6 @@ export const CompressImage = async (inputBuffer: ArrayBuffer) => {
     }).toBuffer();
 }
 
-export const DecompressImage = async (inputBuffer: ArrayBuffer) => {
-    return await sharp(inputBuffer).toFormat('png').toBuffer();
+export const DecompressImage = async (data: any) => {
+    return await sharp(data).png({ quality: 20 }).toBuffer();
 }

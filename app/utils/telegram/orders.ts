@@ -67,13 +67,19 @@ async function downloadImages(urls: string[]): Promise<string[]> {
     const downloadPromises = urls.map(async (url, index) => {
         try {
             const response = await axios.get(url, { responseType: 'arraybuffer' });
-            const filename = `image_${index + 1}.jpg`;
-            const filePath = path.join(__dirname, filename);
-            const image = await DecompressImage(
-                Buffer.from(response.data, 'binary')
-            );
+            if (!response.data) {
+                return null;
+            }
 
+            const data = response.data;
+            const filename = `image_${index + 1}.png`;
+            const filePath = path.join(__dirname, filename);
+
+            const image = await DecompressImage(data);
+
+            // @ts-ignore
             writeFileSync(filePath, image);
+
             return filePath;
         } catch (error) {
             console.error(`Error downloading ${url}: ${error}`);
