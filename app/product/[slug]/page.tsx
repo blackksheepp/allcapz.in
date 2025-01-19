@@ -14,13 +14,12 @@ import Navbar from "@/app/components/Navbar";
 import { BackgroundTexture } from "@/app/components/TextureOverlay";
 import Discount from "@/app/components/Discount";
 
-const SIZES = ["Small", "Medium"] as const;
+const SIZES = ["S(A4)", "M(A3)"] as const;
 type Size = typeof SIZES[number];
 
 export default function Product({ params }: { params: { slug: string } }) {
   const [product, setProduct] = useState<ProductType>();
   const [mobile, setMobile] = useState(false);
-  const [size, setSize] = useState(true);
   const [selectSize, setSelectSize] = useState<Size>(SIZES[1]);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
@@ -30,10 +29,15 @@ export default function Product({ params }: { params: { slug: string } }) {
   const { showLogin } = useLoginStore();
   const { session } = useSession();
 
+  const getSize = (size: typeof SIZES[number]) => {
+    if (size === SIZES[1]) return "Medium";
+    else return "Small";
+  }
+  
   const addToCart = async () => {
     if (!product) return;
 
-    const updatedProduct = { ...product, size: selectSize, quantity: 1 };
+    const updatedProduct = { ...product, size: getSize(selectSize), quantity: 1 };
     const success = session
       ? await AddToCart(session.email, updatedProduct)
       : await AddToCartCookies(updatedProduct);
@@ -185,10 +189,10 @@ export default function Product({ params }: { params: { slug: string } }) {
           </div>
 
           {/* Product Details */}
-          <div className="text-accent font-retro lg:h-[520px] md:h-[500px] lg:w-[400px] md:w-[400px] w-[250px] flex flex-col items-start justify-between gap-vw-10-min@xs place-self-center">
+          <div className="text-accent font-retro lg:h-[530px] md:h-[520px] lg:w-[400px] md:w-[400px] w-[250px] flex flex-col items-start justify-between gap-vw-10-min@xs place-self-center">
             {product && (
               <>
-                <div className="flex flex-col self-center gap-3">
+                <div className="mt-2 flex flex-col self-center gap-3">
                   <div className="flex flex-col items-center gap-3">
                     <p className="lg:text-4xl md:text-4xl text-2xl text-center">{product.title}</p>
                     <hr className="w-36" />
@@ -202,50 +206,32 @@ export default function Product({ params }: { params: { slug: string } }) {
                   </div>
                 </div>
 
-                <div className="text-start lg:text-lg md:text-lg text-sm font-ibm mt-10">
+                <div className="mt-6 text-start lg:text-lg md:text-lg text-sm font-ibm">
                   <div className="mt-2 lg:text-lg md:text-lg text-sm font-ibm font-[600] flex w-full flex-row justify-start items-center">
-                    {size ? (
-                      <div className="flex flex-row items-center justify-center">
-                        <p className="lg:w-[130px] md:w-[130px] w-[105px]">Select Size:</p>
-                        {SIZES.map((sizeOption, index) => (
-                          <p
-                            key={sizeOption}
-                            onClick={() => {
-                              setSelectSize(sizeOption);
-                              setSize(false);
-                            }}
-                            className="cursor-pointer ml-2"
-                          >
-                            {sizeOption}{index !== SIZES.length - 1 && ","}
-                          </p>
-                        ))}
-                      </div>
-                    ) : (
-                      <p onClick={() => setSize(true)} className="cursor-pointer">
-                        Size: {selectSize}
-                      </p>
-                    )}
-                    {!size && (
-                      <Image
-                        onClick={() => setSize(true)}
-                        src={GetImage("img/drop.svg")}
-                        alt="size selector"
-                        width={25}
-                        height={25}
-                        className="cursor-pointer opacity-90 rotate-[270deg]"
-                        style={{ filter: "invert(1) hue-rotate(180deg)" }}
-                      />
-                    )}
+                    <div className="flex flex-row items-center justify-center">
+                      <p>Size:</p>
+                      {SIZES.map((sizeOption, index) => (
+                        <p
+                          key={sizeOption}
+                          onClick={() => {
+                            setSelectSize(sizeOption);
+                          }}
+                          className={`cursor-pointer ml-2 ${selectSize === sizeOption ? "bg-white text-gray-700  py-1 px-2" : "bg-accent text-white bg-opacity-25  py-0.5 px-1.5"} rounded-sm `}
+                        >
+                          {sizeOption}
+                        </p>
+                      ))}
+                    </div>
                   </div>
 
                   <div className="flex flex-col mt-4">
-                    <div className="flex flex-row items-center">
-                      <p className="w-[200px]">8.3×11.7 inches</p>
-                      <p>(Small)</p>
+                    <div className="flex flex-row items-center justify-between">
+                      <p>8.3×11.7 inches</p>
+                      <p>Small</p>
                     </div>
-                    <div className="flex flex-row items-center">
-                      <p className="w-[200px]">11.7×16.5 inches</p>
-                      <p>(Medium)</p>
+                    <div className="flex flex-row items-center justify-between">
+                      <p>11.7×16.5 inches</p>
+                      <p>Medium</p>
                     </div>
                   </div>
 
@@ -259,7 +245,7 @@ export default function Product({ params }: { params: { slug: string } }) {
                 </div>
 
                 <button
-                  className="mt-10 btn w-full h-bh font-retro text-black"
+                  className="mt-6 btn w-full h-bh font-retro text-black"
                   onClick={addToCart}
                 >
                   ADD TO CART

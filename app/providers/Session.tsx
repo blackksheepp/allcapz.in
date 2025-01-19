@@ -6,8 +6,6 @@ import { SendAuthLink, VerifyToken, GetSessionToken } from '../utils/auth';
 import { FitTexture } from '../components/TextureOverlay';
 import { CreateUser, GetUser } from '../utils/database/users';
 import { ClearSessionCookie, GetSessionCookie, SetSessionCookie } from '../utils/cookies/auth';
-import { ClearCartCookies, GetCartFromCookies } from '../utils/cookies/cart';
-import { AddToCart, CartType } from '../utils/database/carts';
 import { useMiscStore } from '../utils/store/miscStore';
 
 interface auth {
@@ -39,6 +37,21 @@ export const SessionProvider: React.FC<SessionProviderProps> = ({ children }) =>
 
     const router = useRouter();
     const searchParams = useSearchParams();
+
+    useEffect(() => {
+        if (navigator.userAgent.includes("Instagram") || navigator.userAgent.includes("FBAN") || navigator.userAgent.includes("FBAV")) {
+            if (navigator.userAgent.includes("iPhone") || navigator.userAgent.includes("iPad")) {
+                // const shortcutName = "OpenInSafari";
+                // const encodedURL = encodeURIComponent(window.location.href);
+
+                // const shortcutTrigger = `shortcuts://x-callback-url/run-shortcut?name=${shortcutName}&input=text&text=${encodedURL}`;
+                // window.location.href = shortcutTrigger;
+            } else {
+                const intentURL = `intent://${window.location.href.replace(/^https?:\/\//, '')}#Intent;scheme=https;end`;
+                window.location.href = intentURL;
+            }
+        }
+    }, [])
 
     useEffect(() => {
         (async () => {
@@ -111,7 +124,7 @@ export const SessionProvider: React.FC<SessionProviderProps> = ({ children }) =>
 
         await CreateUser(user);
         const sessionToken = await GetSessionToken(email);
-        const path = searchParams.get('path'); 
+        const path = searchParams.get('path');
 
         if (await SetSessionCookie(sessionToken)) router.replace(path ? "/checkout?path=" + path : "/");
     }
