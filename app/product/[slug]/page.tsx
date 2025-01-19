@@ -203,9 +203,9 @@ export default function Product({ params }: { params: { slug: string } }) {
                 </div>
 
                 <div className="text-start lg:text-lg md:text-lg text-sm font-ibm mt-10">
-                  <div className="mt-2 lg:text-lg md:text-lg text-sm font-ibm font-[600] flex w-full flex-row justify-start items-center">
+                  <div className={`${size ? "text-red-400" : "text-green-400"} mt-2 lg:text-lg md:text-lg text-sm font-ibm font-[600] flex w-full flex-row justify-start items-center`}>
                     {size ? (
-                      <div className="flex flex-row items-center justify-center">
+                      <div className="bg-black bg-opacity-30 rounded-[2px] border-white border-[1px] px-2.5 py-1.5 md:py-1 flex flex-row items-center justify-center">
                         <p className="lg:w-[130px] md:w-[130px] w-[105px]">Select Size:</p>
                         {SIZES.map((sizeOption, index) => (
                           <p
@@ -221,20 +221,20 @@ export default function Product({ params }: { params: { slug: string } }) {
                         ))}
                       </div>
                     ) : (
-                      <p onClick={() => setSize(true)} className="cursor-pointer">
+                        <p onClick={() => setSize(true)} className=" flex flex-row items-center justify-center bg-black bg-opacity-30 rounded-[2px] border-white border-[1px] px-2.5 py-1 cursor-pointer">
                         Size: {selectSize}
+                          {!size && (
+                            <Image
+                              onClick={() => setSize(true)}
+                              src={GetImage("img/drop.svg")}
+                              alt="size selector"
+                              width={25}
+                              height={25}
+                              className="cursor-pointer opacity-90 rotate-[270deg]"
+                              style={{ filter: "invert(1) hue-rotate(180deg)" }}
+                            />
+                          )}
                       </p>
-                    )}
-                    {!size && (
-                      <Image
-                        onClick={() => setSize(true)}
-                        src={GetImage("img/drop.svg")}
-                        alt="size selector"
-                        width={25}
-                        height={25}
-                        className="cursor-pointer opacity-90 rotate-[270deg]"
-                        style={{ filter: "invert(1) hue-rotate(180deg)" }}
-                      />
                     )}
                   </div>
 
