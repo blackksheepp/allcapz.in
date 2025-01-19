@@ -574,7 +574,7 @@ export default function Checkout({ params }: { params: { slug: string } }) {
                       <Field value={address} onChange={setAddress} name="address" placeholder="Address" formErrors={formErrors} setFormErrors={setFormErrors} />
                       <div className="w-full flex lg:flex-row md:flex-row flex-col lg:gap-4 md:gap-4 gap-7">
                         <Field value={postalCode} onChange={setPostalCode} name="postalCode" placeholder="Postal Code" formErrors={formErrors} setFormErrors={setFormErrors} />
-                        <div className="pointer-events-none w-full">
+                        <div className="w-full">
                           <Field value={city} onChange={setCity} name="city" placeholder="City" formErrors={formErrors} setFormErrors={setFormErrors} />
                         </div>
                       </div>
