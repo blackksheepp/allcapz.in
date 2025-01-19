@@ -100,8 +100,7 @@ const Auth = ({ path = "/" }: { path?: string }) => {
     const GoogleAuth = async () => {
         setEmailSent(`We're redirecting you to google ${authType}.`);
         const link = await GetGoogleAuthLink();
-
-        window.open(link + `&state=${path}`, '_system');
+        router.push(link + `&state=${path}`);
     }
 
     useEffect(() => {
