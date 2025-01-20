@@ -16,6 +16,7 @@ import { useMiscStore } from "./utils/store/miscStore";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useSession } from "./providers/Session";
 import { RedirectUri } from "./utils/auth";
+import Footer from "./components/Footer";
 
 
 const HomePage = () => {
@@ -61,6 +62,7 @@ const HomePage = () => {
           <Navbar />
           <Hero />
           <Products />
+          <Footer />
         </div>
       </div>
     </>

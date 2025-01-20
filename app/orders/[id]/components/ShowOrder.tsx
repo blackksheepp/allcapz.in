@@ -100,7 +100,7 @@ export const ShowOrder = ({ order }: { order: OrderType }) => {
                             <p className="text-lgToxl font-ibm font-[500] text-white">Contact Details</p>
                             <div className="flex flex-col">
                                 <p className="text-smTolg font-ibm font-[500] text-accent">{address?.fname + " " + address?.lname}</p>
-                                <p className="text-smTolg font-ibm text-[#a4a4a4]">{session?.email}</p>
+                                <p className="text-smTolg font-ibm text-[#a4a4a4]">{address?.email}</p>
                                 <p className="text-smTolg font-ibm text-[#a4a4a4]">{address?.phone}</p>
                             </div>
                         </div>

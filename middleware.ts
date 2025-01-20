@@ -11,6 +11,10 @@ const publicRoutes = [
     "/confirmed",
     "/orders",
     "/orders/.*",
+    "/privacy",
+    "/terms",
+    "/shipping",
+    "/refunds"
 ];
 
 export const middleware = async (request: NextRequest) => {
