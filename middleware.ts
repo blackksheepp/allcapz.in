@@ -14,7 +14,9 @@ const publicRoutes = [
     "/privacy",
     "/terms",
     "/shipping",
-    "/refunds"
+    "/refunds",
+    "/about",
+    "/cookies"
 ];
 
 export const middleware = async (request: NextRequest) => {

@@ -74,7 +74,7 @@ const Refunds    = () => {
 
                         <section className="space-y-4">
                             <h2 className="text-xl font-bold">Contact Us</h2>
-                            <p>If you believe you are eligible for a refund or if you need assistance with your refund request, please call us at <strong>+91 99101 28535</strong> asap. For more details reach us via our <Link href={"/contact"} className="text-green-600 underline">Contact Page</Link>.</p>
+                            <p>If you believe you are eligible for a refund or if you need assistance with your refund request, please call us at <strong>+91 99101 28535</strong> asap. For more details reach us via our <Link href={"/about#contact"} className="text-green-600 underline">Contact Page</Link>.</p>
                         </section>
                     </div>
                 </div>

@@ -74,7 +74,7 @@ const Privacy = () => {
 
             <section>
               <h2 className="text-xl sm:text-2xl font-bold my-4">Contact us</h2>
-              <p>If you have any questions regarding privacy while using the Website, please contact us at support@allcapz.in. For more details reach us via our <Link href={"/contact"} className="text-green-600 underline">Contact Page</Link>.</p>
+              <p>If you have any questions regarding privacy while using the Website, please contact us at support@allcapz.in. For more details reach us via our <Link href={"/about#contact"} className="text-green-600 underline">Contact Page</Link>.</p>
             </section>
           </div>
         </div>

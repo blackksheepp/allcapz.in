@@ -64,10 +64,18 @@ const Navbar: React.FC<NavbarProps> = ({ showProfile = true }) => {
             />
           </Link>
           <div className="flex flex-row items-center lg:gap-5 md:gap-4 sm:gap-3 gap-2">
-            {showProfile && <div className="text-accent font-retro cursor-pointer" onClick={() => { session ? router.push("/profile") : setLogin(true) }}>
-              <p className="lg:text-[14px] text-[11px]">Hey, {session ? session.name : "Login"}</p>
-              <p className="lg:text-[10px] text-[8px]">{session ? "Your Profile" : "Or Sign Up"}</p>
-            </div>}
+            {showProfile ?
+
+              (
+                <div className="text-accent font-retro cursor-pointer" onClick={() => { session ? router.push("/profile") : setLogin(true) }}>
+                  <p className="lg:text-[14px] text-[11px]">Hey, {session ? session.name : "Login"}</p>
+                  <p className="lg:text-[10px] text-[8px]">{session ? "Your Profile" : "Or Sign Up"}</p>
+                </div>
+              ) : (
+                <div className="text-accent font-retro cursor-pointer" onClick={logout}>
+                  <p className="lg:text-[14px] text-[14px]">Logout</p>
+                </div>
+              )}
             <Image
               src={GetImage(isFull ? "img/full-cart.svg" : "img/cart.svg")}
               alt="cart"

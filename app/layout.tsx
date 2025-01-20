@@ -51,6 +51,27 @@ const gloria = localFont({
 
 export const metadata: Metadata = {
   title: "ALLCAPZ",
+  description: "Level up your space with avant-garde posters that add personality and flair to your living area. Browse our latest collections and take advantage of exclusive deals.Level up your space with avant-garde posters that add personality and flair to your living area. Browse our latest collections and take advantage of exclusive deals.",
+  openGraph: {
+    title: "ALLCAPZ",
+    images: {
+      url: "https://d3lqxujayvqlsx.cloudfront.net/img/preview.jpg",
+      width: 853,
+      height: 427,
+    },
+    ttl: 1,
+    description: "Level up your space with our avant-garde posters."
+  },
+  twitter: {
+    title: "ALLCAPZ",
+    images: {
+      url: "https://d3lqxujayvqlsx.cloudfront.net/img/preview.jpg",
+      width: 853,
+      height: 427,
+
+    },
+    description: "Level up your space with our avant-garde posters."
+  }
 };
 
 export default function RootLayout({

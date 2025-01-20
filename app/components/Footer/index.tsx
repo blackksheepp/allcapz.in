@@ -13,7 +13,7 @@ const Footer = () => {
                     {/* Company Info */}
                     <div className="space-y-4">
                         <h3 className="text-lg font-retro font-bold">ALLCAPZ</h3>
-                        <p className="text-sm pr-12">Sharing extraordinary art with the world—crafted to inspire and amaze, since 2025.</p>
+                        <p className="text-sm pr-24">Level up your space. Since 2025.</p>
                         <div className="flex space-x-4">
                             <Link href="https://www.facebook.com/profile.php?id=61571980961696" className="hover:scale-[110%]">
                                 <Facebook size={20} />
@@ -35,22 +35,22 @@ const Footer = () => {
                         <h3 className="text-lg font-retro font-bold">Quick Links</h3>
                         <ul className="space-y-2">
                             <li>
-                                <Link href="/about" className="text-sm hover:underline active:underline">
+                                <Link href="/about#us" className="text-sm hover:underline active:underline">
                                     About Us
                                 </Link>
                             </li>
                             <li>
-                                <Link href="/" className="text-sm hover:underline active:underline">
+                                <Link href="/about#products" className="text-sm hover:underline active:underline">
                                     Products
                                 </Link>
                             </li>
                             <li>
-                                <Link href="/services" className="text-sm hover:underline active:underline">
+                                <Link href="/about#services" className="text-sm hover:underline active:underline">
                                     Services
                                 </Link>
                             </li>
                             <li>
-                                <Link href="/contact" className="text-sm hover:underline active:underline">
+                                <Link href="/about#contact" className="text-sm hover:underline active:underline">
                                     Contact
                                 </Link>
                             </li>
@@ -62,24 +62,24 @@ const Footer = () => {
                         <h3 className="text-lg font-retro font-bold">Policies</h3>
                         <ul className="space-y-2">
                             <li>
-                                <Link href="/privacy" className="text-sm hover:underline active:underline">
+                                <a href="/privacy" className="text-sm hover:underline active:underline">
                                     Privacy Policy
-                                </Link>
+                                </a>
                             </li>
                             <li>
-                                <Link href="/terms" className="text-sm hover:underline active:underline">
+                                <a href="/terms" className="text-sm hover:underline active:underline">
                                     Terms & Conditions
-                                </Link>
+                                </a>
                             </li>
                             <li>
-                                <Link href="/shipping" className="text-sm hover:underline active:underline">
+                                <a href="/shipping" className="text-sm hover:underline active:underline">
                                     Shipping Policy
-                                </Link>
+                                </a>
                             </li>
                             <li>
-                                <Link href="/refunds" className="text-sm hover:underline active:underline">
+                                <a href="/refunds" className="text-sm hover:underline active:underline">
                                     Refund Policy
-                                </Link>
+                                </a>
                             </li>
                         </ul>
                     </div>

@@ -108,7 +108,7 @@ const Terms = () => {
 
                         <section className="space-y-4">
                             <h2 className="text-xl font-bold">Contact Information</h2>
-                            <p>Questions about these Terms of Service should be sent to support@allcapz.in. For more details reach us via our <Link href={"/contact"} className="text-green-600 underline">Contact Page</Link>.</p>
+                            <p>Questions about these Terms of Service should be sent to support@allcapz.in. For more details reach us via our <Link href={"/about#contact"} className="text-green-600 underline">Contact Page</Link>.</p>
                         </section>
                     </div>
                 </div>
