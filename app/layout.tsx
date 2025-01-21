@@ -51,7 +51,7 @@ const gloria = localFont({
 
 export const metadata: Metadata = {
   title: "ALLCAPZ",
-  description: "Level up your space with avant-garde posters that add personality and flair to your living area. Browse our latest collections and take advantage of exclusive deals.Level up your space with avant-garde posters that add personality and flair to your living area. Browse our latest collections and take advantage of exclusive deals.",
+  description: "Discover unique avant-garde posters to elevate your living space. Shop exclusive collections and enjoy free shipping.",
   openGraph: {
     title: "ALLCAPZ",
     images: {
@@ -79,13 +79,13 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  
+
   return (
     <html lang="en">
       <body className="bg-black">
         <SessionProvider>
-            <BackgroundTexture />
-            <main className={`${retro.variable} ${ibmPlexMono.variable} ${indieFlower.variable} ${gloria.variable}`}>{children}</main>
+          <BackgroundTexture />
+          <main className={`${retro.variable} ${ibmPlexMono.variable} ${indieFlower.variable} ${gloria.variable}`}>{children}</main>
         </SessionProvider>
       </body>
       <GoogleAnalytics gaId="G-MCD98LP6LK" />

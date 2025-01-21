@@ -56,6 +56,10 @@ const HomePage = () => {
     <>
       {preloader && loading && <Preloader setLoading={setLoading} />}
       <div>
+        <pre style={{ display: "none" }}>
+          Level up your space with avant-garde posters that add personality and flair to your living area. Browse our latest collections and take advantage of exclusive deals.
+        </pre>
+        
         <Cart />
         <Auth />
         <div className={` w-full ${showCart || showLogin ? `transition-all ${showLogin ? "delay-0 duration-0" : "delay-500 duration-200"}  ease-in blur-lg pointer-events-none` : `transition-all delay-200 duration-200 ease-in blur-none`}`}>
