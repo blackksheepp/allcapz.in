@@ -137,7 +137,7 @@ export async function CreateCustomOrder(order: OrderType) {
             return `PO${product.id.toUpperCase().slice(0, 6)}${randomBytes(4).toString('hex').slice(0, 4).toUpperCase()}`
         }
         return {
-            name: `${product.size === "Small" ? "A4 Size" : product.size === "Medium" ? "A5 Size" : ""} Poster of ${product.title}`,
+            name: `${product.size === "Small" ? "A4 Size" : product.size === "Medium" ? "A3 Size" : ""} Poster of ${product.title}`,
             sku: generateSKU(),
             units: product.quantity || 1,
             selling_price: product.price,
@@ -147,7 +147,7 @@ export async function CreateCustomOrder(order: OrderType) {
     var body = JSON.stringify({
         order_id: order.id.replace("order_", "").toUpperCase(),
         order_date: formatDate(order.confirmedAt),
-        pickup_location: "Primary",
+        pickup_location: "Saharsh",
         billing_customer_name: address.fname,
         billing_last_name: address.lname,
         billing_address: address.street,
@@ -162,9 +162,9 @@ export async function CreateCustomOrder(order: OrderType) {
         order_items: products,
         payment_method: "Prepaid",
         sub_total: order.pricing.subtotal,
-        length: 44,
-        breadth: 36,
-        height: 5,
+        length: 46,
+        breadth: 6,
+        height: 6,
         weight: 0.5
     });
 
@@ -179,9 +179,13 @@ export async function CreateCustomOrder(order: OrderType) {
         data: body
     };
 
+    console.log(config);
+
     try {
         const response = await axios(config);
+        console.log(response.status);
         const data = response.data;
+        console.log(data);
         if (data) {
             return `https://app.shiprocket.in/seller/orders/details/${data.order_id}` 
         }

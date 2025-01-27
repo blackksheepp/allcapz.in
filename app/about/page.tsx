@@ -8,6 +8,7 @@ import Cart from '../components/Cart';
 import Auth from '../components/Auth';
 import { useCartStore } from '../utils/store/cartStore';
 import { useParams } from 'next/navigation';
+import { GetImage } from '../components';
 
 const About = () => {
     const { showCart } = useCartStore((state) => state);
@@ -56,7 +57,7 @@ const About = () => {
                         <div className="grid md:grid-cols-2 gap-6 sm:gap-8 items-center mb-8 sm:mb-12">
                             <div className="relative h-[500px] sm:h-[600px] md:h-[750px] lg:[700px] w-full">
                                 <Image
-                                    src={'/img/about/2.avif'}
+                                    src={GetImage('img/about/2.avif')}
                                     alt="Artist studio"
                                     fill
                                     className="object-cover"
@@ -85,7 +86,7 @@ const About = () => {
                         <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 gap-4">
                             <div className="relative h-[200px] sm:h-[250px] md:h-[300px]">
                                 <Image
-                                    src={'/img/about/5.avif'}
+                                    src={GetImage('img/about/5.avif')}
                                     alt={`Gallery image 1`}
                                     fill
                                     style={{objectPosition: "bottom: 40px"}}
@@ -94,7 +95,7 @@ const About = () => {
                             </div>
                             <div className="relative h-[200px] sm:h-[250px] md:h-[300px]">
                                 <Image
-                                    src={'/img/about/4.avif'}
+                                    src={GetImage('img/about/4.avif')}
                                     alt={`Gallery image 2`}
                                     fill
                                     className="object-cover w-full"
@@ -142,7 +143,7 @@ const About = () => {
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <div className="relative h-[250px] sm:h-[300px] md:h-[400px]">
                                     <Image
-                                        src={'/img/about/7.avif'}
+                                        src={GetImage('img/about/7.avif')}
                                         alt={`Product image`}
                                         fill
                                         className="object-cover"
@@ -150,7 +151,7 @@ const About = () => {
                                 </div>
                                 <div className="relative h-[250px] sm:h-[300px] md:h-[400px]">
                                     <Image
-                                        src={'/img/about/8.avif'}
+                                        src={GetImage('img/about/8.avif')}
                                         alt={`Product image`}
                                         fill
                                         className="object-cover"
@@ -158,7 +159,7 @@ const About = () => {
                                 </div>
                                 <div className="relative h-[250px] sm:h-[300px] md:h-[400px]">
                                     <Image
-                                        src={'/img/about/10.avif'}
+                                        src={GetImage('img/about/10.avif')}
                                         alt={`Product image`}
                                         fill
                                         className="object-cover"
@@ -166,7 +167,7 @@ const About = () => {
                                 </div>
                                 <div className="relative h-[250px] sm:h-[300px] md:h-[400px]">
                                     <Image
-                                        src={'/img/about/14.avif'}
+                                        src={GetImage('img/about/14.avif')}
                                         alt={`Product image`}
                                         fill
                                         className="object-cover"
@@ -192,7 +193,7 @@ const About = () => {
                                     </p>
                                     <div className="relative h-[150px] sm:h-[200px]">
                                         <Image
-                                            src={service === "PAYMENTS" ? '/img/about/11.avif' : service === "SHIPPING" ? '/img/about/13.avif' : '/img/about/12.avif'}
+                                            src={service === "PAYMENTS" ? GetImage('img/about/11.avif') : service === "SHIPPING" ? GetImage('img/about/13.avif') : GetImage('img/about/12.avif')}
                                             alt={`${service.toLowerCase()} interface`}
                                             fill
                                             className="object-cover"
@@ -243,7 +244,7 @@ const About = () => {
                             </div>
                             <div className="relative h-[400px] sm:h-[600px] md:h-[800px]">
                                 <Image
-                                    src={'/img/about/1.avif'}
+                                    src={GetImage('img/about/1.avif')}
                                     alt="Office space"
                                     fill
                                     className="object-cover"
