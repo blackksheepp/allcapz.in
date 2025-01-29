@@ -23,6 +23,7 @@ type Product {
   size       String
   quantity   Int?
   collection String
+  hide       Boolean?
 }
 
 model Users {

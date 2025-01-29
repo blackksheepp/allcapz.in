@@ -1,7 +1,6 @@
 "use server"
 import prisma from "@/lib/prisma";
 import { ProductType } from "./collections";
-import { cursorTo } from "readline";
 
 export interface CartType {
     user: string;

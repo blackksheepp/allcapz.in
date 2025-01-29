@@ -22,7 +22,7 @@ export default function ImageSlider() {
     <div>
       <Slider {...settings}>
         <Image
-          src={GetImage("img/banner1.avif")}
+          src={GetImage("img/banner11.avif")}
           alt="logo"
           width={0}
           height={0}

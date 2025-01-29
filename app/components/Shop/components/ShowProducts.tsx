@@ -29,6 +29,7 @@ export const ShowProducts: React.FC<ProductsProps> = ({ products, collection }) 
           {showTransition ? (
             <>
               {transitions((styles, item, { key }) => {
+                if (item.hide) return;
                 return (
                   <Link key={key} href={`/product/${btoa(item.title + "." + collection)}`}>
                     <animated.div style={styles}>
@@ -43,6 +44,7 @@ export const ShowProducts: React.FC<ProductsProps> = ({ products, collection }) 
             <>
               {
                 products.length > 0 && products.map((product, index) => {
+                  if (product.hide) return;
                   return (
                     <Link key={index + product.title} href={`/product/${btoa(product.title + "." + collection)}`}>
                       <div>
