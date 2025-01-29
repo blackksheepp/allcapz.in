@@ -17,7 +17,7 @@ const ProductPreview = ({ product }: { product: ProductType }) => {
                 />
                 <div className="flex flex-col gap-vw-0.5">
                     <p className="text-accent font-retro text-smTolg px-vw-2">{product.title}</p>
-                    <p className="text-[#a4a4a4] font-ibm font-bold text-xsTosm px-vw-2">Size: {product.size}</p>
+                    {!product.hide && <p className="text-[#a4a4a4] font-ibm font-bold text-xsTosm px-vw-2">Size: {product.size}</p>}
                 </div>
             </div>
             <div className="flex flex-col text-center">

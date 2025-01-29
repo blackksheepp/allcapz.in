@@ -39,7 +39,7 @@ const CheckoutProduct = ({ product }: { product: ProductType }) => {
         />
         <div className="flex flex-col gap-vw-0.5">
           <p className="text-background font-retro text-smTolg px-vw-2">{product.title}</p>
-          <p className="text-[#424242] font-ibm font-bold text-xsTosm px-vw-2">Size: {product.size}</p>
+          {!product.hide && <p className="text-[#424242] font-ibm font-bold text-xsTosm px-vw-2">Size: {product.size}</p>}
         </div>
       </div>
       <div className="flex flex-col text-center">
@@ -394,15 +394,12 @@ export default function Checkout({ params }: { params: { slug: string } }) {
   useEffect(() => {
     if (cart?.products) {
       setSubTotal(cart.products.reduce((a, b) => a + (b.price * (b.quantity || 1)), 0) || 0);
-      const nPosters = cart.products.reduce((a, b) => a + (b.quantity || 0), 0)
-      const disc = getDiscount(nPosters, subTotal);
+      const disc = getDiscount(cart.products);
 
       setDiscount(disc.discount);
       setDiscountDesc(disc.description);
     }
   }, [cart, subTotal])
-
-  // const {description, discount} = getDiscount(cart?.products.length || 0, subTotal);
 
   return (
     <div>
@@ -422,7 +419,7 @@ export default function Checkout({ params }: { params: { slug: string } }) {
         </div>
 
         <div className={`lg:w-[45%] w-full h-full flex flex-col lg:items-start items-center bg-accent overflow-scroll lg:py-vw-20 py-vw-10-max@sm lg:pl-vw-10 lg:fixed lg:right-0`}>
-        
+
           <div onClick={() => setShowProducts(!showProducts)} className={`lg:hidden font-ibm cursor-pointer flex flex-row w-full items-center justify-between px-vw-20 ${showProducts && `pb-vw-10`}`}>
 
             <div className="flex flex-row gap-1 items-center">
@@ -450,7 +447,7 @@ export default function Checkout({ params }: { params: { slug: string } }) {
                       <p className="text-smTolg">Subtotal</p>
                       <p className="text-smTolg">₹{subTotal}</p>
                     </div>
-                    
+
                     {discountDesc && (
                       <div>
                         <div className="w-full pt-vw-1 flex flex-row justify-between items-baseline">
@@ -468,7 +465,7 @@ export default function Checkout({ params }: { params: { slug: string } }) {
                     </div>
                     <div className="py-vw-4 text-xl w-full flex flex-row justify-between items-baseline">
                       <p className="text-lgTo2xl">Total</p>
-                      <p className="text-lgTo2xl text-green-500">INR ₹{availDiscount(cart?.products.reduce((a, b) => a + (b.price * (b.quantity || 1)), 0))}</p>
+                      <p className="text-lgTo2xl text-green-500">INR ₹{availDiscount(cart?.products)}</p>
                     </div>
                   </div>
                   <div className="w-full h-[1px] mb-vw-7 bg-background opacity-50"></div>
@@ -687,7 +684,7 @@ export default function Checkout({ params }: { params: { slug: string } }) {
                     </div>
                     <div className="py-vw-2 text-xl w-full flex flex-row justify-between items-baseline">
                       <p className="text-lgTo2xl">Total</p>
-                      <p className="text-lgTo2xl">INR ₹{availDiscount(cart?.products.reduce((a, b) => a + (b.price * (b.quantity || 1)), 0) || 0)}</p>
+                      <p className="text-lgTo2xl">INR ₹{availDiscount(cart?.products || [])}</p>
                     </div>
                   </div>
                 </div>

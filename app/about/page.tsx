@@ -218,7 +218,7 @@ const About = () => {
                                     },
                                     {
                                         title: 'LOCATION',
-                                        content: ['G1 32', 'Indra Enclave, Sector 21D', 'Faridabad, Haryana 121001']
+                                        content: ['Faridabad, Haryana 121001']
                                     },
                                     {
                                         title: 'EMAIL US',

@@ -17,7 +17,8 @@ export interface ProductType {
     price: number;
     size: string;
     quantity?: number | null;
-    collection: string
+    collection: string;
+    hide?: boolean | null;
 }
 
 export const CreateCollection = async (name: string, icon: string) => {

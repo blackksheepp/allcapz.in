@@ -76,8 +76,7 @@ export const ShowOrder = ({ order }: { order: OrderType }) => {
     useEffect(() => {
         if (order.products) {
             setSubTotal(order.products.reduce((a, b) => a + (b.price * (b.quantity || 1)), 0) || 0);
-            const nPosters = order.products.reduce((a, b) => a + (b.quantity || 0), 0)
-            const disc = getDiscount(nPosters, subTotal);
+            const disc = getDiscount(order.products);
 
             setDiscount(disc.discount);
             setDiscountDesc(disc.description);
@@ -202,7 +201,7 @@ export const ShowOrder = ({ order }: { order: OrderType }) => {
                                     </div>
                                     <div className="py-vw-4 text-xl w-full flex flex-row justify-between items-baseline">
                                         <p className="text-lgTo2xl">Total</p>
-                                        <p className="text-lgTo2xl text-green-500">INR ₹{availDiscount(order.products.reduce((a, b) => a + (b.price * (b.quantity || 1)), 0))}</p>
+                                        <p className="text-lgTo2xl text-green-500">INR ₹{availDiscount(order.products)}</p>
                                     </div>
                                 </div>
                                 <div className="w-full h-[1px] mb-vw-10 bg-white"></div>

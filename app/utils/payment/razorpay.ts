@@ -21,7 +21,7 @@ export const CreateRazorpayPayment = async (products: Product[], user: string, p
         notes: {
             paymentFor: products.flatMap((p) => p.title),
             user: user,
-            productId: products.flatMap((p) => p.id+"_"+p.size),
+            productId: products.flatMap((p) => p.id + "_" + p.size),
         }
     };
 
@@ -33,7 +33,7 @@ export const CreateRazorpayPayment = async (products: Product[], user: string, p
             amount: response.amount,
         }
     } catch (err) {
-        console.log(err);
+        console.log(err, "razorpay error");
     }
 }
 
