@@ -70,7 +70,6 @@ const config: Config = {
     fontFamily: {
       retro: "var(--font-retro)",
       gloria: "var(--font-gloria)",
-      indie: "var(--font-indie-flower)",
       ibm: "var(--font-ibm-plex-mono)",
     },
   },

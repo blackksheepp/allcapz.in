@@ -4,25 +4,85 @@ import { SessionProvider } from "./providers/Session";
 import "./globals.css";
 import Script from "next/script";
 
-import { IBM_Plex_Mono, Indie_Flower } from "next/font/google";
 import localFont from "next/font/local";
 
 import { GoogleAnalytics } from '@next/third-parties/google'
 
-const ibmPlexMono = IBM_Plex_Mono({
-  weight: ["100", "200", "300", "400", "500", "600", "700"],
-  subsets: ["latin"],
-  variable: "--font-ibm-plex-mono",
-  preload: false,
-  display: "swap"
-})
-
-const indieFlower = Indie_Flower({
-  weight: ["400"],
-  subsets: ["latin"],
-  variable: "--font-indie-flower",
-  preload: false,
-  display: "swap"
+export const ibmPlexMono = localFont({
+  src: [
+    {
+      path: '../public/assets/IBMPlexMono-Thin.ttf',
+      weight: '100',
+      style: 'normal',
+    },
+    {
+      path: '../public/assets/IBMPlexMono-ThinItalic.ttf',
+      weight: '100',
+      style: 'italic',
+    },
+    {
+      path: '../public/assets/IBMPlexMono-ExtraLight.ttf',
+      weight: '200',
+      style: 'normal',
+    },
+    {
+      path: '../public/assets/IBMPlexMono-ExtraLightItalic.ttf',
+      weight: '200',
+      style: 'italic',
+    },
+    {
+      path: '../public/assets/IBMPlexMono-Light.ttf',
+      weight: '300',
+      style: 'normal',
+    },
+    {
+      path: '../public/assets/IBMPlexMono-LightItalic.ttf',
+      weight: '300',
+      style: 'italic',
+    },
+    {
+      path: '../public/assets/IBMPlexMono-Regular.ttf',
+      weight: '400',
+      style: 'normal',
+    },
+    {
+      path: '../public/assets/IBMPlexMono-Italic.ttf',
+      weight: '400',
+      style: 'italic',
+    },
+    {
+      path: '../public/assets/IBMPlexMono-Medium.ttf',
+      weight: '500',
+      style: 'normal',
+    },
+    {
+      path: '../public/assets/IBMPlexMono-MediumItalic.ttf',
+      weight: '500',
+      style: 'italic',
+    },
+    {
+      path: '../public/assets/IBMPlexMono-SemiBold.ttf',
+      weight: '600',
+      style: 'normal',
+    },
+    {
+      path: '../public/assets/IBMPlexMono-SemiBoldItalic.ttf',
+      weight: '600',
+      style: 'italic',
+    },
+    {
+      path: '../public/assets/IBMPlexMono-Bold.ttf',
+      weight: '700',
+      style: 'normal',
+    },
+    {
+      path: '../public/assets/IBMPlexMono-BoldItalic.ttf',
+      weight: '700',
+      style: 'italic',
+    },
+  ],
+  display: 'swap',
+  variable: '--font-ibm-plex-mono',
 })
 
 const retro = localFont({
@@ -85,7 +145,7 @@ export default function RootLayout({
       <body className="bg-black">
         <SessionProvider>
           <BackgroundTexture />
-          <main className={`${retro.variable} ${ibmPlexMono.variable} ${indieFlower.variable} ${gloria.variable}`}>{children}</main>
+          <main className={`${retro.variable} ${ibmPlexMono.variable} ${gloria.variable}`}>{children}</main>
         </SessionProvider>
       </body>
       <GoogleAnalytics gaId="G-MCD98LP6LK" />
