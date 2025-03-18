@@ -2,7 +2,7 @@
 import prisma from "@/lib/prisma";
 import { CompressImage } from "../image-compression";
 import { GetImage } from "../../components";
-import { DeleteImage, StoreImage } from "../s3";
+import { DeleteImage, StoreImage } from "../storage";
 import { appendFile, readFile } from "fs";
 const bson = require('bson');
 export interface CollectionType {

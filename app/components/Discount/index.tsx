@@ -29,7 +29,7 @@ const Discount = () => {
                                     <div className="w-full flex flex-col items-center justify-center gap-5">
                                         <div className="relative mr-4 rotate-[-10deg]">
                                             <Image
-                                                src="https://d3lqxujayvqlsx.cloudfront.net/676d91049acc1cae48df1f8a.avif"
+                                                src="https://media.allcapz.in/676d91049acc1cae48df1f8a.avif"
                                                 alt=''
                                                 width={0}
                                                 height={0}
@@ -37,7 +37,7 @@ const Discount = () => {
                                                 className="w-20 h-auto"
                                             />
                                             <Image
-                                                src="https://d3lqxujayvqlsx.cloudfront.net/678a917abb5448552723b30c.avif"
+                                                src="https://media.allcapz.in/678a917abb5448552723b30c.avif"
                                                 alt=''
                                                 width={0}
                                                 height={0}
@@ -51,7 +51,7 @@ const Discount = () => {
                                     <div className="w-full flex flex-col items-center justify-center gap-5">
                                         <div className="relative rotate-[-20deg] mr-8">
                                             <Image
-                                                src="https://d3lqxujayvqlsx.cloudfront.net/676d91049acc1cae48df1f8a.avif"
+                                                src="https://media.allcapz.in/676d91049acc1cae48df1f8a.avif"
                                                 alt=''
                                                 width={0}
                                                 height={0}
@@ -59,7 +59,7 @@ const Discount = () => {
                                                 className="w-20 h-auto"
                                             />
                                             <Image
-                                                src="https://d3lqxujayvqlsx.cloudfront.net/678a917abb5448552723b30c.avif"
+                                                src="https://media.allcapz.in/678a917abb5448552723b30c.avif"
                                                 alt=''
                                                 width={0}
                                                 height={0}
@@ -67,7 +67,7 @@ const Discount = () => {
                                                 className="w-20 h-auto rotate-[10deg] absolute top-2 left-2"
                                             />
                                             <Image
-                                                src="https://d3lqxujayvqlsx.cloudfront.net/678a8f5cbb5448552723b308.avif"
+                                                src="https://media.allcapz.in/678a8f5cbb5448552723b308.avif"
                                                 alt=''
                                                 width={0}
                                                 height={0}
@@ -82,7 +82,7 @@ const Discount = () => {
                                 <div className="w-full flex flex-col items-center justify-center gap-5">
                                     <div className="relative mr-12 rotate-[-30deg]">
                                         <Image
-                                            src="https://d3lqxujayvqlsx.cloudfront.net/676d91049acc1cae48df1f8a.avif"
+                                            src="https://media.allcapz.in/676d91049acc1cae48df1f8a.avif"
                                             alt=''
                                             width={0}
                                             height={0}
@@ -90,7 +90,7 @@ const Discount = () => {
                                             className="w-20 h-auto"
                                         />
                                         <Image
-                                            src="https://d3lqxujayvqlsx.cloudfront.net/678a917abb5448552723b30c.avif"
+                                            src="https://media.allcapz.in/678a917abb5448552723b30c.avif"
                                             alt=''
                                             width={0}
                                             height={0}
@@ -98,7 +98,7 @@ const Discount = () => {
                                             className="w-20 h-auto rotate-[10deg] absolute top-2 left-2"
                                         />
                                         <Image
-                                            src="https://d3lqxujayvqlsx.cloudfront.net/678a8f5cbb5448552723b308.avif"
+                                            src="https://media.allcapz.in/678a8f5cbb5448552723b308.avif"
                                             alt=''
                                             width={0}
                                             height={0}
@@ -106,7 +106,7 @@ const Discount = () => {
                                             className="w-20 h-auto rotate-[20deg] absolute top-4 left-4"
                                         />
                                         <Image
-                                            src="https://d3lqxujayvqlsx.cloudfront.net/678a979cbb5448552723b30d.avif"
+                                            src="https://media.allcapz.in/678a979cbb5448552723b30d.avif"
                                             alt=''
                                             width={0}
                                             height={0}

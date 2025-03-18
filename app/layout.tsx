@@ -55,7 +55,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "ALLCAPZ",
     images: {
-      url: "https://d3lqxujayvqlsx.cloudfront.net/img/preview.jpg",
+      url: "https://media.allcapz.in/img/preview.jpg",
       width: 853,
       height: 427,
     },
@@ -65,7 +65,7 @@ export const metadata: Metadata = {
   twitter: {
     title: "ALLCAPZ",
     images: {
-      url: "https://d3lqxujayvqlsx.cloudfront.net/img/preview.jpg",
+      url: "https://media.allcapz.in/img/preview.jpg",
       width: 853,
       height: 427,
 
