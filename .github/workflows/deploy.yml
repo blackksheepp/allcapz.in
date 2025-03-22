@@ -50,26 +50,6 @@ jobs:
     environment: production
     runs-on: ubuntu-latest
 
-    env:
-      DATABASE_URL: ${{ secrets.DATABASE_URL }}
-      REDIS_URI: ${{ secrets.REDIS_URI }}
-      SMTP_HOST: ${{ secrets.SMTP_HOST }}
-      SMTP_PORT: ${{ secrets.SMTP_PORT }}
-      SMTP_USERNAME: ${{ secrets.SMTP_USERNAME }}
-      SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
-      AUTH_URL: ${{ secrets.AUTH_URL }}
-      JWT_SECRET: ${{ secrets.JWT_SECRET }}
-      GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
-      GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
-      RAZORPAY_ID: ${{ secrets.RAZORPAY_ID }}
-      RAZORPAY_KEY: ${{ secrets.RAZORPAY_KEY }}
-      SHIPROCKET_EMAIL: ${{ secrets.SHIPROCKET_EMAIL }}
-      SHIPROCKET_PASSWORD: ${{ secrets.SHIPROCKET_PASSWORD }}
-      ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
-      TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-      TELEGRAM_CHANNEL: ${{ secrets.TELEGRAM_CHANNEL }}
-      STORAGE_API_KEY: ${{ secrets.STORAGE_API_KEY }}
-
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -79,7 +59,7 @@ jobs:
           echo "${{ secrets.PRIVATE_KEY }}" > key.pem
           chmod 600 key.pem
 
-      - name: Write .env file dynamically
+      - name: Write .env file
         run: |
           echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" > .env
           echo "REDIS_URI=${{ secrets.REDIS_URI }}" >> .env
@@ -99,21 +79,114 @@ jobs:
           echo "TELEGRAM_BOT_TOKEN=${{ secrets.TELEGRAM_BOT_TOKEN }}" >> .env
           echo "TELEGRAM_CHANNEL=${{ secrets.TELEGRAM_CHANNEL }}" >> .env
           echo "STORAGE_API_KEY=${{ secrets.STORAGE_API_KEY }}" >> .env
+          echo "BACKUP_CHANNEL=${{ secrets.BACKUP_CHANNEL }}" >> .env
+          echo "MONGO_USERNAME=${{ secrets.MONGO_USERNAME }}" >> .env
+          echo "MONGO_PASSWORD=${{ secrets.MONGO_PASSWORD }}" >> .env
 
       - name: SCP .env file to server
         run: |
           scp -o StrictHostKeyChecking=no -i key.pem .env ${{ secrets.HOST }}:~
 
-      - name: Write docker-compose.yml dynamically
+      - name: Write backup.sh 
+        run: |
+          cat <<EOR > backup.sh
+          #!/bin/bash
+
+          if [ -f /usr/local/bin/.env ]; then
+            source /usr/local/bin/.env
+          else
+            echo "Environment file not found!"
+            exit 1
+          fi
+
+          BACKUP_DIR="/backup/mongodb"
+          TIMESTAMP=\$(date +"%Y-%m-%d_%H-%M-%S")
+          BACKUP_NAME="mongo_backup_\${TIMESTAMP}"
+
+          mkdir -p "\$BACKUP_DIR"
+
+          mongodump --host mongodb -u "\$MONGO_INITDB_ROOT_USERNAME" -p "\$MONGO_INITDB_ROOT_PASSWORD" --authenticationDatabase admin --out "\$BACKUP_DIR/\$BACKUP_NAME"
+
+          tar -czf "\$BACKUP_DIR/\$BACKUP_NAME.tar.gz" -C "\$BACKUP_DIR" "\$BACKUP_NAME"
+
+          curl -F "chat_id=\${CHAT_ID}" -F document=@"\$BACKUP_DIR/\$BACKUP_NAME.tar.gz" "https://api.telegram.org/bot\${TELEGRAM_TOKEN}/sendDocument"
+
+          echo "MongoDB backup sent to Telegram."
+          EOR
+
+      - name: SCP backup.sh file to server
+        run: |
+          ssh -o StrictHostKeyChecking=no -i key.pem ${{ secrets.HOST }} 'mkdir -p ~/backup'
+          scp -o StrictHostKeyChecking=no -i key.pem backup.sh ${{ secrets.HOST }}:~/backup/
+
+      - name: Write backup.Dockerfile 
+        run: |
+          cat <<EOR > backup.Dockerfile
+          FROM alpine:3.17
+
+          RUN apk add --no-cache \\
+              curl \\
+              bash \\
+              mongodb-tools
+
+          COPY backup/backup.sh /usr/local/bin/backup.sh
+
+          RUN chmod +x /usr/local/bin/backup.sh
+
+          CMD ["/usr/local/bin/backup.sh"]
+          EOR
+
+      - name: SCP backup.Dockerfile file to server
+        run: |
+          scp -o StrictHostKeyChecking=no -i key.pem backup.Dockerfile ${{ secrets.HOST }}:~
+
+
+      - name: Write docker-compose.yml
         run: |
           cat <<EOF > docker-compose.yml
           services:
+            mongodb:
+              image: mongo:latest
+              container_name: mongodb
+              restart: always
+              environment:
+                MONGO_INITDB_ROOT_USERNAME: \${MONGO_USERNAME}
+                MONGO_INITDB_ROOT_PASSWORD: \${MONGO_PASSWORD}
+              ports:
+                - "127.0.0.1:27017:27017"  # expose only to local interface
+              volumes:
+                - mongodb_data:/data/db
+
+            backup:
+              build:
+                context: .
+                dockerfile: backup.Dockerfile
+              container_name: mongo_backup
+              volumes:
+                - ~/backup/:/usr/local/bin
+                - ~/.env:/usr/local/bin/.env
+              environment:
+                - TELEGRAM_TOKEN=\${TELEGRAM_BOT_TOKEN}
+                - CHAT_ID=\${BACKUP_CHANNEL}
+                - MONGO_INITDB_ROOT_USERNAME=\${MONGO_USERNAME}
+                - MONGO_INITDB_ROOT_PASSWORD=\${MONGO_PASSWORD}
+              entrypoint: ["bash", "/usr/local/bin/backup.sh"]
+              restart: no
+
             app:
-              image: ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.REPO }}:arm64
+              image: randompickle/allcapz.in:arm64
+              container_name: allcapz
               env_file:
                 - .env
               ports:
-                - "8000:8000"
+                - "127.0.0.1:8000:8000"  # expose it only local interface
+              restart: unless-stopped  # keep it
+              depends_on:
+                - mongodb  # ensures MongoDB starts before the app
+
+          volumes:
+            mongodb_data:
+              driver: local
           EOF
 
       - name: SCP docker-compose.yml to server
